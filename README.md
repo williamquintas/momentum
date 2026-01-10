@@ -29,7 +29,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 - **State Management**: Redux Toolkit or Zustand
 - **Data Fetching**: React Query (TanStack Query)
 - **Styling**: Ant Design theme customization, CSS-in-JS if needed
-- **Build Tool**: Next.js (or Vite/Webpack based on configuration)
+- **Build Tool**: Vite
 
 ## 🚀 Getting Started
 
