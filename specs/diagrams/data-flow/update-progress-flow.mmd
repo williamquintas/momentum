@@ -1,0 +1,95 @@
+flowchart TD
+    Start([User Action: Update Progress]) --> ActionType{Goal Type?}
+    ActionType -->|Quantitative| QtyInput[User enters new currentValue]
+    ActionType -->|Qualitative| QualInput[User updates status/rating]
+    ActionType -->|Binary| BinInput[User checks/unchecks item]
+    ActionType -->|Milestone| MilInput[User completes milestone]
+    ActionType -->|Recurring| RecInput[User marks occurrence complete]
+    ActionType -->|Habit| HabInput[User marks day complete]
+    
+    QtyInput --> Capture[UI Component: Capture Input]
+    QualInput --> Capture
+    BinInput --> Capture
+    MilInput --> Capture
+    RecInput --> Capture
+    HabInput --> Capture
+    
+    Capture --> ValidateInput{Validate input client-side}
+    ValidateInput -->|Invalid| ShowError[Show error]
+    ShowError --> UserFixes[User fixes]
+    UserFixes --> ValidateInput
+    ValidateInput -->|Valid| Optimistic[Optimistic Update]
+    
+    Optimistic --> DispatchPending[Dispatch: updateProgressPending]
+    DispatchPending --> UpdateStore[Update goal in store immediately]
+    UpdateStore --> ShowLoading[Show loading state]
+    ShowLoading --> CalcService[Progress Calculation Service]
+    
+    CalcService --> CalcType{Goal Type?}
+    CalcType -->|Quantitative| CalcQty[progress = current - start / target - start * 100]
+    CalcType -->|Milestone| CalcMil[progress = completedMilestones / totalMilestones * 100]
+    CalcType -->|Binary| CalcBin[progress = currentCount / targetCount * 100]
+    CalcType -->|Qualitative| CalcQual[progress = status-based or rating-based]
+    CalcType -->|Recurring| CalcRec[progress = completedOccurrences / totalOccurrences * 100]
+    CalcType -->|Habit| CalcHab[progress = completedDays / totalDays * 100]
+    
+    CalcQty --> Clamp[Clamp progress: 0-100 or allow >100]
+    CalcMil --> Clamp
+    CalcBin --> Clamp
+    CalcQual --> Clamp
+    CalcRec --> Clamp
+    CalcHab --> Clamp
+    
+    Clamp --> ReturnCalc[Return: progress, isComplete, message]
+    ReturnCalc --> APIService[API Service: updateProgress]
+    APIService --> PrepareRequest[Prepare request: goalId, progress, progressEntry, type-specific updates]
+    PrepareRequest --> HTTPRequest[HTTP Request: PATCH /api/goals/:id/progress]
+    HTTPRequest --> Backend[Backend API Handler]
+    Backend --> LoadGoal[Load goal from database]
+    LoadGoal --> ValidateUpdate{Validate update}
+    ValidateUpdate --> CheckPerms[Check user permissions]
+    CheckPerms --> ValidateProgress[Validate progress value 0-100]
+    ValidateProgress --> ValidateType[Validate type-specific fields]
+    ValidateType --> CheckDeps{Has dependencies?}
+    CheckDeps -->|Yes| ValidateDeps[Check dependencies for milestones]
+    ValidateDeps --> Recalc[Recalculate progress server-side validation]
+    CheckDeps -->|No| Recalc
+    Recalc --> CreateHistory[Create progress history entry]
+    CreateHistory --> UpdateGoal[Update goal: progress, currentValue/currentCount/etc., updatedAt, progressHistory]
+    UpdateGoal --> CheckComplete{Progress = 100%?}
+    CheckComplete -->|Yes| SuggestComplete[Suggest completion]
+    CheckComplete -->|No| SaveDB
+    SuggestComplete --> SaveDB[Database: UPDATE Goal + INSERT ProgressEntry]
+    SaveDB --> Transaction[Transaction: UPDATE goals SET progress=?, currentValue=?, updatedAt=?]
+    Transaction --> InsertHistory[INSERT INTO progress_history]
+    InsertHistory --> ReturnUpdated[Return: Updated goal]
+    ReturnUpdated --> APIResponse[API Response: 200 OK]
+    APIResponse --> TransformResponse[API Service: Transform Response]
+    TransformResponse --> UpdateStore2[State Management: Update Store]
+    UpdateStore2 --> DispatchSuccess[Dispatch: updateProgressSuccess]
+    DispatchSuccess --> ReplaceOptimistic[Replace optimistic update with real data]
+    ReplaceOptimistic --> UpdateGoalStore[Update goal in store]
+    UpdateGoalStore --> UpdateCache[Update goal list cache if applicable]
+    UpdateCache --> UpdateUI[UI Component: Update View]
+    UpdateUI --> UpdateProgressBar[Update progress bar: progress%]
+    UpdateProgressBar --> UpdatePercentage[Update progress percentage display]
+    UpdatePercentage --> AddHistory[Add entry to progress history timeline]
+    AddHistory --> UpdateTypeDisplay{Update type-specific displays}
+    UpdateTypeDisplay -->|Quantitative| ShowQty[currentValue, progress bar]
+    UpdateTypeDisplay -->|Milestone| ShowMil[Steps component, milestone status]
+    UpdateTypeDisplay -->|Recurring/Habit| ShowRec[Calendar heatmap, streak]
+    ShowQty --> ShowSuccess[Show success message optional]
+    ShowMil --> ShowSuccess
+    ShowRec --> ShowSuccess
+    ShowSuccess --> End([Progress Updated Successfully])
+
+    style Start fill:#e1f5ff
+    style End fill:#c8e6c9
+    style ActionType fill:#fff9c4
+    style ValidateInput fill:#fff9c4
+    style CalcType fill:#fff9c4
+    style ValidateUpdate fill:#fff9c4
+    style CheckDeps fill:#fff9c4
+    style CheckComplete fill:#fff9c4
+    style UpdateTypeDisplay fill:#fff9c4
+

@@ -1,0 +1,40 @@
+stateDiagram-v2
+    [*] --> active: Create Goal
+    
+    active --> paused: Pause Goal
+    active --> cancelled: Cancel Goal (with confirmation)
+    active --> completed: Complete Goal (if progress = 100% or user confirms)
+    
+    paused --> active: Resume Goal
+    paused --> cancelled: Cancel Goal (with confirmation)
+    paused --> completed: Complete Goal (if progress = 100% or user confirms)
+    
+    completed --> [*]: Final State
+    cancelled --> [*]: Final State
+    
+    note right of active
+        Default status for new goals
+        Can update progress
+        Deadline countdown active
+    end note
+    
+    note right of paused
+        Progress preserved
+        Deadline countdown paused
+        Can resume anytime
+    end note
+    
+    note right of completed
+        Final state
+        Cannot change status
+        Can archive/unarchive
+        Data preserved
+    end note
+    
+    note right of cancelled
+        Final state
+        Cannot reactivate
+        Requires confirmation
+        Data preserved for history
+    end note
+

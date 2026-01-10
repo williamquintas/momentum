@@ -1,0 +1,46 @@
+flowchart TD
+    Start([START: User wants to create a goal]) --> Auth{Is user authenticated?}
+    Auth -->|NO| ShowLogin[Show login/error message]
+    ShowLogin --> End1([END])
+    Auth -->|YES| SelectType[User selects goal type]
+    
+    SelectType --> Type{Goal Type?}
+    Type -->|QUANTITATIVE| QtyForm[Enter: title, description, category, priority<br/>Enter: startValue, targetValue, currentValue, unit<br/>Set: allowDecimals yes/no<br/>Optional: minValue, maxValue, startDate, deadline]
+    Type -->|QUALITATIVE| QualForm[Enter: title, description, category, priority<br/>Set: qualitativeStatus default: not_started<br/>Optional: improvementCriteria, targetRating, startDate, deadline]
+    Type -->|BINARY| BinForm[Enter: title, description, category, priority<br/>Optional: targetCount, items array<br/>Set: allowPartialCompletion yes/no<br/>Optional: startDate, deadline]
+    Type -->|MILESTONE| MilForm[Enter: title, description, category, priority<br/>Add at least one milestone<br/>For each: title, order, optional description, dueDate, dependencies<br/>Validate no circular dependencies<br/>Set: allowMilestoneReordering, requireSequentialCompletion<br/>Optional: startDate, deadline]
+    Type -->|RECURRING| RecForm[Enter: title, description, category, priority<br/>Configure recurrence:<br/>frequency: daily/weekly/monthly/yearly<br/>interval: positive integer<br/>If weekly: daysOfWeek array<br/>If monthly: dayOfMonth optional<br/>If yearly: dayOfYear optional<br/>Optional: endDate, startDate, deadline]
+    Type -->|HABIT| HabForm[Enter: title, description, category, priority<br/>Set: targetFrequency daily/every_other_day/weekly/custom<br/>If custom: set customFrequency<br/>Optional: startDate, deadline]
+    
+    QtyForm --> Validate
+    QualForm --> Validate
+    BinForm --> Validate
+    MilForm --> Validate
+    RecForm --> Validate
+    HabForm --> Validate
+    
+    Validate[Validate all required fields] --> Valid{Validation passes?}
+    Valid -->|NO| ShowErrors[Show errors]
+    ShowErrors --> UserFixes[User fixes]
+    UserFixes --> Validate
+    Valid -->|YES| Submit[Submit to API]
+    
+    Submit --> APIResult{API result?}
+    APIResult -->|Error| ShowError[Show error message]
+    ShowError --> Retry{User retry or cancel?}
+    Retry -->|Retry| Submit
+    Retry -->|Cancel| End2([END])
+    APIResult -->|Success| ShowSuccess[Show success message]
+    ShowSuccess --> Navigate[Navigate to goal detail]
+    Navigate --> End3([END: Goal created successfully])
+
+    style Start fill:#e1f5ff
+    style End1 fill:#ffcdd2
+    style End2 fill:#ffcdd2
+    style End3 fill:#c8e6c9
+    style Auth fill:#fff9c4
+    style Type fill:#fff9c4
+    style Valid fill:#fff9c4
+    style APIResult fill:#fff9c4
+    style Retry fill:#fff9c4
+

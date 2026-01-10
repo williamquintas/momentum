@@ -1,0 +1,156 @@
+erDiagram
+    BaseGoal ||--o{ Note : has
+    BaseGoal ||--o{ Attachment : has
+    BaseGoal ||--o{ ProgressEntry : has
+    BaseGoal ||--o{ BaseGoal : "relatedGoals"
+    
+    BaseGoal {
+        string id
+        string title
+        string description
+        GoalType type
+        GoalStatus status
+        Priority priority
+        string category
+        string[] tags
+        Date startDate
+        Date deadline
+        Date completedDate
+        number progress
+        Date createdAt
+        Date updatedAt
+        string createdBy
+        string assignee
+        boolean archived
+        boolean favorite
+    }
+    
+    QuantitativeGoal ||--|| BaseGoal : extends
+    QuantitativeGoal {
+        number startValue
+        number targetValue
+        number currentValue
+        string unit
+        boolean allowDecimals
+        number minValue
+        number maxValue
+    }
+    
+    QualitativeGoal ||--|| BaseGoal : extends
+    QualitativeGoal {
+        QualitativeStatus qualitativeStatus
+        SelfAssessment[] selfAssessments
+        string[] improvementCriteria
+        number targetRating
+    }
+    
+    BinaryGoal ||--|| BaseGoal : extends
+    BinaryGoal {
+        number targetCount
+        number currentCount
+        string[] items
+        boolean allowPartialCompletion
+    }
+    
+    MilestoneGoal ||--|| BaseGoal : extends
+    MilestoneGoal ||--o{ Milestone : has
+    MilestoneGoal {
+        boolean allowMilestoneReordering
+        boolean requireSequentialCompletion
+    }
+    
+    RecurringGoal ||--|| BaseGoal : extends
+    RecurringGoal ||--|| Recurrence : has
+    RecurringGoal ||--|| CompletionStats : has
+    RecurringGoal ||--o{ HabitEntry : "occurrences"
+    RecurringGoal {
+    }
+    
+    HabitGoal ||--|| BaseGoal : extends
+    HabitGoal ||--|| CompletionStats : has
+    HabitGoal ||--o{ HabitEntry : "entries"
+    HabitGoal {
+        string targetFrequency
+        number customFrequency
+        number habitStrength
+    }
+    
+    Milestone ||--o{ Milestone : "dependencies"
+    Milestone {
+        string id
+        string title
+        string description
+        string status
+        Date dueDate
+        Date completedDate
+        number order
+        string[] dependencies
+    }
+    
+    Recurrence {
+        RecurrenceFrequency frequency
+        number interval
+        Date endDate
+        number[] daysOfWeek
+        number dayOfMonth
+        number dayOfYear
+    }
+    
+    CompletionStats ||--|| Streak : has
+    CompletionStats {
+        number totalOccurrences
+        number completedOccurrences
+        number completionRate
+        Date lastCompletedDate
+        Date firstCompletedDate
+    }
+    
+    Streak {
+        number current
+        number longest
+        Date lastCompletedDate
+        Date startDate
+    }
+    
+    HabitEntry {
+        string id
+        Date date
+        boolean completed
+        number value
+        string note
+    }
+    
+    Note {
+        string id
+        string content
+        Date createdAt
+        Date updatedAt
+        string createdBy
+        string[] tags
+    }
+    
+    Attachment {
+        string id
+        string filename
+        string url
+        string mimeType
+        number size
+        Date uploadedAt
+        string uploadedBy
+    }
+    
+    ProgressEntry {
+        string id
+        Date date
+        number value
+        string note
+    }
+    
+    SelfAssessment {
+        string id
+        Date date
+        number rating
+        string comment
+        object criteria
+    }
+

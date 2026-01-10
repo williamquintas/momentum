@@ -1,0 +1,78 @@
+sequenceDiagram
+    participant User
+    participant GoalDetail
+    participant MilestoneSteps
+    participant Validation
+    participant Store
+    participant APIService
+    participant Backend
+    participant Database
+    
+    User->>GoalDetail: Navigate to milestone goal detail page
+    GoalDetail->>MilestoneSteps: Display milestones using Ant Design Steps
+    MilestoneSteps->>User: Show all milestones with status: pending
+    
+    User->>MilestoneSteps: Click "Mark Complete" on Milestone 1
+    MilestoneSteps->>Validation: Validate: No dependencies (first milestone)
+    Validation-->>MilestoneSteps: Validation passed
+    
+    MilestoneSteps->>Store: Optimistic update: completeMilestonePending()
+    Store->>Store: Update milestone status in store
+    Store->>Store: Recalculate progress optimistically
+    
+    MilestoneSteps->>APIService: completeMilestone(goalId, milestoneId)
+    APIService->>Backend: PATCH /api/goals/:id/milestones/:milestoneId
+    
+    Backend->>Database: Load goal from database
+    Database-->>Backend: Goal with milestones
+    
+    Backend->>Backend: Find milestone by ID
+    Backend->>Validation: Validate dependencies server-side
+    Validation-->>Backend: All dependencies met
+    
+    Backend->>Backend: Validate sequential completion (if required)
+    Backend->>Backend: Update milestone: status = 'completed', completedDate = now
+    Backend->>Backend: Recalculate overall progress: (1/5) * 100 = 20%
+    
+    Backend->>Backend: Check: All milestones completed?
+    Backend->>Backend: No, continue
+    
+    Backend->>Database: UPDATE goal SET progress=?, milestones=?, updatedAt=?
+    Database-->>Backend: Updated goal
+    
+    Backend-->>APIService: 200 OK with updated goal
+    APIService->>Store: completeMilestoneSuccess(goal)
+    Store->>Store: Replace optimistic update
+    Store->>Store: Update goal in store
+    Store->>Store: Update milestone status
+    
+    MilestoneSteps->>User: Update Steps component: Milestone 1 shows as completed
+    MilestoneSteps->>User: Update progress bar: 20%
+    MilestoneSteps->>User: Next milestone (2) enabled
+    
+    Note over User,Database: User continues completing milestones 2, 3, 4...
+    
+    User->>MilestoneSteps: Click "Mark Complete" on Milestone 5 (last)
+    MilestoneSteps->>Validation: Validate dependencies
+    Validation-->>MilestoneSteps: All dependencies met
+    
+    MilestoneSteps->>APIService: completeMilestone(goalId, milestoneId5)
+    APIService->>Backend: PATCH /api/goals/:id/milestones/:milestoneId5
+    Backend->>Backend: Update milestone 5
+    Backend->>Backend: Recalculate progress: (5/5) * 100 = 100%
+    Backend->>Backend: Check: All milestones completed? YES
+    Backend->>Backend: Suggest completion
+    
+    Backend-->>APIService: 200 OK with goal (progress: 100%)
+    APIService->>Store: completeMilestoneSuccess(goal)
+    Store->>Store: Update goal
+    
+    MilestoneSteps->>User: Show: "All milestones completed! Mark goal as complete?"
+    User->>MilestoneSteps: Confirm completion
+    MilestoneSteps->>APIService: Complete goal
+    APIService->>Backend: Update goal status to 'completed'
+    Backend->>Database: UPDATE goal SET status='completed', completedDate=now
+    Database-->>Backend: Goal completed
+    
+    GoalDetail->>User: Show goal as completed
+

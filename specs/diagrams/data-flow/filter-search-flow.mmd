@@ -1,0 +1,64 @@
+flowchart TD
+    Start([User: Apply Filters/Search]) --> UserActions[User selects filters and search]
+    UserActions --> Filters[User selects filters:<br/>Type, Status, Priority, Category, Tags, Date range]
+    UserActions --> Search[User enters search: keyword]
+    UserActions --> Sort[User selects sort: field, order]
+    
+    Filters --> UpdateFilterState[UI Component: Update Filter State]
+    Search --> UpdateFilterState
+    Sort --> UpdateFilterState
+    
+    UpdateFilterState --> UpdateLocal[Update local filter state]
+    UpdateLocal --> Debounce[Debounce search input 300ms]
+    Debounce --> BuildQuery[Build query parameters]
+    
+    BuildQuery --> UpdateStore[State Management: Update Filters]
+    UpdateStore --> DispatchFilters[Dispatch: setFilters, setSearchQuery, setSortOptions]
+    DispatchFilters --> StoreUpdate[Store: Update filter state]
+    
+    StoreUpdate --> CheckCache[React Query: Check Cache]
+    CheckCache --> BuildCacheKey[Build cache key from filters/search/sort]
+    BuildCacheKey --> CacheExists{Data exists in cache?}
+    CacheExists -->|Found & Fresh| ReturnCached[Return cached data]
+    CacheExists -->|Not found or Stale| FetchAPI[Fetch from API]
+    
+    ReturnCached --> RenderResults
+    FetchAPI --> APIService[API Service: fetchGoals]
+    APIService --> BuildQueryString[Build query string:<br/>?type=quantitative,binary<br/>&status=active<br/>&priority=high,medium<br/>&category=Health<br/>&tags=fitness<br/>&startDateFrom=2024-01-01<br/>&deadlineTo=2024-12-31<br/>&search=weight%20loss<br/>&sort=deadline<br/>&order=asc<br/>&page=1<br/>&limit=20]
+    
+    BuildQueryString --> HTTPRequest[HTTP Request: GET /api/goals]
+    HTTPRequest --> Backend[Backend API Handler]
+    Backend --> ParseQuery[Parse query parameters]
+    ParseQuery --> BuildDBQuery[Build database query:<br/>WHERE clauses from filters<br/>Full-text search on title/description<br/>ORDER BY from sort options<br/>LIMIT/OFFSET from pagination]
+    
+    BuildDBQuery --> UseIndexes[Use indexes:<br/>Index on: type, status, priority<br/>Index on: category, tags<br/>Index on: deadline, createdAt<br/>Full-text index on: title, description]
+    
+    UseIndexes --> ExecuteQuery[Database: Execute Query]
+    ExecuteQuery --> SQLQuery[SELECT goals WHERE ...<br/>AND title LIKE '%weight loss%'<br/>OR description LIKE '%weight loss%'<br/>ORDER BY deadline ASC<br/>LIMIT 20 OFFSET 0]
+    
+    SQLQuery --> ReturnResults[Return: Goals array + total count]
+    ReturnResults --> APIResponse[API Response: 200 OK]
+    APIResponse --> TransformResponse[API Service: Transform Response]
+    TransformResponse --> ConvertDates[Convert dates]
+    ConvertDates --> AddComputed[Add computed fields]
+    
+    AddComputed --> UpdateCache2[React Query: Update Cache]
+    UpdateCache2 --> CacheResults[Cache results with key]
+    CacheResults --> SetExpiration[Set cache expiration 5 minutes]
+    
+    SetExpiration --> UpdateStore2[State Management: Update Store]
+    UpdateStore2 --> DispatchGoals[Dispatch: setGoals]
+    DispatchGoals --> StoreGoals[Store: Update goals list]
+    
+    StoreGoals --> RenderResults[UI Component: Render Results]
+    RenderResults --> DisplayGoals[Display filtered goals]
+    DisplayGoals --> ShowBadges[Show active filter badges]
+    ShowBadges --> HighlightSearch[Show search term highlighted]
+    HighlightSearch --> ShowPagination[Show pagination controls]
+    ShowPagination --> ShowCount[Show X results found message]
+    ShowCount --> End([END: Results Displayed])
+
+    style Start fill:#e1f5ff
+    style End fill:#c8e6c9
+    style CacheExists fill:#fff9c4
+

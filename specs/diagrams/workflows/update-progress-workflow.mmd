@@ -1,0 +1,68 @@
+sequenceDiagram
+    participant User
+    participant GoalDetail
+    participant ProgressForm
+    participant CalcService
+    participant Store
+    participant APIService
+    participant Backend
+    participant Database
+    
+    User->>GoalDetail: Navigate to goal detail page
+    GoalDetail->>User: Display current progress: 15% (currentValue: 197)
+    
+    User->>ProgressForm: Click "Update Progress" button
+    ProgressForm->>User: Display progress update form
+    
+    User->>ProgressForm: Enter new currentValue: 195
+    User->>ProgressForm: Optionally add note: "Weekly weigh-in"
+    User->>ProgressForm: Click "Save"
+    
+    ProgressForm->>ProgressForm: Validate input client-side
+    
+    alt Validation fails
+        ProgressForm->>User: Show error message
+        User->>ProgressForm: Correct value
+    end
+    
+    ProgressForm->>Store: Optimistic update: updateProgressPending()
+    Store->>Store: Update goal in store immediately
+    Store->>User: Show loading state
+    
+    ProgressForm->>CalcService: Calculate new progress
+    CalcService->>CalcService: Formula: ((195 - 200) / (180 - 200)) * 100 = 25%
+    CalcService->>CalcService: Clamp progress: 0-100
+    CalcService-->>ProgressForm: Return: { progress: 25%, isComplete: false }
+    
+    ProgressForm->>APIService: updateProgress(goalId, progress, currentValue, note)
+    APIService->>APIService: Prepare request with progress entry
+    APIService->>Backend: PATCH /api/goals/:id/progress
+    
+    Backend->>Database: Load goal from database
+    Database-->>Backend: Goal data
+    
+    Backend->>Backend: Validate update (permissions, progress value, type-specific fields)
+    Backend->>Backend: Recalculate progress (server-side validation)
+    Backend->>Backend: Create progress history entry
+    Backend->>Backend: Update goal: progress, currentValue, updatedAt, progressHistory
+    
+    alt Progress = 100%
+        Backend->>Backend: Suggest completion
+    end
+    
+    Backend->>Database: UPDATE goal + INSERT progress_history
+    Database-->>Backend: Updated goal
+    
+    Backend-->>APIService: 200 OK with updated goal
+    APIService->>APIService: Transform response
+    APIService->>Store: updateProgressSuccess(goal)
+    Store->>Store: Replace optimistic update with real data
+    Store->>Store: Update goal in store
+    Store->>Store: Update goal list cache
+    
+    GoalDetail->>User: Update progress bar: 25%
+    GoalDetail->>User: Update progress percentage display: "25%"
+    GoalDetail->>User: Add entry to progress history timeline
+    GoalDetail->>User: Update type-specific displays (currentValue, progress bar)
+    GoalDetail->>User: Show success message (optional)
+

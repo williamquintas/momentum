@@ -1,0 +1,104 @@
+flowchart TD
+    Start([START: User wants to update goal progress]) --> LoadGoal[Load goal data]
+    LoadGoal --> LoadResult{Load successful?}
+    LoadResult -->|Error| ShowError1[Show error]
+    ShowError1 --> End1([END])
+    LoadResult -->|Success| DetermineType[Determine goal type]
+    
+    DetermineType --> GoalType{Goal Type?}
+    
+    GoalType -->|QUANTITATIVE| QtyFlow[User enters new currentValue]
+    QtyFlow --> QtyValidate1{Within minValue/maxValue?}
+    QtyValidate1 -->|No| QtyError[Show error]
+    QtyError --> QtyFlow
+    QtyValidate1 -->|Yes| QtyValidate2{Matches allowDecimals?}
+    QtyValidate2 -->|No| QtyError
+    QtyValidate2 -->|Yes| QtyCalc[Calculate progress:<br/>current - start / target - start * 100]
+    QtyCalc --> QtyClamp[Clamp progress: 0-100 or allow >100]
+    QtyClamp --> QtyCheck{currentValue >= targetValue?}
+    QtyCheck -->|Yes| QtySuggest[Suggest marking goal as completed]
+    QtyCheck -->|No| QtyHistory[Create progress history entry]
+    QtySuggest --> QtyHistory
+    QtyHistory --> SaveUpdate
+    
+    GoalType -->|QUALITATIVE| QualFlow[User updates qualitativeStatus OR adds self-assessment]
+    QualFlow --> QualStatus{Status update?}
+    QualStatus -->|Yes| QualStatusCalc[Calculate based on status:<br/>not_started: 0%<br/>in_progress: 50%<br/>completed: 100%]
+    QualStatus -->|No| QualRating[Calculate average rating:<br/>averageRating / 10 * 100]
+    QualStatusCalc --> QualHistory[Create progress history entry]
+    QualRating --> QualHistory
+    QualHistory --> SaveUpdate
+    
+    GoalType -->|BINARY| BinFlow[User checks/unchecks items OR updates currentCount]
+    BinFlow --> BinUpdate[Update currentCount]
+    BinUpdate --> BinCalc{targetCount set?}
+    BinCalc -->|Yes| BinCalc1[progress = currentCount / targetCount * 100]
+    BinCalc -->|No| BinCalc2[progress = 100% if currentCount > 0, else 0%]
+    BinCalc1 --> BinCheck{currentCount >= targetCount?}
+    BinCalc2 --> BinCheck
+    BinCheck -->|Yes| BinSuggest[Suggest marking goal as completed]
+    BinCheck -->|No| BinHistory[Create progress history entry]
+    BinSuggest --> BinHistory
+    BinHistory --> SaveUpdate
+    
+    GoalType -->|MILESTONE| MilFlow[User marks milestone as completed]
+    MilFlow --> MilDeps{Dependencies met?}
+    MilDeps -->|NO| MilError1[Show error: Complete dependencies first]
+    MilError1 --> End2([END])
+    MilDeps -->|YES| MilSeq{Sequential completion required?}
+    MilSeq -->|YES| MilSeqCheck{Previous milestone completed?}
+    MilSeqCheck -->|NO| MilError2[Show error: Complete milestones in order]
+    MilError2 --> End3([END])
+    MilSeqCheck -->|YES| MilUpdate[Update milestone status to completed]
+    MilSeq -->|NO| MilUpdate
+    MilUpdate --> MilSetDate[Set milestone completedDate]
+    MilSetDate --> MilCalc[Calculate overall progress:<br/>completedMilestones / totalMilestones * 100]
+    MilCalc --> MilAll{All milestones completed?}
+    MilAll -->|YES| MilSuggest[Suggest marking goal as completed]
+    MilAll -->|NO| MilHistory[Create progress history entry]
+    MilSuggest --> MilHistory
+    MilHistory --> SaveUpdate
+    
+    GoalType -->|RECURRING| RecFlow[User marks occurrence as completed]
+    RecFlow --> RecEntry[Create HabitEntry with completed: true]
+    RecEntry --> RecStats[Update completionStats:<br/>Increment completedOccurrences<br/>Recalculate completionRate<br/>Update streak]
+    RecStats --> RecCalc[Calculate progress:<br/>completedOccurrences / totalOccurrences * 100]
+    RecCalc --> RecHistory[Create progress history entry]
+    RecHistory --> SaveUpdate
+    
+    GoalType -->|HABIT| HabFlow[User marks habit for today as completed]
+    HabFlow --> HabEntry[Create HabitEntry with completed: true, date: today]
+    HabEntry --> HabStats[Update completionStats:<br/>Increment completedOccurrences<br/>Recalculate completionRate<br/>Update streak]
+    HabStats --> HabStrength[Calculate habitStrength<br/>based on consistency, streak, etc.]
+    HabStrength --> HabCalc[Calculate progress:<br/>completedDays / totalDaysInPeriod * 100]
+    HabCalc --> HabHistory[Create progress history entry]
+    HabHistory --> SaveUpdate
+    
+    SaveUpdate[Save update to API] --> APISuccess{API success?}
+    APISuccess -->|Error| ShowError2[Show error]
+    ShowError2 --> Rollback[Rollback optimistic update]
+    Rollback --> End4([END])
+    APISuccess -->|Success| UpdateUI[Update UI]
+    UpdateUI --> ShowSuccess[Show success message]
+    ShowSuccess --> End5([END: Progress updated successfully])
+
+    style Start fill:#e1f5ff
+    style End1 fill:#ffcdd2
+    style End2 fill:#ffcdd2
+    style End3 fill:#ffcdd2
+    style End4 fill:#ffcdd2
+    style End5 fill:#c8e6c9
+    style LoadResult fill:#fff9c4
+    style GoalType fill:#fff9c4
+    style QtyValidate1 fill:#fff9c4
+    style QtyValidate2 fill:#fff9c4
+    style QtyCheck fill:#fff9c4
+    style QualStatus fill:#fff9c4
+    style BinCalc fill:#fff9c4
+    style BinCheck fill:#fff9c4
+    style MilDeps fill:#fff9c4
+    style MilSeq fill:#fff9c4
+    style MilSeqCheck fill:#fff9c4
+    style MilAll fill:#fff9c4
+    style APISuccess fill:#fff9c4
+

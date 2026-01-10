@@ -1,0 +1,33 @@
+flowchart TD
+    Start([START: User adds/updates milestone with dependencies]) --> GetMilestones[Get list of all milestone IDs in goal]
+    GetMilestones --> ForEachDep[For each dependency ID]
+    
+    ForEachDep --> CheckExists{Dependency ID exists in milestone list?}
+    CheckExists -->|NO| Error1[ERROR: Dependency references non-existent milestone]
+    Error1 --> End1([END])
+    CheckExists -->|YES| CheckCircular[Check for circular dependencies]
+    
+    CheckCircular --> BuildGraph[Build dependency graph]
+    BuildGraph --> RunCycleDetection[Run cycle detection algorithm DFS]
+    RunCycleDetection --> CycleResult{Cycle detected?}
+    CycleResult -->|YES| Error2[ERROR: Circular dependencies detected]
+    Error2 --> End2([END])
+    CycleResult -->|NO| CheckSelf[Check: milestone depends on itself?]
+    
+    CheckSelf --> SelfDep{Milestone depends on itself?}
+    SelfDep -->|YES| Error3[ERROR: Milestone cannot depend on itself]
+    Error3 --> End3([END])
+    SelfDep -->|NO| ValidationPassed[Validation passed]
+    
+    ValidationPassed --> SaveMilestone[Save milestone]
+    SaveMilestone --> End4([END: Dependencies valid, milestone saved])
+
+    style Start fill:#e1f5ff
+    style End1 fill:#ffcdd2
+    style End2 fill:#ffcdd2
+    style End3 fill:#ffcdd2
+    style End4 fill:#c8e6c9
+    style CheckExists fill:#fff9c4
+    style CycleResult fill:#fff9c4
+    style SelfDep fill:#fff9c4
+

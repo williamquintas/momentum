@@ -1,0 +1,74 @@
+flowchart TD
+    Start([User Input]) --> Form[CreateGoalForm Component]
+    Form --> Validate{Validate with Zod Schema}
+    Validate -->|Invalid| ShowErrors[Show Errors]
+    ShowErrors --> UserFixes[User Fixes]
+    UserFixes --> Validate
+    Validate -->|Valid| Optimistic[Optimistic Update to Store]
+    Optimistic --> DispatchPending[Dispatch: createGoalPending]
+    DispatchPending --> AddTemp[Store: Add temporary goal with loading state]
+    AddTemp --> APIService[API Service: createGoal]
+    APIService --> Transform[Transform data to API format]
+    Transform --> ConvertDates[Convert dates to ISO strings]
+    ConvertDates --> SetDefaults[Set defaults: progress: 0, timestamps]
+    SetDefaults --> RemoveFields[Remove client-only fields]
+    RemoveFields --> HTTPRequest[HTTP Request: POST /api/goals]
+    HTTPRequest --> Backend[Backend API Handler]
+    Backend --> ServerValidate{Validate with Zod Schema}
+    ServerValidate -->|Invalid| Return400[Return 400 with errors]
+    Return400 --> ErrorHandler[API Service: Handle Error]
+    ServerValidate -->|Valid| Authorize{Authorize: Check user permissions}
+    Authorize -->|Unauthorized| Return403[Return 403]
+    Return403 --> ErrorHandler
+    Authorize -->|Authorized| Generate[Generate: id UUID, createdAt, updatedAt]
+    Generate --> SetDefaults2[Set defaults: progress: 0, progressHistory: [], notes: [], attachments: [], relatedGoals: []]
+    SetDefaults2 --> Database[Database: INSERT Goal]
+    Database --> Transaction[Transaction: Insert goal record]
+    Transaction --> InsertMain[Insert main goal fields]
+    InsertMain --> InsertMilestones{Has milestones?}
+    InsertMilestones -->|Yes| InsertMilestoneData[Insert milestones]
+    InsertMilestoneData --> InsertProgress
+    InsertMilestones -->|No| InsertProgress[Insert initial progress entry]
+    InsertProgress --> ReturnCreated[Return: Created goal with all fields]
+    ReturnCreated --> APIResponse[API Response: 201 Created]
+    APIResponse --> TransformResponse[API Service: Transform Response]
+    TransformResponse --> ConvertDates2[Convert dates from ISO strings to Date objects]
+    ConvertDates2 --> AddComputed[Add computed fields if needed]
+    AddComputed --> UpdateStore[State Management: Update Store]
+    UpdateStore --> DispatchSuccess[Dispatch: createGoalSuccess]
+    DispatchSuccess --> RemoveTemp[Remove temporary goal]
+    RemoveTemp --> AddReal[Add real goal to store]
+    AddReal --> UpdateCache[Update goal list cache]
+    UpdateCache --> UpdateUI[UI Component: Update View]
+    UpdateUI --> ShowSuccess[Show success message]
+    ShowSuccess --> Navigate[Navigate to goal detail page OR Add goal to list view]
+    Navigate --> ClearForm[Clear form if staying on page]
+    ClearForm --> End([Goal Created Successfully])
+    
+    ErrorHandler --> ParseError[Parse error response]
+    ParseError --> ErrorType{Error Type?}
+    ErrorType -->|400| ExtractFieldErrors[Extract field errors]
+    ErrorType -->|403| PermissionError[Show permission error]
+    ErrorType -->|500| GenericError[Show generic error]
+    ErrorType -->|Network| NetworkError[Show network error]
+    ExtractFieldErrors --> ErrorState[State Management: Error Handling]
+    PermissionError --> ErrorState
+    GenericError --> ErrorState
+    NetworkError --> ErrorState
+    ErrorState --> DispatchError[Dispatch: createGoalError]
+    DispatchError --> RemoveTemp2[Remove temporary goal]
+    RemoveTemp2 --> SetError[Set error state]
+    SetError --> DisplayError[UI Component: Display Error]
+    DisplayError --> ShowErrorMsg[Show error message]
+    ShowErrorMsg --> ShowFieldErrors[Show field-level errors if validation]
+    ShowFieldErrors --> AllowRetry[Allow user to retry or cancel]
+    AllowRetry --> EndError([Error Handled])
+
+    style Start fill:#e1f5ff
+    style End fill:#c8e6c9
+    style EndError fill:#ffcdd2
+    style Validate fill:#fff9c4
+    style ServerValidate fill:#fff9c4
+    style Authorize fill:#fff9c4
+    style ErrorType fill:#fff9c4
+

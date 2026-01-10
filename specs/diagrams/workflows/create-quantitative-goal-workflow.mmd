@@ -1,0 +1,63 @@
+sequenceDiagram
+    participant User
+    participant CreateGoalForm
+    participant Validation
+    participant Store
+    participant APIService
+    participant Backend
+    participant Database
+    
+    User->>CreateGoalForm: Navigate to Create Goal page
+    User->>CreateGoalForm: Select goal type: Quantitative
+    CreateGoalForm->>CreateGoalForm: Display quantitative-specific fields
+    
+    User->>CreateGoalForm: Enter: Title, Description, Category, Priority
+    User->>CreateGoalForm: Enter: Start Value (200), Target Value (180), Current Value (200), Unit (pounds)
+    User->>CreateGoalForm: Set: Allow Decimals (No)
+    User->>CreateGoalForm: Optionally set: Start Date, Deadline
+    
+    User->>CreateGoalForm: Click "Create Goal"
+    CreateGoalForm->>Validation: Validate all fields
+    Validation-->>CreateGoalForm: Validation result
+    
+    alt Validation fails
+        CreateGoalForm->>User: Display field-level errors
+        User->>CreateGoalForm: Fix errors
+        CreateGoalForm->>Validation: Re-validate
+    end
+    
+    CreateGoalForm->>Store: Optimistic update: createGoalPending()
+    Store->>Store: Add temporary goal with loading state
+    
+    CreateGoalForm->>APIService: createGoal(goalData)
+    APIService->>APIService: Transform data to API format
+    APIService->>APIService: Convert dates to ISO strings
+    APIService->>APIService: Set defaults (progress: 0)
+    APIService->>Backend: POST /api/goals
+    
+    Backend->>Validation: Server-side validation
+    Validation-->>Backend: Validation result
+    
+    alt Validation fails
+        Backend-->>APIService: 400 Bad Request with errors
+        APIService->>Store: createGoalError(error)
+        Store->>Store: Remove temporary goal, set error state
+        CreateGoalForm->>User: Show error message
+    else Validation succeeds
+        Backend->>Backend: Check user permissions
+        Backend->>Backend: Generate: id (UUID), createdAt, updatedAt
+        Backend->>Database: INSERT goal record
+        Database-->>Backend: Goal created
+        Backend-->>APIService: 201 Created with goal data
+        
+        APIService->>APIService: Transform response (dates, etc.)
+        APIService->>Store: createGoalSuccess(goal)
+        Store->>Store: Remove temporary goal
+        Store->>Store: Add real goal to store
+        Store->>Store: Update goal list cache
+        
+        CreateGoalForm->>User: Show success message
+        CreateGoalForm->>User: Navigate to goal detail page
+        CreateGoalForm->>User: Clear form (if staying on page)
+    end
+

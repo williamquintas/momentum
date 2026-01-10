@@ -1,0 +1,87 @@
+flowchart TD
+    Start([START: User wants to change goal status]) --> GetCurrent[Get current status]
+    GetCurrent --> DetermineTarget[Determine target status]
+    
+    DetermineTarget --> Target{Target Status?}
+    
+    Target -->|PAUSED| PausedFlow{Current Status?}
+    PausedFlow -->|active| PausedAllowed[ALLOWED]
+    PausedFlow -->|completed| PausedNotAllowed1[NOT ALLOWED]
+    PausedFlow -->|cancelled| PausedNotAllowed2[NOT ALLOWED]
+    PausedNotAllowed1 --> ShowError1[Show error]
+    PausedNotAllowed2 --> ShowError1
+    ShowError1 --> End1([END])
+    PausedAllowed --> SetPaused[Set status to 'paused']
+    SetPaused --> PauseCountdown[Optional: Pause deadline countdown]
+    PauseCountdown --> PauseReason[Optional: Prompt for pause reason]
+    PauseReason --> SavePaused[Save]
+    SavePaused --> End2([END])
+    
+    Target -->|CANCELLED| CancelledFlow{Current Status?}
+    CancelledFlow -->|active| CancelledAllowed1[ALLOWED]
+    CancelledFlow -->|paused| CancelledAllowed2[ALLOWED]
+    CancelledFlow -->|completed| CancelledNotAllowed[NOT ALLOWED]
+    CancelledFlow -->|cancelled| AlreadyCancelled[Already cancelled]
+    CancelledNotAllowed --> ShowError2[Show error]
+    ShowError2 --> End3([END])
+    AlreadyCancelled --> End4([END])
+    CancelledAllowed1 --> ConfirmCancel1[Show confirmation dialog]
+    CancelledAllowed2 --> ConfirmCancel2[Show confirmation dialog]
+    ConfirmCancel1 --> UserConfirm1{User confirms?}
+    ConfirmCancel2 --> UserConfirm2{User confirms?}
+    UserConfirm1 -->|No| End5([END])
+    UserConfirm2 -->|No| End6([END])
+    UserConfirm1 -->|Yes| SetCancelled
+    UserConfirm2 -->|Yes| SetCancelled
+    SetCancelled[Set status to 'cancelled'] --> CancelReason[Optional: Prompt for cancellation reason]
+    CancelReason --> SaveCancelled[Save]
+    SaveCancelled --> End7([END])
+    
+    Target -->|ACTIVE| ActiveFlow{Current Status?}
+    ActiveFlow -->|paused| ActiveAllowed[ALLOWED]
+    ActiveFlow -->|active| AlreadyActive[Already active]
+    ActiveFlow -->|completed| ActiveNotAllowed1[NOT ALLOWED]
+    ActiveFlow -->|cancelled| ActiveNotAllowed2[NOT ALLOWED]
+    ActiveNotAllowed1 --> ShowError3[Show error]
+    ActiveNotAllowed2 --> ShowError3
+    ShowError3 --> End8([END])
+    AlreadyActive --> End9([END])
+    ActiveAllowed --> SetActive[Set status to 'active']
+    SetActive --> ResumeCountdown[Resume deadline countdown if applicable]
+    ResumeCountdown --> SaveActive[Save]
+    SaveActive --> End10([END])
+    
+    Target -->|COMPLETED| CompletedFlow{Current Status?}
+    CompletedFlow -->|active| CompletedAllowed1[ALLOWED if progress = 100% or user confirms]
+    CompletedFlow -->|paused| CompletedAllowed2[ALLOWED if progress = 100% or user confirms]
+    CompletedFlow -->|completed| AlreadyCompleted[Already completed]
+    CompletedFlow -->|cancelled| CompletedNotAllowed[NOT ALLOWED]
+    CompletedNotAllowed --> ShowError4[Show error]
+    ShowError4 --> End11([END])
+    AlreadyCompleted --> End12([END])
+    CompletedAllowed1 --> FollowCompletion[Follow Goal Completion Decision Tree]
+    CompletedAllowed2 --> FollowCompletion
+    FollowCompletion --> End13([END])
+
+    style Start fill:#e1f5ff
+    style End1 fill:#ffcdd2
+    style End2 fill:#c8e6c9
+    style End3 fill:#ffcdd2
+    style End4 fill:#fff9c4
+    style End5 fill:#fff9c4
+    style End6 fill:#fff9c4
+    style End7 fill:#c8e6c9
+    style End8 fill:#ffcdd2
+    style End9 fill:#fff9c4
+    style End10 fill:#c8e6c9
+    style End11 fill:#ffcdd2
+    style End12 fill:#fff9c4
+    style End13 fill:#c8e6c9
+    style Target fill:#fff9c4
+    style PausedFlow fill:#fff9c4
+    style CancelledFlow fill:#fff9c4
+    style UserConfirm1 fill:#fff9c4
+    style UserConfirm2 fill:#fff9c4
+    style ActiveFlow fill:#fff9c4
+    style CompletedFlow fill:#fff9c4
+

@@ -1,0 +1,78 @@
+flowchart TD
+    Start([Calculate Progress]) --> GoalType{Goal Type?}
+    
+    GoalType -->|QUANTITATIVE| QtyFormula[Formula: current - start / target - start * 100]
+    QtyFormula --> QtyEdge{Edge Cases?}
+    QtyEdge -->|startValue === targetValue| QtyEdge1[If currentValue >= targetValue: 100%<br/>Else: 0%]
+    QtyEdge -->|currentValue < startValue| QtyEdge2[Progress = 0% clamped]
+    QtyEdge -->|currentValue > targetValue| QtyEdge3[Progress = 100% clamped<br/>or >100% if over-achievement allowed]
+    QtyEdge -->|Normal| QtyNormal[Calculate normally]
+    QtyEdge1 --> Clamp
+    QtyEdge2 --> Clamp
+    QtyEdge3 --> Clamp
+    QtyNormal --> Clamp
+    
+    GoalType -->|MILESTONE| MilFormula[Formula: completedMilestones / totalMilestones * 100]
+    MilFormula --> MilSkipped{Skipped milestones?}
+    MilSkipped -->|Yes| MilExclude[Exclude skipped from calculation optional policy]
+    MilSkipped -->|No| MilNormal[Calculate normally]
+    MilExclude --> Clamp
+    MilNormal --> Clamp
+    
+    GoalType -->|BINARY| BinCheck{targetCount set?}
+    BinCheck -->|Yes| BinFormula1[Formula: currentCount / targetCount * 100]
+    BinCheck -->|No| BinFormula2[If currentCount > 0: 100%<br/>Else: 0%]
+    BinFormula1 --> Clamp
+    BinFormula2 --> Clamp
+    
+    GoalType -->|QUALITATIVE| QualCheck{Self-assessments exist?}
+    QualCheck -->|Yes| QualRating[Average rating / 10 * 100]
+    QualCheck -->|No| QualStatus{Status?}
+    QualStatus -->|not_started| Qual0[0%]
+    QualStatus -->|in_progress| Qual50[50% or based on ratings]
+    QualStatus -->|completed| Qual100[100%]
+    QualRating --> Clamp
+    Qual0 --> Clamp
+    Qual50 --> Clamp
+    Qual100 --> Clamp
+    
+    GoalType -->|RECURRING| RecFormula[Formula: completedOccurrences / totalOccurrences * 100]
+    RecFormula --> RecWindow{Time Window?}
+    RecWindow -->|All time| RecAll[Calculate for all time]
+    RecWindow -->|Last 30 days| Rec30[Calculate for last 30 days]
+    RecWindow -->|Last 90 days| Rec90[Calculate for last 90 days]
+    RecAll --> Clamp
+    Rec30 --> Clamp
+    Rec90 --> Clamp
+    
+    GoalType -->|HABIT| HabFormula[Formula: completedDays / totalDaysInPeriod * 100]
+    HabFormula --> HabWindow{Time Window?}
+    HabWindow -->|Last 7 days| Hab7[Calculate for last 7 days]
+    HabWindow -->|Last 30 days| Hab30[Calculate for last 30 days]
+    HabWindow -->|Last 90 days| Hab90[Calculate for last 90 days]
+    HabWindow -->|All time| HabAll[Calculate for all time]
+    Hab7 --> Clamp
+    Hab30 --> Clamp
+    Hab90 --> Clamp
+    HabAll --> Clamp
+    
+    Clamp[Clamp progress: 0-100%] --> OverAchieve{Over-achievement allowed?}
+    OverAchieve -->|Yes| AllowOver100[Allow >100%]
+    OverAchieve -->|No| Max100[Max 100%]
+    AllowOver100 --> Return[Return progress value]
+    Max100 --> Return
+    
+    Return --> End([END: Progress calculated])
+
+    style Start fill:#e1f5ff
+    style End fill:#c8e6c9
+    style GoalType fill:#fff9c4
+    style QtyEdge fill:#fff9c4
+    style MilSkipped fill:#fff9c4
+    style BinCheck fill:#fff9c4
+    style QualCheck fill:#fff9c4
+    style QualStatus fill:#fff9c4
+    style RecWindow fill:#fff9c4
+    style HabWindow fill:#fff9c4
+    style OverAchieve fill:#fff9c4
+
