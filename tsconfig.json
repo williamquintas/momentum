@@ -44,7 +44,8 @@
       "@/pages/*": ["src/pages/*"],
       "@/layouts/*": ["src/layouts/*"],
       "@/providers/*": ["src/providers/*"],
-      "@/assets/*": ["src/assets/*"]
+      "@/assets/*": ["src/assets/*"],
+      "@specs/*": ["specs/*"]
     }
   },
   "include": ["src", "specs"],

@@ -2,10 +2,17 @@
  * Goals Feature - Type System
  *
  * This file re-exports all goal-related types from the specifications.
- * It serves as the single source of truth for type imports within the goals feature.
+ * It serves as a convenience layer for type imports within the goals feature.
  *
- * All types are defined in `specs/types/goal.types.ts` to maintain consistency
- * across the application and ensure type safety.
+ * Architecture Decision:
+ * - Types are defined in `@specs/types/goal.types.ts` as the authoritative source
+ * - The `specs/` directory contains specifications (types, validation schemas, business rules)
+ * - This feature's `types/index.ts` provides a clean API for importing types
+ * - This separation allows specs to be shared across documentation, validation, and implementation
+ *
+ * Usage:
+ *   import type { Goal, GoalType } from '@/features/goals/types';
+ *   import { GoalType, isQuantitativeGoal } from '@/features/goals/types';
  */
 
 // Re-export enums (as values - this also exports them as types)
@@ -15,7 +22,7 @@ export {
   Priority,
   RecurrenceFrequency,
   QualitativeStatus,
-} from '../../../../specs/types/goal.types';
+} from '@specs/types/goal.types';
 
 // Re-export all types from specs
 export type {
@@ -48,7 +55,7 @@ export type {
   GoalSortOptions,
   // Progress Calculation Types
   ProgressCalculation,
-} from '../../../../specs/types/goal.types';
+} from '@specs/types/goal.types';
 
 // Re-export type guards
 export {
@@ -58,5 +65,5 @@ export {
   isMilestoneGoal,
   isRecurringGoal,
   isHabitGoal,
-} from '../../../../specs/types/goal.types';
+} from '@specs/types/goal.types';
 
