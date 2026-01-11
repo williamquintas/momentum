@@ -145,7 +145,7 @@ export const GoalList: React.FC<GoalListProps> = ({
           if (!b.deadline) return -1;
           return a.deadline.getTime() - b.deadline.getTime();
         },
-        render: (deadline: Date | undefined, goal: Goal) => {
+        render: (deadline: Date | undefined) => {
           if (!deadline) {
             return <Text type="secondary">-</Text>;
           }

@@ -9,7 +9,6 @@ import React, { useEffect } from 'react';
 import { Form, Input, Select, DatePicker, InputNumber, Switch, Button, Space, Row, Col } from 'antd';
 import type { FormInstance } from 'antd';
 import dayjs from 'dayjs';
-import type { Dayjs } from 'dayjs';
 import type { CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/goals/types';
 import { CreateGoalInputSchema } from '@/features/goals/utils/validation';
@@ -61,18 +60,18 @@ export const GoalForm: React.FC<GoalFormProps> = ({
   // Set default values
   useEffect(() => {
     if (initialValues) {
+      const { progressHistory, ...restValues } = initialValues;
       form.setFieldsValue({
-        ...initialValues,
+        ...restValues,
         startDate: initialValues.startDate ? dayjs(initialValues.startDate) : undefined,
         deadline: initialValues.deadline ? dayjs(initialValues.deadline) : undefined,
-      });
+      } as any);
     } else {
       // Set defaults for new goal
       form.setFieldsValue({
         status: GoalStatus.ACTIVE,
         priority: Priority.MEDIUM,
         tags: [],
-        progress: 0,
         relatedGoals: [],
         archived: false,
         favorite: false,
@@ -83,26 +82,35 @@ export const GoalForm: React.FC<GoalFormProps> = ({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       // Transform form values to CreateGoalInput
-      const formData: CreateGoalInput = {
+      // Note: Form values may include dayjs objects for dates
+      const formData = {
         ...values,
-        startDate: values.startDate ? values.startDate.toDate() : undefined,
-        deadline: values.deadline ? values.deadline.toDate() : undefined,
+        startDate: values.startDate && typeof values.startDate === 'object' && 'toDate' in values.startDate
+          ? (values.startDate as any).toDate()
+          : values.startDate instanceof Date
+          ? values.startDate
+          : undefined,
+        deadline: values.deadline && typeof values.deadline === 'object' && 'toDate' in values.deadline
+          ? (values.deadline as any).toDate()
+          : values.deadline instanceof Date
+          ? values.deadline
+          : undefined,
         // Type-specific defaults
         ...(values.type === GoalType.QUANTITATIVE && {
-          currentValue: values.currentValue ?? values.startValue ?? 0,
-          allowDecimals: values.allowDecimals ?? false,
+          currentValue: (values as any).currentValue ?? (values as any).startValue ?? 0,
+          allowDecimals: (values as any).allowDecimals ?? false,
         }),
         ...(values.type === GoalType.BINARY && {
-          currentCount: values.currentCount ?? 0,
-          allowPartialCompletion: values.allowPartialCompletion ?? true,
+          currentCount: (values as any).currentCount ?? 0,
+          allowPartialCompletion: (values as any).allowPartialCompletion ?? true,
         }),
         ...(values.type === GoalType.QUALITATIVE && {
-          qualitativeStatus: values.qualitativeStatus ?? QualitativeStatus.NOT_STARTED,
-          selfAssessments: values.selfAssessments ?? [],
+          qualitativeStatus: (values as any).qualitativeStatus ?? QualitativeStatus.NOT_STARTED,
+          selfAssessments: (values as any).selfAssessments ?? [],
         }),
-      };
+      } as CreateGoalInput;
 
       // Validate with Zod
       const validated = CreateGoalInputSchema.parse(formData);

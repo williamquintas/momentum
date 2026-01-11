@@ -55,7 +55,7 @@ export const useDeleteGoal = () => {
       // Return context for rollback
       return { previousGoal, previousGoals };
     },
-    onError: (error, id, context) => {
+    onError: (_error, id, context) => {
       // Rollback optimistic update on error
       if (context?.previousGoal) {
         queryClient.setQueryData(queryKeys.goals.detail(id), context.previousGoal);

@@ -71,7 +71,7 @@ export const useUpdateGoal = () => {
             };
           }
           return goal;
-        };
+        });
       });
 
       // Return context for rollback
