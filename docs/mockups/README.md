@@ -1,6 +1,6 @@
 # Mockups Directory
 
-This directory contains UI mockups and design references for the Goals Tracking Management System.
+This directory contains UI mockups and design references for Momentum.
 
 ## Purpose
 

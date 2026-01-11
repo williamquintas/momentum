@@ -1,6 +1,6 @@
-# Goal Tracking System - Business Rules
+# Momentum - Business Rules
 
-This document defines all business rules, constraints, and policies that govern the Goals Tracking Management System.
+This document defines all business rules, constraints, and policies that govern Momentum.
 
 ---
 

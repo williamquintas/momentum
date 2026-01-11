@@ -1,12 +1,12 @@
-# Goals Tracking Management System
+# Momentum
 
-[![CI](https://github.com/YOUR_USERNAME/goals-tracking/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/goals-tracking/actions)
+[![CI](https://github.com/williamquintas/momentum/workflows/CI/badge.svg)](https://github.com/williamquintas/momentum/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/YOUR_USERNAME/goals-tracking)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
 
-A comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
+Momentum is a comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
 
 ## 🎯 Features
 
@@ -53,7 +53,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 
 ```bash
 git clone <repository-url>
-cd goals-tracking
+cd momentum
 ```
 
 2. Install dependencies:
@@ -199,9 +199,9 @@ See [CONTRIBUTORS.md](./CONTRIBUTORS.md) for the full list of contributors.
 Need help? Here are some ways to get support:
 
 - 📚 **Documentation**: Check our [README](./README.md) and [Contributing Guide](./CONTRIBUTING.md)
-- 💬 **Discussions**: Ask questions in [GitHub Discussions](https://github.com/YOUR_USERNAME/goals-tracking/discussions)
-- 🐛 **Bug Reports**: Report bugs using the [bug report template](https://github.com/YOUR_USERNAME/goals-tracking/issues/new?template=bug_report.md)
-- ✨ **Feature Requests**: Suggest features using the [feature request template](https://github.com/YOUR_USERNAME/goals-tracking/issues/new?template=feature_request.md)
+- 💬 **Discussions**: Ask questions in [GitHub Discussions](https://github.com/williamquintas/momentum/discussions)
+- 🐛 **Bug Reports**: Report bugs using the [bug report template](https://github.com/williamquintas/momentum/issues/new?template=bug_report.md)
+- ✨ **Feature Requests**: Suggest features using the [feature request template](https://github.com/williamquintas/momentum/issues/new?template=feature_request.md)
 - 📖 **Support Guide**: See [.github/SUPPORT.md](.github/SUPPORT.md) for more information
 
 ## 📝 License
@@ -211,12 +211,15 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ## 📦 Demo
 
 <!-- Add live demo link when available -->
+
 🚀 **Live Demo**: Coming soon!
 
 <!-- Add screenshots/GIFs when available -->
+
 ### Screenshots
 
 <!-- Add screenshots here -->
+
 - Dashboard view
 - Goal list view
 - Goal detail view

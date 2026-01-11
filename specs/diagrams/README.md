@@ -1,6 +1,6 @@
-# Goal Tracking System - Visual Diagrams
+# Momentum - Visual Diagrams
 
-This directory contains machine-readable diagrams for the Goals Tracking Management System, created using Mermaid syntax.
+This directory contains machine-readable diagrams for Momentum, created using Mermaid syntax.
 
 ## Diagram Organization
 

@@ -1,8 +1,8 @@
-# Goals Tracking Management System - Planning Document
+# Momentum - Planning Document
 
 ## Executive Summary
 
-A comprehensive goals tracking management system built with Ant Design that provides users with clear visibility into their objectives, progress, and achievements. The system supports multiple goal types, flexible tracking mechanisms, and rich visualization capabilities.
+Momentum is a comprehensive goals tracking management system built with Ant Design that provides users with clear visibility into their objectives, progress, and achievements. The system supports multiple goal types, flexible tracking mechanisms, and rich visualization capabilities.
 
 ---
 
@@ -544,6 +544,6 @@ interface Goal {
 
 ## Conclusion
 
-This goals tracking management system leverages Ant Design's comprehensive component library to create a powerful, user-friendly platform for goal management. The system supports diverse goal types, provides rich visibility into progress, and offers flexible tracking mechanisms to accommodate various user needs.
+Momentum leverages Ant Design's comprehensive component library to create a powerful, user-friendly platform for goal management. The system supports diverse goal types, provides rich visibility into progress, and offers flexible tracking mechanisms to accommodate various user needs.
 
 The modular design allows for phased implementation, starting with core functionality and gradually adding advanced features based on user feedback and requirements.

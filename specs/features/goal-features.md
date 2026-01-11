@@ -1,6 +1,6 @@
-# Goal Tracking System - Feature Specifications
+# Momentum - Feature Specifications
 
-This document contains detailed feature specifications with acceptance criteria for all goal-related features in the Goals Tracking Management System.
+This document contains detailed feature specifications with acceptance criteria for all goal-related features in Momentum.
 
 **Note**: This system uses Local Storage for persistence instead of a backend API. All data operations (create, read, update, delete) are performed against browser Local Storage using a normalized structure with indexes for optimal query performance.
 

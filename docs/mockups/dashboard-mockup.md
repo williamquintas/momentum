@@ -1,8 +1,8 @@
-# Dashboard Mockup - Goals Tracking System
+# Dashboard Mockup - Momentum
 
 ## Overview
 
-This document describes the UI mockup for the Goals Tracking Management System dashboard. The mockup shows a comprehensive multi-panel interface with four distinct views that demonstrate the key features and user experience of the application.
+This document describes the UI mockup for the Momentum dashboard. The mockup shows a comprehensive multi-panel interface with four distinct views that demonstrate the key features and user experience of the application.
 
 ## Image Location
 

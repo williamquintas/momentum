@@ -23,7 +23,7 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/goals-tracking.git
+   git clone https://github.com/williamquintas/goals-tracking.git
    cd goals-tracking
    ```
 3. **Add the upstream remote**:
@@ -48,17 +48,20 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 ### Installation Steps
 
 1. **Install dependencies**:
+
    ```bash
    npm install
    ```
 
 2. **Set up environment variables**:
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your configuration
    ```
 
 3. **Start the development server**:
+
    ```bash
    npm run dev
    ```
@@ -99,7 +102,7 @@ function calculateProgress(goal: Goal): number {
 type Goal = {
   id: string;
   title: string;
-}
+};
 ```
 
 ### React
@@ -159,17 +162,20 @@ src/
 ### Before Creating a PR
 
 1. **Update your branch**:
+
    ```bash
    git fetch upstream
    git rebase upstream/develop  # or main
    ```
 
 2. **Run validation**:
+
    ```bash
    npm run validate  # Runs type-check, lint, and format:check
    ```
 
 3. **Run tests**:
+
    ```bash
    npm test
    ```
@@ -182,6 +188,7 @@ src/
 ### Creating the PR
 
 1. **Push your branch**:
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -302,6 +309,7 @@ BREAKING CHANGE: Authentication now requires JWT tokens
 See [File Organization](./.cursor/rules/file-organization.md) for detailed structure guidelines.
 
 Key directories:
+
 - `src/features/`: Feature-based modules
 - `src/components/`: Shared components
 - `src/services/`: API and service layers
@@ -340,4 +348,3 @@ Key directories:
 - [System Plan](./GOALS_TRACKING_SYSTEM_PLAN.md)
 
 Thank you for contributing! 🎉
-

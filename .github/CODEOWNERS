@@ -4,33 +4,33 @@
 # More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Global owners - all files
-# * @YOUR_USERNAME
+# * @williamquintas
 
 # Source code
-/src/ @YOUR_USERNAME
+/src/ @williamquintas
 
 # Configuration files
-*.json @YOUR_USERNAME
-*.yml @YOUR_USERNAME
-*.yaml @YOUR_USERNAME
-tsconfig.json @YOUR_USERNAME
-vite.config.ts @YOUR_USERNAME
-vitest.config.ts @YOUR_USERNAME
+*.json @williamquintas
+*.yml @williamquintas
+*.yaml @williamquintas
+tsconfig.json @williamquintas
+vite.config.ts @williamquintas
+vitest.config.ts @williamquintas
 
 # Documentation
-/docs/ @YOUR_USERNAME
-*.md @YOUR_USERNAME
+/docs/ @williamquintas
+*.md @williamquintas
 
 # GitHub workflows
-/.github/ @YOUR_USERNAME
+/.github/ @williamquintas
 
 # Specifications
-/specs/ @YOUR_USERNAME
+/specs/ @williamquintas
 
 # Tests
-/__tests__/ @YOUR_USERNAME
-*.test.ts @YOUR_USERNAME
-*.test.tsx @YOUR_USERNAME
-*.spec.ts @YOUR_USERNAME
-*.spec.tsx @YOUR_USERNAME
+/__tests__/ @williamquintas
+*.test.ts @williamquintas
+*.test.tsx @williamquintas
+*.spec.ts @williamquintas
+*.spec.tsx @williamquintas
 

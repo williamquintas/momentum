@@ -1,6 +1,6 @@
-# Goal Tracking System - Decision Trees and Flow Charts
+# Momentum - Decision Trees and Flow Charts
 
-This document contains decision trees and flow charts for key decision points and processes in the Goals Tracking Management System.
+This document contains decision trees and flow charts for key decision points and processes in Momentum.
 
 ---
 
