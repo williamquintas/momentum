@@ -2,6 +2,8 @@
 
 This document contains detailed feature specifications with acceptance criteria for all goal-related features in the Goals Tracking Management System.
 
+**Note**: This system uses Local Storage for persistence instead of a backend API. All data operations (create, read, update, delete) are performed against browser Local Storage using a normalized structure with indexes for optimal query performance.
+
 ---
 
 ## Feature 1: Create Goal
@@ -40,7 +42,8 @@ As a user, I want to create goals with different types and configurations so tha
 - [ ] System shows validation errors clearly to user
 
 #### AC4: Success Handling
-- [ ] System saves goal to database
+- [ ] System saves goal to Local Storage
+- [ ] System updates storage indexes (type, status, category, tags)
 - [ ] System returns created goal with all fields populated
 - [ ] System navigates user to goal detail page or shows success message
 - [ ] System updates goal list view if applicable
@@ -657,9 +660,10 @@ As a user, I want to mark important goals as favorites so that I can quickly acc
 
 ### Security
 - Users can only modify their own goals (unless shared/collaborative)
-- File uploads must be validated and scanned
-- All API endpoints require authentication
-- Input validation on both client and server
+- File uploads must be validated (stored as base64 in Local Storage or external storage)
+- Input validation on client-side (Zod schemas)
+- Data sanitization before storage to prevent XSS
+- Storage quota management to prevent abuse
 
 ### Usability
 - Intuitive UI following Ant Design patterns

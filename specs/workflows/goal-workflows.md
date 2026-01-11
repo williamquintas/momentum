@@ -2,6 +2,8 @@
 
 This document contains detailed workflow charts for key user journeys and system processes in the Goals Tracking Management System.
 
+**Note**: This system uses Local Storage for persistence instead of a backend API. All "save to database" references in workflows refer to saving to browser Local Storage with a normalized structure for optimal performance.
+
 ---
 
 ## Workflow 1: Create and Track Quantitative Goal
@@ -36,7 +38,8 @@ This document contains detailed workflow charts for key user journeys and system
    - Progress: 0%
    - Status: "active"
    - Generated ID, timestamps
-9. System saves goal to database
+9. System saves goal to Local Storage
+   - Updates normalized indexes (type, status, category, tags)
 10. System redirects to goal detail page
 11. User views goal with progress bar showing 0%
 
@@ -49,15 +52,15 @@ This document contains detailed workflow charts for key user journeys and system
   - User resubmits form
   - Flow continues from step 7
 
-#### A2: API Error
-- At step 9, if API call fails:
-  - System displays error message
+#### A2: Storage Error
+- At step 9, if Local Storage save fails:
+  - System displays error message (quota exceeded, storage unavailable, etc.)
   - User can retry or cancel
   - If retry: Flow continues from step 6
   - If cancel: Flow ends
 
 ### Postconditions
-- Goal created in database
+- Goal saved to Local Storage
 - Goal visible in user's goal list
 - Goal detail page accessible
 
@@ -92,7 +95,7 @@ This document contains detailed workflow charts for key user journeys and system
     - currentValue: 195
     - progress: 25%
     - updatedAt: Now
-12. System saves to database
+12. System saves to Local Storage
 13. System updates UI:
     - Progress bar shows 25%
     - Progress percentage displays "25%"
@@ -397,7 +400,7 @@ This document contains detailed workflow charts for key user journeys and system
    - updatedAt: Now
    - All other data preserved (progress, values, etc.)
 8. System pauses deadline countdown (if applicable)
-9. System saves to database
+9. System saves to Local Storage
 10. System updates UI:
     - Status badge shows "Paused"
     - Deadline countdown paused
@@ -412,7 +415,7 @@ This document contains detailed workflow charts for key user journeys and system
     - status: "paused" → "active"
     - updatedAt: Now
 16. System resumes deadline countdown (if applicable)
-17. System saves to database
+17. System saves to Local Storage
 18. System updates UI:
     - Status badge shows "Active"
     - Deadline countdown resumes
@@ -467,7 +470,7 @@ This document contains detailed workflow charts for key user journeys and system
     - createdBy: Current user
     - tags: ["motivation", "workout"]
 11. System adds note to goal.notes array
-12. System saves to database
+12. System saves to Local Storage
 13. System updates UI: Note appears in notes list
 14. User views added note
 
@@ -479,7 +482,7 @@ This document contains detailed workflow charts for key user journeys and system
 19. System validates:
     - File type: Allowed (image)
     - File size: < 10MB ✓
-20. System uploads file to storage
+20. System stores file (as base64 in Local Storage or external storage)
 21. System creates Attachment:
     - id: Generated UUID
     - filename: "progress-photo.jpg"
@@ -489,7 +492,7 @@ This document contains detailed workflow charts for key user journeys and system
     - uploadedAt: Now
     - uploadedBy: Current user
 22. System adds attachment to goal.attachments array
-23. System saves to database
+23. System saves to Local Storage
 24. System updates UI: Attachment appears in attachments list
 25. User can click attachment to view/download
 
@@ -537,7 +540,7 @@ This document contains detailed workflow charts for key user journeys and system
     - Goal B exists ✓
     - Goal B is not Goal A ✓ (prevent self-linking)
 10. System adds Goal B ID to Goal A.relatedGoals array
-11. System saves Goal A to database
+11. System saves Goal A to Local Storage
 12. System updates UI:
     - Goal B appears in related goals list
     - Shows Goal B title, status, progress
@@ -547,7 +550,7 @@ This document contains detailed workflow charts for key user journeys and system
 ### Bidirectional Linking (Optional)
 14. If bidirectional linking enabled:
     - System also adds Goal A ID to Goal B.relatedGoals array
-    - System saves Goal B to database
+    - System saves Goal B to Local Storage
     - Both goals show each other as related
 
 ### Alternative Flows
@@ -570,7 +573,7 @@ This document contains detailed workflow charts for key user journeys and system
 17. System shows confirmation: "Remove this relationship?"
 18. User confirms
 19. System removes Goal B ID from Goal A.relatedGoals array
-20. System saves to database
+20. System saves to Local Storage
 21. System updates UI: Goal B removed from related goals list
 
 ### Postconditions
@@ -599,7 +602,7 @@ This document contains detailed workflow charts for key user journeys and system
 7. System updates goal:
     - archived: false → true
     - updatedAt: Now
-8. System saves to database
+8. System saves to Local Storage
 9. System updates UI:
     - Goal removed from active goals list
     - "Archived" badge shown if viewing archived goals
@@ -621,7 +624,7 @@ This document contains detailed workflow charts for key user journeys and system
 21. System updates goal:
     - archived: true → false
     - updatedAt: Now
-22. System saves to database
+22. System saves to Local Storage
 23. System updates UI:
     - "Archived" badge removed
     - Goal appears in active goals list again
