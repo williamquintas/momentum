@@ -6,10 +6,12 @@
  */
 
 import React from 'react';
-import { Card, Progress, Tag, Space, Typography } from 'antd';
+import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
 import type { Goal } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
+import { formatDate, isOverdue, isDueSoon, getDeadlineStatusText } from '@/features/goals/utils/dateUtils';
+import { formatProgress } from '@/features/goals/utils/progressUtils';
 import './GoalCard.css';
 
 const { Text, Title } = Typography;
@@ -134,9 +136,34 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) 
           <Progress
             percent={progress}
             status={progressStatus}
-            format={(percent) => `${percent}%`}
+            format={() => formatProgress(goal)}
             showInfo
           />
+        </div>
+
+        {/* Deadline and Assignee */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* Deadline */}
+          {goal.deadline && (
+            <Space size="small">
+              <Text type="secondary" style={{ fontSize: '12px' }}>
+                Deadline: {formatDate(goal.deadline)}
+              </Text>
+              {isOverdue(goal.deadline) && (
+                <Tag color="red">{getDeadlineStatusText(goal.deadline)}</Tag>
+              )}
+              {isDueSoon(goal.deadline) && !isOverdue(goal.deadline) && (
+                <Tag color="orange">{getDeadlineStatusText(goal.deadline)}</Tag>
+              )}
+            </Space>
+          )}
+
+          {/* Assignee */}
+          {goal.assignee && (
+            <Avatar size="small" style={{ backgroundColor: '#1890ff' }}>
+              {goal.assignee.charAt(0).toUpperCase()}
+            </Avatar>
+          )}
         </div>
 
         {/* Category and Tags */}
