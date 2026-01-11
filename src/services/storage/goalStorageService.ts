@@ -1,0 +1,553 @@
+/**
+ * Goal Storage Service
+ *
+ * Handles goal-specific CRUD operations with index management
+ * for efficient querying by type, status, category, and tags.
+ */
+
+import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '../../../specs/types/goal.types';
+
+/**
+ * Generate a UUID v4
+ */
+const generateUUID = (): string => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for older browsers
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+import {
+  setStorageItem,
+  initializeStorage,
+} from './localStorageService';
+import {
+  STORAGE_KEYS,
+  StorageError,
+  StorageErrorType,
+  type SerializedGoal,
+  type GoalsIndex,
+  type GoalsData,
+  type GoalsByType,
+  type GoalsByStatus,
+  type GoalsByCategory,
+  type GoalsByTag,
+} from './storageTypes';
+
+/**
+ * Serialize a goal for storage (convert dates to ISO strings)
+ */
+const serializeGoal = (goal: Goal): SerializedGoal => {
+  const serializeDate = (date?: Date): string | undefined => {
+    return date ? date.toISOString() : undefined;
+  };
+
+  const serialized: SerializedGoal = {
+    ...goal,
+    startDate: serializeDate(goal.startDate),
+    deadline: serializeDate(goal.deadline),
+    completedDate: serializeDate(goal.completedDate),
+    createdAt: goal.createdAt.toISOString(),
+    updatedAt: goal.updatedAt.toISOString(),
+    progressHistory: goal.progressHistory.map((entry: { date: Date; [key: string]: unknown }) => ({
+      ...entry,
+      date: entry.date.toISOString(),
+    })),
+  };
+
+  // Serialize milestones if present
+  if ('milestones' in goal && goal.milestones) {
+    serialized.milestones = goal.milestones.map((milestone: { dueDate?: Date; completedDate?: Date; [key: string]: unknown }) => ({
+      ...milestone,
+      dueDate: serializeDate(milestone.dueDate),
+      completedDate: serializeDate(milestone.completedDate),
+    }));
+  }
+
+  // Serialize occurrences/entries for recurring/habit goals
+  if ('occurrences' in goal && goal.occurrences) {
+    serialized.occurrences = goal.occurrences.map((entry: { date: Date; [key: string]: unknown }) => ({
+      ...entry,
+      date: entry.date.toISOString(),
+    }));
+  }
+
+  if ('entries' in goal && goal.entries) {
+    serialized.entries = goal.entries.map((entry: { date: Date; [key: string]: unknown }) => ({
+      ...entry,
+      date: entry.date.toISOString(),
+    }));
+  }
+
+  return serialized;
+};
+
+/**
+ * Deserialize a goal from storage (convert ISO strings to dates)
+ */
+const deserializeGoal = (serialized: SerializedGoal): Goal => {
+  const deserializeDate = (dateStr?: string): Date | undefined => {
+    return dateStr ? new Date(dateStr) : undefined;
+  };
+
+  const goal: Goal = {
+    ...serialized,
+    startDate: deserializeDate(serialized.startDate),
+    deadline: deserializeDate(serialized.deadline),
+    completedDate: deserializeDate(serialized.completedDate),
+    createdAt: new Date(serialized.createdAt),
+    updatedAt: new Date(serialized.updatedAt),
+    progressHistory: serialized.progressHistory.map((entry: { date: string; [key: string]: unknown }) => ({
+      ...entry,
+      date: new Date(entry.date),
+    })),
+  } as Goal;
+
+  // Deserialize milestones if present
+  if (serialized.milestones) {
+    (goal as any).milestones = serialized.milestones.map((milestone: { dueDate?: string; completedDate?: string; [key: string]: unknown }) => ({
+      ...milestone,
+      dueDate: deserializeDate(milestone.dueDate),
+      completedDate: deserializeDate(milestone.completedDate),
+    }));
+  }
+
+  // Deserialize occurrences/entries
+  if (serialized.occurrences) {
+    (goal as any).occurrences = serialized.occurrences.map((entry: { date: string; [key: string]: unknown }) => ({
+      ...entry,
+      date: new Date(entry.date),
+    }));
+  }
+
+  if (serialized.entries) {
+    (goal as any).entries = serialized.entries.map((entry: { date: string; [key: string]: unknown }) => ({
+      ...entry,
+      date: new Date(entry.date),
+    }));
+  }
+
+  return goal;
+};
+
+/**
+ * Update indexes when a goal is added
+ */
+const addToIndexes = (
+  goalId: string,
+  goal: Goal,
+  goalsByType: GoalsByType,
+  goalsByStatus: GoalsByStatus,
+  goalsByCategory: GoalsByCategory,
+  goalsByTag: GoalsByTag
+): void => {
+  // Add to type index
+  if (!goalsByType[goal.type]) {
+    goalsByType[goal.type] = [];
+  }
+  if (!goalsByType[goal.type].includes(goalId)) {
+    goalsByType[goal.type].push(goalId);
+  }
+
+  // Add to status index
+  if (!goalsByStatus[goal.status]) {
+    goalsByStatus[goal.status] = [];
+  }
+  const statusArray = goalsByStatus[goal.status];
+  if (statusArray && !statusArray.includes(goalId)) {
+    statusArray.push(goalId);
+  }
+
+  // Add to category index
+  if (!goalsByCategory[goal.category]) {
+    goalsByCategory[goal.category] = [];
+  }
+  const categoryArray = goalsByCategory[goal.category];
+  if (categoryArray && !categoryArray.includes(goalId)) {
+    categoryArray.push(goalId);
+  }
+
+  // Add to tag indexes
+  goal.tags.forEach((tag: string) => {
+    if (!goalsByTag[tag]) {
+      goalsByTag[tag] = [];
+    }
+    const tagArray = goalsByTag[tag];
+    if (tagArray && !tagArray.includes(goalId)) {
+      tagArray.push(goalId);
+    }
+  });
+};
+
+/**
+ * Remove from indexes when a goal is deleted or updated
+ */
+const removeFromIndexes = (
+  goalId: string,
+  oldGoal: Goal | null,
+  goalsByType: GoalsByType,
+  goalsByStatus: GoalsByStatus,
+  goalsByCategory: GoalsByCategory,
+  goalsByTag: GoalsByTag
+): void => {
+  if (!oldGoal) return;
+
+  // Remove from type index
+  if (goalsByType[oldGoal.type]) {
+    goalsByType[oldGoal.type] = goalsByType[oldGoal.type]!.filter((id: string) => id !== goalId);
+    if (goalsByType[oldGoal.type]!.length === 0) {
+      delete goalsByType[oldGoal.type];
+    }
+  }
+
+  // Remove from status index
+  if (goalsByStatus[oldGoal.status]) {
+    goalsByStatus[oldGoal.status] = goalsByStatus[oldGoal.status]!.filter((id: string) => id !== goalId);
+    if (goalsByStatus[oldGoal.status]!.length === 0) {
+      delete goalsByStatus[oldGoal.status];
+    }
+  }
+
+  // Remove from category index
+  if (goalsByCategory[oldGoal.category]) {
+    goalsByCategory[oldGoal.category] = goalsByCategory[oldGoal.category]!.filter((id: string) => id !== goalId);
+    if (goalsByCategory[oldGoal.category]!.length === 0) {
+      delete goalsByCategory[oldGoal.category];
+    }
+  }
+
+  // Remove from tag indexes
+  oldGoal.tags.forEach((tag: string) => {
+    if (goalsByTag[tag]) {
+      goalsByTag[tag] = goalsByTag[tag]!.filter((id: string) => id !== goalId);
+      if (goalsByTag[tag]!.length === 0) {
+        delete goalsByTag[tag];
+      }
+    }
+  });
+};
+
+/**
+ * Save all storage structures atomically
+ */
+const saveStorage = (
+  goalsIndex: GoalsIndex,
+  goalsData: GoalsData,
+  goalsByType: GoalsByType,
+  goalsByStatus: GoalsByStatus,
+  goalsByCategory: GoalsByCategory,
+  goalsByTag: GoalsByTag
+): void => {
+  try {
+    goalsIndex.lastUpdated = new Date().toISOString();
+    setStorageItem(STORAGE_KEYS.GOALS_INDEX, goalsIndex);
+    setStorageItem(STORAGE_KEYS.GOALS_DATA, goalsData);
+    setStorageItem(STORAGE_KEYS.GOALS_BY_TYPE, goalsByType);
+    setStorageItem(STORAGE_KEYS.GOALS_BY_STATUS, goalsByStatus);
+    setStorageItem(STORAGE_KEYS.GOALS_BY_CATEGORY, goalsByCategory);
+    setStorageItem(STORAGE_KEYS.GOALS_BY_TAG, goalsByTag);
+  } catch (error) {
+    if (error instanceof StorageError) {
+      throw error;
+    }
+    throw new StorageError(
+      StorageErrorType.UNKNOWN,
+      'Failed to save goals to storage',
+      error as Error
+    );
+  }
+};
+
+/**
+ * Create a new goal
+ */
+export const createGoal = (input: CreateGoalInput): Goal => {
+  const storage = initializeStorage();
+
+  // Generate ID and timestamps
+  const now = new Date();
+  const goalId = generateUUID();
+
+  // Create goal with defaults
+  // CreateGoalInput already has all required fields except id, timestamps, and defaults
+  const goal: Goal = {
+    ...input,
+    id: goalId,
+    createdAt: now,
+    updatedAt: now,
+    progress: 0,
+    progressHistory: input.progressHistory || [],
+    notes: [],
+    attachments: [],
+    relatedGoals: input.relatedGoals || [],
+    archived: input.archived ?? false,
+    favorite: input.favorite ?? false,
+  } as unknown as Goal; // Type assertion needed due to union type complexity
+
+  // Serialize and store
+  const serialized = serializeGoal(goal);
+  storage.goalsData[goalId] = serialized;
+
+  // Update indexes
+  addToIndexes(goalId, goal, storage.goalsByType, storage.goalsByStatus, storage.goalsByCategory, storage.goalsByTag);
+
+  // Update goals index
+  if (!storage.goalsIndex.ids.includes(goalId)) {
+    storage.goalsIndex.ids.push(goalId);
+  }
+
+  // Save all changes
+  saveStorage(
+    storage.goalsIndex,
+    storage.goalsData,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  return goal;
+};
+
+/**
+ * Get a goal by ID
+ */
+export const getGoal = (goalId: string): Goal | null => {
+  const storage = initializeStorage();
+  const serialized = storage.goalsData[goalId];
+
+  if (!serialized) {
+    return null;
+  }
+
+  return deserializeGoal(serialized);
+};
+
+/**
+ * Get all goals
+ */
+export const getAllGoals = (): Goal[] => {
+  const storage = initializeStorage();
+  return storage.goalsIndex.ids
+    .map((id) => {
+      const serialized = storage.goalsData[id];
+      return serialized ? deserializeGoal(serialized) : null;
+    })
+    .filter((goal): goal is Goal => goal !== null);
+};
+
+/**
+ * Update a goal
+ */
+export const updateGoal = (goalId: string, input: UpdateGoalInput): Goal => {
+  const storage = initializeStorage();
+  const existingSerialized = storage.goalsData[goalId];
+
+  if (!existingSerialized) {
+    throw new StorageError(StorageErrorType.NOT_FOUND, `Goal with ID ${goalId} not found`);
+  }
+
+  const existingGoal = deserializeGoal(existingSerialized);
+
+  // Merge updates
+  const updatedGoal: Goal = {
+    ...existingGoal,
+    ...input,
+    id: goalId, // Ensure ID doesn't change
+    updatedAt: new Date(),
+  } as Goal;
+
+  // Remove from old indexes
+  removeFromIndexes(
+    goalId,
+    existingGoal,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  // Add to new indexes
+  addToIndexes(
+    goalId,
+    updatedGoal,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  // Serialize and store
+  const serialized = serializeGoal(updatedGoal);
+  storage.goalsData[goalId] = serialized;
+
+  // Save all changes
+  saveStorage(
+    storage.goalsIndex,
+    storage.goalsData,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  return updatedGoal;
+};
+
+/**
+ * Delete a goal
+ */
+export const deleteGoal = (goalId: string): void => {
+  const storage = initializeStorage();
+  const existingSerialized = storage.goalsData[goalId];
+
+  if (!existingSerialized) {
+    throw new StorageError(StorageErrorType.NOT_FOUND, `Goal with ID ${goalId} not found`);
+  }
+
+  const existingGoal = deserializeGoal(existingSerialized);
+
+  // Remove from indexes
+  removeFromIndexes(
+    goalId,
+    existingGoal,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  // Remove from goals data
+  delete storage.goalsData[goalId];
+
+  // Remove from goals index
+  storage.goalsIndex.ids = storage.goalsIndex.ids.filter((id) => id !== goalId);
+
+  // Save all changes
+  saveStorage(
+    storage.goalsIndex,
+    storage.goalsData,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+};
+
+/**
+ * Query goals with filters
+ */
+export const queryGoals = (filters: GoalFilters = {}): Goal[] => {
+  const storage = initializeStorage();
+  let candidateIds = new Set<string>(storage.goalsIndex.ids);
+
+  // Filter by type
+  if (filters.type && filters.type.length > 0) {
+    const typeIds = new Set<string>();
+    filters.type.forEach((type: string) => {
+      const typeArray = storage.goalsByType[type];
+      if (typeArray) {
+        typeArray.forEach((id: string) => typeIds.add(id));
+      }
+    });
+    candidateIds = new Set([...candidateIds].filter((id: string) => typeIds.has(id)));
+  }
+
+  // Filter by status
+  if (filters.status && filters.status.length > 0) {
+    const statusIds = new Set<string>();
+    filters.status.forEach((status: string) => {
+      const statusArray = storage.goalsByStatus[status];
+      if (statusArray) {
+        statusArray.forEach((id: string) => statusIds.add(id));
+      }
+    });
+    candidateIds = new Set([...candidateIds].filter((id: string) => statusIds.has(id)));
+  }
+
+  // Filter by category
+  if (filters.category && filters.category.length > 0) {
+    const categoryIds = new Set<string>();
+    filters.category.forEach((category: string) => {
+      const categoryArray = storage.goalsByCategory[category];
+      if (categoryArray) {
+        categoryArray.forEach((id: string) => categoryIds.add(id));
+      }
+    });
+    candidateIds = new Set([...candidateIds].filter((id: string) => categoryIds.has(id)));
+  }
+
+  // Filter by tags
+  if (filters.tags && filters.tags.length > 0) {
+    const tagIds = new Set<string>();
+    filters.tags.forEach((tag: string) => {
+      const tagArray = storage.goalsByTag[tag];
+      if (tagArray) {
+        tagArray.forEach((id: string) => tagIds.add(id));
+      }
+    });
+    candidateIds = new Set([...candidateIds].filter((id: string) => tagIds.has(id)));
+  }
+
+  // Get goals and apply remaining filters
+  const goals = Array.from(candidateIds)
+    .map((id) => {
+      const serialized = storage.goalsData[id];
+      return serialized ? deserializeGoal(serialized) : null;
+    })
+    .filter((goal): goal is Goal => goal !== null)
+    .filter((goal) => {
+      // Filter by archived
+      if (filters.archived !== undefined && goal.archived !== filters.archived) {
+        return false;
+      }
+
+      // Filter by favorite
+      if (filters.favorite !== undefined && goal.favorite !== filters.favorite) {
+        return false;
+      }
+
+      // Filter by assignee
+      if (filters.assignee && goal.assignee !== filters.assignee) {
+        return false;
+      }
+
+      // Filter by createdBy
+      if (filters.createdBy && goal.createdBy !== filters.createdBy) {
+        return false;
+      }
+
+      // Filter by date ranges
+      if (filters.startDateFrom && goal.startDate && goal.startDate < filters.startDateFrom) {
+        return false;
+      }
+      if (filters.startDateTo && goal.startDate && goal.startDate > filters.startDateTo) {
+        return false;
+      }
+      if (filters.deadlineFrom && goal.deadline && goal.deadline < filters.deadlineFrom) {
+        return false;
+      }
+      if (filters.deadlineTo && goal.deadline && goal.deadline > filters.deadlineTo) {
+        return false;
+      }
+
+      // Filter by search (title and description)
+      if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
+        const matchesTitle = goal.title.toLowerCase().includes(searchLower);
+        const matchesDescription = goal.description?.toLowerCase().includes(searchLower) ?? false;
+        if (!matchesTitle && !matchesDescription) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+  return goals;
+};
+
