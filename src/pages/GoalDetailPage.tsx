@@ -2,27 +2,38 @@
  * GoalDetailPage Component
  *
  * Page for displaying detailed information about a single goal.
- * This is a placeholder implementation for Step 8. Full implementation will be in Step 9.
- *
- * Features (to be implemented in Step 9):
- * - Display all goal information
- * - Progress visualization
- * - Edit goal button
- * - Delete goal button
- * - Type-specific display (quantitative shows values, binary shows checklist, etc.)
+ * Full implementation for Step 9 with comprehensive goal detail view.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
-import { Card, Typography, Button, Space, Spin } from 'antd';
+import { Button, Card, Typography, Spin, message } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { EditGoalModal } from '@/features/goals/components/EditGoalModal';
+import { GoalDetail } from '@/features/goals/components/GoalDetail';
+import { useDeleteGoal } from '@/features/goals/hooks/useDeleteGoal';
+import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
+import type { CreateGoalInput, UpdateGoalInput } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
+
+/**
+ * Convert CreateGoalInput to UpdateGoalInput
+ */
+const createInputToUpdateInput = (input: CreateGoalInput): UpdateGoalInput => {
+  // Remove fields that shouldn't be in UpdateGoalInput
+  const { progressHistory: _progressHistory, ...rest } = input;
+
+  return {
+    ...rest,
+    updatedAt: new Date(),
+  } as UpdateGoalInput;
+};
 
 /**
  * GoalDetailPage Component
@@ -30,6 +41,7 @@ const { Title, Paragraph } = Typography;
 export const GoalDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   // Fetch goal details
   const {
@@ -51,9 +63,49 @@ export const GoalDetailPage: React.FC = () => {
     enabled: !!id,
   });
 
+  // Update and delete mutations
+  const updateGoal = useUpdateGoal();
+  const deleteGoal = useDeleteGoal();
+
   // Handle navigation back
   const handleBack = () => {
     navigate('/goals');
+  };
+
+  // Handle edit
+  const handleEdit = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (values: CreateGoalInput) => {
+    if (!id) {
+      void message.error('Goal ID is missing');
+      return;
+    }
+
+    const updateInput = createInputToUpdateInput(values);
+    try {
+      await updateGoal.mutateAsync({ id, updates: updateInput });
+      void message.success('Goal updated successfully');
+      setEditModalOpen(false);
+    } catch (error) {
+      void message.error('Failed to update goal');
+      console.error('Error updating goal:', error);
+    }
+  };
+
+  // Handle delete
+  const handleDelete = (goalId: string) => {
+    void (async () => {
+      try {
+        await deleteGoal.mutateAsync(goalId);
+        void message.success('Goal deleted successfully');
+        navigate('/goals');
+      } catch (error) {
+        void message.error('Failed to delete goal');
+        console.error('Error deleting goal:', error);
+      }
+    })();
   };
 
   // Loading state
@@ -76,7 +128,7 @@ export const GoalDetailPage: React.FC = () => {
           Back to Goals
         </Button>
         <Card>
-          <Title level={3}>Goal Not Found</Title>
+          <Typography.Title level={3}>Goal Not Found</Typography.Title>
           <Paragraph>
             {error
               ? 'An error occurred while loading the goal. Please try again.'
@@ -99,104 +151,17 @@ export const GoalDetailPage: React.FC = () => {
         </Button>
       </div>
 
-      {/* Goal Details Card */}
-      <Card>
-        <Space direction="vertical" style={{ width: '100%' }} size="large">
-          <div>
-            <Title level={2} style={{ margin: 0 }}>
-              {goal.title}
-            </Title>
-            {goal.description && <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>}
-          </div>
+      {/* Goal Detail Component */}
+      <GoalDetail goal={goal} onEdit={handleEdit} onDelete={handleDelete} deleting={deleteGoal.isPending} />
 
-          <div>
-            <Title level={4}>Basic Information</Title>
-            <Paragraph>
-              <strong>Type:</strong> {goal.type}
-            </Paragraph>
-            <Paragraph>
-              <strong>Status:</strong> {goal.status}
-            </Paragraph>
-            <Paragraph>
-              <strong>Priority:</strong> {goal.priority}
-            </Paragraph>
-            {goal.category && (
-              <Paragraph>
-                <strong>Category:</strong> {goal.category}
-              </Paragraph>
-            )}
-            <Paragraph>
-              <strong>Progress:</strong> {goal.progress}%
-            </Paragraph>
-          </div>
-
-          {/* Type-specific information will be added in Step 9 */}
-          {goal.type === 'quantitative' && (
-            <div>
-              <Title level={4}>Quantitative Goal Details</Title>
-              <Paragraph>
-                <strong>Start Value:</strong> {goal.startValue} {goal.unit}
-              </Paragraph>
-              <Paragraph>
-                <strong>Current Value:</strong> {goal.currentValue} {goal.unit}
-              </Paragraph>
-              <Paragraph>
-                <strong>Target Value:</strong> {goal.targetValue} {goal.unit}
-              </Paragraph>
-            </div>
-          )}
-
-          {goal.type === 'binary' && (
-            <div>
-              <Title level={4}>Binary Goal Details</Title>
-              {goal.targetCount && (
-                <Paragraph>
-                  <strong>Progress:</strong> {goal.currentCount} / {goal.targetCount}
-                </Paragraph>
-              )}
-            </div>
-          )}
-
-          {goal.type === 'qualitative' && (
-            <div>
-              <Title level={4}>Qualitative Goal Details</Title>
-              <Paragraph>
-                <strong>Status:</strong> {goal.qualitativeStatus}
-              </Paragraph>
-            </div>
-          )}
-
-          {/* Dates */}
-          <div>
-            <Title level={4}>Timeline</Title>
-            {goal.startDate && (
-              <Paragraph>
-                <strong>Start Date:</strong> {new Date(goal.startDate).toLocaleDateString()}
-              </Paragraph>
-            )}
-            {goal.deadline && (
-              <Paragraph>
-                <strong>Deadline:</strong> {new Date(goal.deadline).toLocaleDateString()}
-              </Paragraph>
-            )}
-            <Paragraph>
-              <strong>Created:</strong> {new Date(goal.createdAt).toLocaleDateString()}
-            </Paragraph>
-            <Paragraph>
-              <strong>Last Updated:</strong> {new Date(goal.updatedAt).toLocaleDateString()}
-            </Paragraph>
-          </div>
-
-          {/* Placeholder for future features */}
-          <div>
-            <Title level={4}>Additional Features</Title>
-            <Paragraph type="secondary">
-              Full goal detail view with progress visualization, edit/delete actions, and type-specific displays will be
-              implemented in Step 9.
-            </Paragraph>
-          </div>
-        </Space>
-      </Card>
+      {/* Edit Modal */}
+      <EditGoalModal
+        open={editModalOpen}
+        goal={goal}
+        onCancel={() => setEditModalOpen(false)}
+        onSubmit={handleEditSubmit}
+        loading={updateGoal.isPending}
+      />
     </div>
   );
 };

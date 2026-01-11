@@ -144,9 +144,9 @@ export const GoalForm: React.FC<GoalFormProps> = ({
       onSubmit(validated as CreateGoalInput);
     } catch (error) {
       // Handle Zod validation errors
-      if (error && typeof error === 'object' && 'errors' in error) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        applyZodErrorsToForm(form, error);
+      if (error && typeof error === 'object' && 'errors' in error && 'issues' in error) {
+        // Type guard for ZodError
+        applyZodErrorsToForm(form, error as Parameters<typeof applyZodErrorsToForm>[1]);
       }
       // Ant Design form validation errors are already handled
     }
