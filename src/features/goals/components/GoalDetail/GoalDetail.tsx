@@ -6,7 +6,7 @@
  * Follows the mockup specifications for goal detail view.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   EditOutlined,
@@ -15,6 +15,7 @@ import {
   ClockCircleOutlined,
   FileTextOutlined,
   PaperClipOutlined,
+  RiseOutlined,
 } from '@ant-design/icons';
 import {
   Card,
@@ -35,6 +36,7 @@ import {
   Statistic,
 } from 'antd';
 
+import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 import type { Goal } from '@/features/goals/types';
 import {
   isQuantitativeGoal,
@@ -56,6 +58,8 @@ import {
 } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
 
+import { UpdateProgressModal } from '../UpdateProgressModal';
+
 const { Title, Paragraph, Text } = Typography;
 
 export interface GoalDetailProps {
@@ -75,9 +79,19 @@ export interface GoalDetailProps {
   onDelete?: (goalId: string) => void;
 
   /**
+   * Callback when progress is updated
+   */
+  onUpdateProgress?: (input: UpdateProgressInput) => void | Promise<void>;
+
+  /**
    * Loading state for delete operation
    */
   deleting?: boolean;
+
+  /**
+   * Loading state for progress update operation
+   */
+  updatingProgress?: boolean;
 }
 
 /**
@@ -106,13 +120,32 @@ const formatGoalType = (type: string): string => {
 /**
  * GoalDetail Component
  */
-export const GoalDetail: React.FC<GoalDetailProps> = ({ goal, onEdit, onDelete, deleting = false }) => {
+export const GoalDetail: React.FC<GoalDetailProps> = ({
+  goal,
+  onEdit,
+  onDelete,
+  onUpdateProgress,
+  deleting = false,
+  updatingProgress = false,
+}) => {
+  const [progressModalOpen, setProgressModalOpen] = useState(false);
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
 
   const handleDelete = () => {
     if (onDelete) {
       onDelete(goal.id);
+    }
+  };
+
+  const handleUpdateProgress = () => {
+    setProgressModalOpen(true);
+  };
+
+  const handleProgressSubmit = async (input: UpdateProgressInput) => {
+    if (onUpdateProgress) {
+      await onUpdateProgress(input);
+      setProgressModalOpen(false);
     }
   };
 
@@ -164,8 +197,13 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({ goal, onEdit, onDelete, 
 
               {/* Action Buttons */}
               <Space>
+                {onUpdateProgress && (
+                  <Button type="primary" icon={<RiseOutlined />} onClick={handleUpdateProgress}>
+                    Update Progress
+                  </Button>
+                )}
                 {onEdit && (
-                  <Button type="primary" icon={<EditOutlined />} onClick={() => onEdit(goal)}>
+                  <Button icon={<EditOutlined />} onClick={() => onEdit(goal)}>
                     Edit Goal
                   </Button>
                 )}
@@ -522,6 +560,17 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({ goal, onEdit, onDelete, 
             )}
           />
         </Card>
+      )}
+
+      {/* Update Progress Modal */}
+      {onUpdateProgress && (
+        <UpdateProgressModal
+          open={progressModalOpen}
+          goal={goal}
+          onCancel={() => setProgressModalOpen(false)}
+          onSubmit={handleProgressSubmit}
+          loading={updatingProgress}
+        />
       )}
     </div>
   );

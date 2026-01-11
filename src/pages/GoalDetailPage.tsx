@@ -16,6 +16,7 @@ import { EditGoalModal } from '@/features/goals/components/EditGoalModal';
 import { GoalDetail } from '@/features/goals/components/GoalDetail';
 import { useDeleteGoal } from '@/features/goals/hooks/useDeleteGoal';
 import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
+import { useUpdateProgress } from '@/features/goals/hooks/useUpdateProgress';
 import type { CreateGoalInput, UpdateGoalInput } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
@@ -66,6 +67,7 @@ export const GoalDetailPage: React.FC = () => {
   // Update and delete mutations
   const updateGoal = useUpdateGoal();
   const deleteGoal = useDeleteGoal();
+  const updateProgress = useUpdateProgress();
 
   // Handle navigation back
   const handleBack = () => {
@@ -106,6 +108,17 @@ export const GoalDetailPage: React.FC = () => {
         console.error('Error deleting goal:', error);
       }
     })();
+  };
+
+  // Handle progress update
+  const handleUpdateProgress = async (input: Parameters<typeof updateProgress.mutateAsync>[0]) => {
+    try {
+      await updateProgress.mutateAsync(input);
+      void message.success('Progress updated successfully');
+    } catch (error) {
+      void message.error('Failed to update progress');
+      console.error('Error updating progress:', error);
+    }
   };
 
   // Loading state
@@ -152,7 +165,14 @@ export const GoalDetailPage: React.FC = () => {
       </div>
 
       {/* Goal Detail Component */}
-      <GoalDetail goal={goal} onEdit={handleEdit} onDelete={handleDelete} deleting={deleteGoal.isPending} />
+      <GoalDetail
+        goal={goal}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onUpdateProgress={handleUpdateProgress}
+        deleting={deleteGoal.isPending}
+        updatingProgress={updateProgress.isPending}
+      />
 
       {/* Edit Modal */}
       <EditGoalModal

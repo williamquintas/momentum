@@ -6,7 +6,13 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
-import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '../../../specs/types/goal.types';
+import type {
+  Goal,
+  CreateGoalInput,
+  UpdateGoalInput,
+  GoalFilters,
+  ProgressEntry,
+} from '../../../specs/types/goal.types';
 
 /**
  * Generate a UUID v4
@@ -497,6 +503,85 @@ export const deleteGoal = (goalId: string): void => {
     storage.goalsByCategory,
     storage.goalsByTag
   );
+};
+
+/**
+ * Update progress for a goal
+ * Creates a progress history entry and recalculates progress
+ */
+export const updateProgress = (
+  goalId: string,
+  progressValue: number,
+  note?: string,
+  typeSpecificUpdates?: Partial<Goal>
+): Goal => {
+  const storage = initializeStorage();
+  const existingSerialized = storage.goalsData[goalId];
+
+  if (!existingSerialized) {
+    throw new StorageError(StorageErrorType.NOT_FOUND, `Goal with ID ${goalId} not found`);
+  }
+
+  const existingGoal = deserializeGoal(existingSerialized);
+
+  // Apply type-specific updates if provided
+  const updatedGoal: Goal = {
+    ...existingGoal,
+    ...typeSpecificUpdates,
+    id: goalId, // Ensure ID doesn't change
+    updatedAt: new Date(),
+  } as Goal;
+
+  // Create progress history entry
+  const progressEntry: ProgressEntry = {
+    id: generateUUID(),
+    date: new Date(),
+    value: progressValue,
+    note,
+    metadata: {},
+  };
+
+  // Add to progress history
+  updatedGoal.progressHistory = [...updatedGoal.progressHistory, progressEntry];
+
+  // Update progress
+  updatedGoal.progress = progressValue;
+
+  // Remove from old indexes (in case status changed)
+  removeFromIndexes(
+    goalId,
+    existingGoal,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  // Add to new indexes
+  addToIndexes(
+    goalId,
+    updatedGoal,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  // Serialize and store
+  const serialized = serializeGoal(updatedGoal);
+  storage.goalsData[goalId] = serialized;
+
+  // Save all changes
+  saveStorage(
+    storage.goalsIndex,
+    storage.goalsData,
+    storage.goalsByType,
+    storage.goalsByStatus,
+    storage.goalsByCategory,
+    storage.goalsByTag
+  );
+
+  return updatedGoal;
 };
 
 /**

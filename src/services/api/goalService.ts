@@ -13,7 +13,15 @@
 
 import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '@specs/types/goal.types';
 
-import { createGoal, getGoal, getAllGoals, updateGoal, deleteGoal, queryGoals } from '../storage/goalStorageService';
+import {
+  createGoal,
+  getGoal,
+  getAllGoals,
+  updateGoal,
+  deleteGoal,
+  queryGoals,
+  updateProgress as updateProgressStorage,
+} from '../storage/goalStorageService';
 
 /**
  * Goal Service API
@@ -80,5 +88,22 @@ export const goalService = {
    */
   query: (filters: GoalFilters): Promise<Goal[]> => {
     return Promise.resolve(queryGoals(filters));
+  },
+
+  /**
+   * Update progress for a goal
+   * @param id - Goal ID
+   * @param progressValue - New progress value (0-100)
+   * @param note - Optional note for progress entry
+   * @param typeSpecificUpdates - Optional type-specific updates (e.g., currentValue for quantitative)
+   * @returns Promise resolving to updated goal
+   */
+  updateProgress: (
+    id: string,
+    progressValue: number,
+    note?: string,
+    typeSpecificUpdates?: Partial<Goal>
+  ): Promise<Goal> => {
+    return Promise.resolve(updateProgressStorage(id, progressValue, note, typeSpecificUpdates));
   },
 };
