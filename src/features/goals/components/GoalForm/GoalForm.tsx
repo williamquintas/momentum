@@ -113,8 +113,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
       // Type-specific defaults
       ...(values.type === GoalType.QUANTITATIVE && {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        currentValue:
-          (values.currentValue as number | undefined) ?? (values.startValue as number | undefined) ?? 0,
+        currentValue: (values.currentValue as number | undefined) ?? (values.startValue as number | undefined) ?? 0,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         allowDecimals: (values.allowDecimals as boolean | undefined) ?? false,
       }),
@@ -126,8 +125,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
       }),
       ...(values.type === GoalType.QUALITATIVE && {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        qualitativeStatus:
-          (values.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
+        qualitativeStatus: (values.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         selfAssessments: (values.selfAssessments as unknown[] | undefined) ?? [],
       }),
@@ -140,7 +138,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
     try {
       // Transform form values to CreateGoalInput
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const formData = transformFormValues(values as Record<string, unknown>);
+      const formData = transformFormValues(values);
 
       // Validate with Zod (this will ensure progress is not included)
       const validated = CreateGoalInputSchema.parse(formData);
@@ -168,8 +166,8 @@ export const GoalForm: React.FC<GoalFormProps> = ({
     <Form
       form={form}
       layout="vertical"
-      onFinish={async (values) => {
-        await handleSubmit(values);
+      onFinish={(values) => {
+        void handleSubmit(values);
       }}
       onFinishFailed={handleFinishFailed}
       initialValues={{
