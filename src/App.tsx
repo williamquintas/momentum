@@ -1,22 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
-import { MainLayout } from '@/layouts/MainLayout';
-import { GoalDetailPage } from '@/pages/GoalDetailPage';
-import { GoalsPage } from '@/pages/GoalsPage';
-import { HomePage } from '@/pages/HomePage';
-import { NotFoundPage } from '@/pages/NotFoundPage';
+import { AppRoutes } from '@/routes';
 
+/**
+ * Main application component
+ *
+ * Provides routing context via BrowserRouter and renders application routes.
+ * Route definitions are separated into @/routes for better organization.
+ */
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="goals" element={<GoalsPage />} />
-          <Route path="goals/:id" element={<GoalDetailPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

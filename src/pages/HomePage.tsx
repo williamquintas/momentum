@@ -1,15 +1,14 @@
-import { Typography } from 'antd';
+import { Navigate } from 'react-router-dom';
 
-const { Title } = Typography;
-
+/**
+ * HomePage Component
+ *
+ * Redirects users to the main Goals page, which is the primary entry point
+ * for the Goals Tracking Management System.
+ *
+ * Future enhancement: This could be replaced with a dashboard showing
+ * overview metrics, recent goals, and quick actions (see dashboard-mockup.md).
+ */
 export const HomePage = () => {
-  return (
-    <div>
-      <Title level={1}>Goals Tracking Management System</Title>
-      <Title level={3}>Welcome! The project is initialized and ready for development.</Title>
-      <p>
-        Start building features according to the specifications in the <code>specs/</code> directory.
-      </p>
-    </div>
-  );
+  return <Navigate to="/goals" replace />;
 };
