@@ -49,4 +49,3 @@ export const getPriorityColor = (priority: Priority): string => {
       return 'default';
   }
 };
-

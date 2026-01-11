@@ -35,4 +35,3 @@ export const useGoals = (filters?: GoalFilters) => {
     gcTime: 10 * 60 * 1000, // 10 minutes - cache persists for 10 minutes
   });
 };
-

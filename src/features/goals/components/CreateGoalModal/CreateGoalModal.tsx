@@ -38,27 +38,14 @@ export interface CreateGoalModalProps {
 /**
  * CreateGoalModal Component
  */
-export const CreateGoalModal: React.FC<CreateGoalModalProps> = ({
-  open,
-  onCancel,
-  onSubmit,
-  loading = false,
-}) => {
+export const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ open, onCancel, onSubmit, loading = false }) => {
   const handleSubmit = (values: CreateGoalInput) => {
     void onSubmit(values);
   };
 
   return (
-    <Modal
-      title="Create New Goal"
-      open={open}
-      onCancel={onCancel}
-      footer={null}
-      width={800}
-      destroyOnClose
-    >
+    <Modal title="Create New Goal" open={open} onCancel={onCancel} footer={null} width={800} destroyOnClose>
       <GoalForm onSubmit={handleSubmit} onCancel={onCancel} loading={loading} />
     </Modal>
   );
 };
-

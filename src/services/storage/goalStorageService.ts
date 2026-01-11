@@ -22,10 +22,7 @@ const generateUUID = (): string => {
     return v.toString(16);
   });
 };
-import {
-  setStorageItem,
-  initializeStorage,
-} from './localStorageService';
+import { setStorageItem, initializeStorage } from './localStorageService';
 import {
   STORAGE_KEYS,
   StorageError,
@@ -322,11 +319,7 @@ const saveStorage = (
     if (error instanceof StorageError) {
       throw error;
     }
-    throw new StorageError(
-      StorageErrorType.UNKNOWN,
-      'Failed to save goals to storage',
-      error as Error
-    );
+    throw new StorageError(StorageErrorType.UNKNOWN, 'Failed to save goals to storage', error as Error);
   }
 };
 
@@ -618,4 +611,3 @@ export const queryGoals = (filters: GoalFilters = {}): Goal[] => {
 
   return goals;
 };
-

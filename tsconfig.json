@@ -51,4 +51,3 @@
   "include": ["src", "specs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
-

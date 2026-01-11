@@ -13,14 +13,7 @@ import { z } from 'zod';
 // Base Enums and Primitives
 // ============================================================================
 
-export const GoalTypeSchema = z.enum([
-  'quantitative',
-  'qualitative',
-  'binary',
-  'milestone',
-  'recurring',
-  'habit',
-]);
+export const GoalTypeSchema = z.enum(['quantitative', 'qualitative', 'binary', 'milestone', 'recurring', 'habit']);
 
 export const GoalStatusSchema = z.enum(['active', 'completed', 'paused', 'cancelled']);
 
@@ -240,9 +233,7 @@ export const QuantitativeGoalSchema = BaseGoalSchema.extend({
     (data) => {
       if (!data.allowDecimals) {
         return (
-          Number.isInteger(data.startValue) &&
-          Number.isInteger(data.targetValue) &&
-          Number.isInteger(data.currentValue)
+          Number.isInteger(data.startValue) && Number.isInteger(data.targetValue) && Number.isInteger(data.currentValue)
         );
       }
       return true;
@@ -288,14 +279,15 @@ export const MilestoneGoalSchema = BaseGoalSchema.extend({
   milestones: z.array(MilestoneSchema).min(1),
   allowMilestoneReordering: z.boolean().default(false),
   requireSequentialCompletion: z.boolean().default(false),
-}).refine(
-  (data) => {
-    // Ensure milestone IDs are unique
-    const ids = data.milestones.map((m) => m.id);
-    return new Set(ids).size === ids.length;
-  },
-  { message: 'Milestone IDs must be unique' }
-)
+})
+  .refine(
+    (data) => {
+      // Ensure milestone IDs are unique
+      const ids = data.milestones.map((m) => m.id);
+      return new Set(ids).size === ids.length;
+    },
+    { message: 'Milestone IDs must be unique' }
+  )
   .refine(
     (data) => {
       // Validate dependencies reference existing milestones
@@ -609,4 +601,3 @@ export type GoalFilters = z.infer<typeof GoalFiltersSchema>;
 export type GoalSortOptions = z.infer<typeof GoalSortOptionsSchema>;
 export type UpdateProgressInput = z.infer<typeof UpdateProgressInputSchema>;
 export type UpdateQuantitativeValue = z.infer<typeof UpdateQuantitativeValueSchema>;
-

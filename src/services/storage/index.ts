@@ -5,4 +5,3 @@
 export * from './storageTypes';
 export * from './localStorageService';
 export * from './goalStorageService';
-

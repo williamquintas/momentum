@@ -9,6 +9,7 @@ This document describes how data flows through the system for key operations, in
 ## 1. Create Goal Data Flow
 
 ### Components Involved
+
 - **UI Component**: CreateGoalForm
 - **State Management**: Goal Store (Redux/Zustand)
 - **Storage Service**: Goal Storage Service (Local Storage)
@@ -129,11 +130,13 @@ This document describes how data flows through the system for key operations, in
 ### Data Transformations
 
 **Client → Storage:**
+
 - Dates: `Date` → ISO string (Local Storage stores strings)
 - Enums: TypeScript enum → string
 - Optional fields: `undefined` → omitted or null
 
 **Storage → Client:**
+
 - Dates: ISO string → `Date`
 - Enums: string → TypeScript enum
 - Defaults: Applied if missing
@@ -143,6 +146,7 @@ This document describes how data flows through the system for key operations, in
 ## 2. Update Progress Data Flow
 
 ### Components Involved
+
 - **UI Component**: ProgressUpdateForm / GoalDetail
 - **State Management**: Goal Store
 - **Storage Service**: Goal Storage Service
@@ -308,6 +312,7 @@ This document describes how data flows through the system for key operations, in
 ## 3. Filter and Search Data Flow
 
 ### Components Involved
+
 - **UI Component**: GoalList, FilterPanel, SearchBar
 - **State Management**: Goal Store, Filter State
 - **Storage Service**: Goal Storage Service
@@ -456,6 +461,7 @@ This document describes how data flows through the system for key operations, in
 ## 4. Milestone Completion Data Flow
 
 ### Components Involved
+
 - **UI Component**: MilestoneSteps, GoalDetail
 - **State Management**: Goal Store
 - **Storage Service**: Goal Storage Service
@@ -577,6 +583,7 @@ This document describes how data flows through the system for key operations, in
 ## 5. Recurring Goal Occurrence Completion Data Flow
 
 ### Components Involved
+
 - **UI Component**: RecurringGoalDetail, CalendarHeatmap
 - **State Management**: Goal Store
 - **Storage Service**: Goal Storage Service
@@ -719,6 +726,7 @@ This document describes how data flows through the system for key operations, in
 ## 6. Data Synchronization Flow
 
 ### Components Involved
+
 - **State Management**: Goal Store, React Query
 - **Storage Service**: Goal Storage Service
 - **Local Storage**: Browser Local Storage
@@ -789,6 +797,7 @@ This document describes how data flows through the system for key operations, in
 ## 7. Data Validation Flow
 
 ### Components Involved
+
 - **UI Component**: Form components
 - **Validation**: Zod schemas (client-side only)
 - **Storage Service**: Data validation before storage
@@ -861,6 +870,7 @@ This document describes how data flows through the system for key operations, in
 ## 8. Data Export Flow
 
 ### Components Involved
+
 - **UI Component**: ExportButton, ExportDialog
 - **Storage Service**: Goal Storage Service
 - **Export Service**: File generation (CSV, JSON, PDF)
@@ -946,8 +956,8 @@ This document describes how data flows through the system for key operations, in
 ---
 
 These data flow specifications should be:
+
 1. **Referenced during development** to ensure correct data handling
 2. **Used in code reviews** to verify implementation matches specification
 3. **Updated** when data structures or APIs change
 4. **Tested** to ensure data flows correctly end-to-end
-

@@ -9,13 +9,16 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 1: Create and Track Quantitative Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - User is authenticated
 - User has access to goal creation
 
 ### Main Flow
+
 1. User navigates to "Create Goal" page
 2. User selects goal type: "Quantitative"
 3. System displays quantitative-specific form fields
@@ -46,6 +49,7 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Validation Error
+
 - At step 7, if validation fails:
   - System displays field-level errors
   - User fixes errors
@@ -53,6 +57,7 @@ This document contains detailed workflow charts for key user journeys and system
   - Flow continues from step 7
 
 #### A2: Storage Error
+
 - At step 9, if Local Storage save fails:
   - System displays error message (quota exceeded, storage unavailable, etc.)
   - User can retry or cancel
@@ -60,6 +65,7 @@ This document contains detailed workflow charts for key user journeys and system
   - If cancel: Flow ends
 
 ### Postconditions
+
 - Goal saved to Local Storage
 - Goal visible in user's goal list
 - Goal detail page accessible
@@ -69,13 +75,16 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 2: Update Progress for Quantitative Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - Goal exists and is active
 - User has permission to update goal
 
 ### Main Flow
+
 1. User navigates to goal detail page
 2. User views current progress: 15% (currentValue: 197)
 3. User clicks "Update Progress" button
@@ -86,7 +95,7 @@ This document contains detailed workflow charts for key user journeys and system
 8. System validates:
    - currentValue is within min/max (if set)
    - currentValue matches allowDecimals setting
-9. System calculates new progress: ((195 - 200) / (180 - 200)) * 100 = 25%
+9. System calculates new progress: ((195 - 200) / (180 - 200)) \* 100 = 25%
 10. System creates progress history entry:
     - Date: Today
     - Value: 25%
@@ -105,12 +114,14 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Invalid Value
+
 - At step 8, if validation fails:
   - System displays error message
   - User corrects value
   - Flow continues from step 5
 
 #### A2: Value Exceeds Target
+
 - At step 9, if currentValue >= targetValue:
   - System calculates progress: 100%
   - System suggests: "Goal target reached! Mark as complete?"
@@ -118,6 +129,7 @@ This document contains detailed workflow charts for key user journeys and system
   - If user declines: Continue with progress = 100%
 
 ### Postconditions
+
 - Goal progress updated
 - Progress history entry created
 - UI reflects new progress
@@ -127,12 +139,15 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 3: Create and Complete Milestone Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - User is authenticated
 
 ### Main Flow
+
 1. User creates milestone goal: "Launch Mobile App"
 2. User adds milestones:
    - Milestone 1: "Design UI/UX" (order: 1)
@@ -147,20 +162,20 @@ This document contains detailed workflow charts for key user journeys and system
 7. System displays milestones using Ant Design Steps component
 8. All milestones show status: "pending"
 9. User completes Milestone 1:
-    - User clicks "Mark Complete" on Milestone 1
-    - System validates: No dependencies (first milestone)
-    - System updates: Milestone 1 status = "completed", completedDate = Now
-    - System calculates progress: (1/5) * 100 = 20%
-    - System updates UI: Milestone 1 shows as completed
+   - User clicks "Mark Complete" on Milestone 1
+   - System validates: No dependencies (first milestone)
+   - System updates: Milestone 1 status = "completed", completedDate = Now
+   - System calculates progress: (1/5) \* 100 = 20%
+   - System updates UI: Milestone 1 shows as completed
 10. User completes Milestone 2:
     - User clicks "Mark Complete" on Milestone 2
     - System validates: Milestone 1 is completed (dependency met)
     - System validates: Sequential order maintained
     - System updates: Milestone 2 status = "completed"
-    - System calculates progress: (2/5) * 100 = 40%
+    - System calculates progress: (2/5) \* 100 = 40%
 11. User continues completing milestones 3, 4, 5
 12. After Milestone 5 completion:
-    - System calculates progress: (5/5) * 100 = 100%
+    - System calculates progress: (5/5) \* 100 = 100%
     - System suggests: "All milestones completed! Mark goal as complete?"
 13. User confirms completion
 14. System updates goal status to "completed"
@@ -170,6 +185,7 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Try to Skip Milestone
+
 - At step 10, if user tries to complete Milestone 3 before Milestone 2:
   - System validates: Milestone 2 not completed
   - System shows error: "Complete milestones in order. Milestone 2 must be completed first."
@@ -177,6 +193,7 @@ This document contains detailed workflow charts for key user journeys and system
   - Flow continues from step 9
 
 #### A2: Dependency Not Met
+
 - At step 10, if Milestone 1 was not completed:
   - System validates: Dependency not met
   - System shows error: "Complete Milestone 1 first"
@@ -184,6 +201,7 @@ This document contains detailed workflow charts for key user journeys and system
   - Flow continues from step 9
 
 ### Postconditions
+
 - All milestones completed
 - Goal marked as completed
 - Progress shows 100%
@@ -193,14 +211,17 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 4: Track Daily Habit Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - Habit goal exists: "Daily Meditation"
 - Goal is active
 - targetFrequency: "daily"
 
 ### Main Flow
+
 1. User navigates to habit goal detail page
 2. System displays:
    - Calendar heatmap showing past completions
@@ -224,7 +245,7 @@ This document contains detailed workflow charts for key user journeys and system
    - Completion rate: 86% → 17.2 points
    - Recency: 100% → 10 points
    - Total: 81.2 → habitStrength = 81
-9. System updates progress: (completedDays / totalDays) * 100
+9. System updates progress: (completedDays / totalDays) \* 100
 10. System updates UI:
     - Today's date marked as completed in calendar
     - Streak counter: 6 days
@@ -235,6 +256,7 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Miss a Day
+
 - User doesn't complete habit on Day 7:
   - System creates HabitEntry: completed = false
   - System checks grace period:
@@ -245,6 +267,7 @@ This document contains detailed workflow charts for key user journeys and system
   - Flow continues next day
 
 #### A2: Break Streak
+
 - If grace period = 0 and user misses day:
   - System resets current streak to 0
   - System preserves longest streak (if current was longer)
@@ -252,6 +275,7 @@ This document contains detailed workflow charts for key user journeys and system
   - User can continue tracking
 
 ### Postconditions
+
 - Habit entry created for today
 - Streak updated
 - Habit strength recalculated
@@ -262,13 +286,16 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 5: Filter and Search Goals
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - User has multiple goals (various types, statuses, priorities)
 - User is on goals list page
 
 ### Main Flow
+
 1. User views goals list (shows all goals)
 2. User wants to find active high-priority quantitative goals
 3. User applies filters:
@@ -294,18 +321,21 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: No Results
+
 - At step 5, if no goals match filters:
   - System displays: "No goals match your filters"
   - System shows "Clear Filters" button
   - User can adjust filters or clear all
 
 #### A2: Clear Filters
+
 - User clicks "Clear All Filters"
 - System removes all filters
 - System displays all goals again
 - Flow continues from step 1
 
 ### Postconditions
+
 - Goals list shows filtered, searched, sorted results
 - Active filters displayed as badges
 - User can further refine or clear filters
@@ -315,14 +345,17 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 6: Complete Recurring Goal Occurrence
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - Recurring goal exists: "Weekly Team Meeting"
 - Recurrence: Weekly, every Monday
 - Goal is active
 
 ### Main Flow
+
 1. User navigates to recurring goal detail page
 2. System displays:
    - Next occurrence: Next Monday
@@ -337,7 +370,7 @@ This document contains detailed workflow charts for key user journeys and system
    - completed: true
 7. System updates completionStats:
    - Increment completedOccurrences: 8 → 9
-   - Recalculate completionRate: (9/10) * 100 = 90%
+   - Recalculate completionRate: (9/10) \* 100 = 90%
    - Update streak: current = 4 weeks
 8. System calculates next occurrence:
    - Next Monday (7 days from today)
@@ -353,6 +386,7 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Miss Occurrence
+
 - User doesn't complete occurrence on Monday:
   - System creates HabitEntry: completed = false
   - System updates completionStats:
@@ -364,6 +398,7 @@ This document contains detailed workflow charts for key user journeys and system
   - Flow continues
 
 #### A2: Recurrence Ends
+
 - If endDate is set and passed:
   - System calculates: No more occurrences
   - System suggests: "Recurrence period ended. Mark goal as complete?"
@@ -371,6 +406,7 @@ This document contains detailed workflow charts for key user journeys and system
   - If user declines: Goal remains active
 
 ### Postconditions
+
 - Occurrence marked as completed
 - Completion stats updated
 - Streak updated
@@ -382,13 +418,16 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 7: Pause and Resume Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - Goal exists and is active
 - Goal has progress: 45%
 
 ### Main Flow
+
 1. User navigates to goal detail page
 2. User views active goal with 45% progress
 3. User needs to pause goal (e.g., going on vacation)
@@ -408,6 +447,7 @@ This document contains detailed workflow charts for key user journeys and system
 11. User sees goal is paused
 
 ### Resume Flow
+
 12. User returns from vacation
 13. User navigates to paused goal
 14. User clicks "Resume Goal" button
@@ -425,18 +465,21 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Cancel Pause
+
 - At step 6, if user cancels:
   - System does not change status
   - Goal remains active
   - Flow ends
 
 #### A2: Pause Completed Goal
+
 - User tries to pause completed goal:
   - System shows error: "Cannot pause completed goals"
   - Action prevented
   - Flow ends
 
 ### Postconditions
+
 - Goal status changed to paused/resumed
 - All data preserved
 - Deadline countdown paused/resumed accordingly
@@ -446,13 +489,16 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 8: Add Note and Attachment to Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - Goal exists
 - User has permission to modify goal
 
 ### Main Flow
+
 1. User navigates to goal detail page
 2. User views "Notes" section
 3. User wants to add a note
@@ -475,6 +521,7 @@ This document contains detailed workflow charts for key user journeys and system
 14. User views added note
 
 ### Attachment Flow
+
 15. User wants to attach a file (e.g., progress photo)
 16. User clicks "Attach File" button
 17. System displays file upload dialog
@@ -499,18 +546,21 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Invalid File
+
 - At step 19, if file validation fails:
   - System shows error: "File type not allowed" or "File too large"
   - User selects different file
   - Flow continues from step 18
 
 #### A2: Upload Error
+
 - At step 20, if upload fails:
   - System shows error: "Upload failed. Please try again."
   - User can retry or cancel
   - If retry: Flow continues from step 18
 
 ### Postconditions
+
 - Note added to goal
 - Attachment added to goal (if uploaded)
 - UI updated to show new note/attachment
@@ -520,14 +570,17 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 9: Link Related Goals
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - User has multiple goals
 - Goal A exists: "Lose Weight"
 - Goal B exists: "Exercise Daily"
 
 ### Main Flow
+
 1. User navigates to Goal A detail page
 2. User views "Related Goals" section (currently empty)
 3. User wants to link Goal B as related
@@ -537,8 +590,8 @@ This document contains detailed workflow charts for key user journeys and system
 7. System shows matching goals: Goal B appears
 8. User selects Goal B
 9. System validates:
-    - Goal B exists ✓
-    - Goal B is not Goal A ✓ (prevent self-linking)
+   - Goal B exists ✓
+   - Goal B is not Goal A ✓ (prevent self-linking)
 10. System adds Goal B ID to Goal A.relatedGoals array
 11. System saves Goal A to Local Storage
 12. System updates UI:
@@ -548,6 +601,7 @@ This document contains detailed workflow charts for key user journeys and system
 13. User views related goal link
 
 ### Bidirectional Linking (Optional)
+
 14. If bidirectional linking enabled:
     - System also adds Goal A ID to Goal B.relatedGoals array
     - System saves Goal B to Local Storage
@@ -556,18 +610,21 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Self-Linking Attempt
+
 - At step 9, if user tries to link goal to itself:
   - System shows error: "A goal cannot be related to itself"
   - Action prevented
   - Flow ends
 
 #### A2: Goal Not Found
+
 - At step 7, if no goals match search:
   - System shows: "No goals found"
   - User can adjust search or cancel
   - Flow continues from step 6
 
 ### Unlink Flow
+
 15. User wants to remove related goal link
 16. User clicks "Remove" next to Goal B in related goals list
 17. System shows confirmation: "Remove this relationship?"
@@ -577,6 +634,7 @@ This document contains detailed workflow charts for key user journeys and system
 21. System updates UI: Goal B removed from related goals list
 
 ### Postconditions
+
 - Goals linked (or unlinked)
 - Related goals section updated
 - Relationship visible on both goals (if bidirectional)
@@ -586,13 +644,16 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow 10: Archive and Unarchive Goal
 
 ### Actors
+
 - User
 
 ### Preconditions
+
 - Goal exists and is completed
 - Goal is not archived
 
 ### Main Flow
+
 1. User navigates to completed goal detail page
 2. User views goal marked as "Completed"
 3. User wants to archive goal to clean up active list
@@ -600,17 +661,18 @@ This document contains detailed workflow charts for key user journeys and system
 5. System shows confirmation: "Archive this goal? It will be hidden from default views."
 6. User confirms
 7. System updates goal:
-    - archived: false → true
-    - updatedAt: Now
+   - archived: false → true
+   - updatedAt: Now
 8. System saves to Local Storage
 9. System updates UI:
-    - Goal removed from active goals list
-    - "Archived" badge shown if viewing archived goals
+   - Goal removed from active goals list
+   - "Archived" badge shown if viewing archived goals
 10. User navigates to goals list
 11. System filters out archived goals by default
 12. User sees only active/non-archived goals
 
 ### View Archived Flow
+
 13. User wants to view archived goals
 14. User clicks "Show Archived" toggle/filter
 15. System includes archived goals in query
@@ -618,6 +680,7 @@ This document contains detailed workflow charts for key user journeys and system
 17. User views archived goal with "Archived" badge
 
 ### Unarchive Flow
+
 18. User wants to restore archived goal
 19. User navigates to archived goal detail page
 20. User clicks "Unarchive Goal" button
@@ -633,13 +696,15 @@ This document contains detailed workflow charts for key user journeys and system
 ### Alternative Flows
 
 #### A1: Archive Active Goal
+
 - At step 4, if goal is still active:
-    - System shows warning: "This goal is still active. Archive anyway?"
-    - User can confirm or cancel
-    - If confirmed: Goal archived (status remains active)
-    - If cancelled: Action prevented
+  - System shows warning: "This goal is still active. Archive anyway?"
+  - User can confirm or cancel
+  - If confirmed: Goal archived (status remains active)
+  - If cancelled: Action prevented
 
 ### Postconditions
+
 - Goal archived/unarchived
 - Goal visibility updated in lists
 - Archived status persisted
@@ -649,6 +714,7 @@ This document contains detailed workflow charts for key user journeys and system
 ## Workflow Summary
 
 These workflows cover the primary user journeys:
+
 1. **Goal Creation**: Creating goals of different types
 2. **Progress Tracking**: Updating progress for various goal types
 3. **Milestone Management**: Completing milestones with dependencies
@@ -661,6 +727,7 @@ These workflows cover the primary user journeys:
 10. **Organization**: Archiving completed goals
 
 Each workflow includes:
+
 - Clear step-by-step process
 - Alternative flows for error cases
 - Preconditions and postconditions
@@ -668,8 +735,8 @@ Each workflow includes:
 - UI state changes
 
 These workflows should be:
+
 - **Implemented** as described in the application
 - **Tested** through E2E tests
 - **Documented** in user guides
 - **Updated** when features change
-

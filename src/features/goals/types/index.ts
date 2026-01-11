@@ -16,13 +16,7 @@
  */
 
 // Re-export enums (as values - this also exports them as types)
-export {
-  GoalType,
-  GoalStatus,
-  Priority,
-  RecurrenceFrequency,
-  QualitativeStatus,
-} from '@specs/types/goal.types';
+export { GoalType, GoalStatus, Priority, RecurrenceFrequency, QualitativeStatus } from '@specs/types/goal.types';
 
 // Re-export all types from specs
 export type {
@@ -66,4 +60,3 @@ export {
   isRecurringGoal,
   isHabitGoal,
 } from '@specs/types/goal.types';
-

@@ -32,10 +32,7 @@ export const isStorageAvailable = (): boolean => {
  */
 export const getStorageItem = <T>(key: string): T | null => {
   if (!isStorageAvailable()) {
-    throw new StorageError(
-      StorageErrorType.STORAGE_UNAVAILABLE,
-      'Local Storage is not available in this browser'
-    );
+    throw new StorageError(StorageErrorType.STORAGE_UNAVAILABLE, 'Local Storage is not available in this browser');
   }
 
   try {
@@ -52,11 +49,7 @@ export const getStorageItem = <T>(key: string): T | null => {
         error as Error
       );
     }
-    throw new StorageError(
-      StorageErrorType.UNKNOWN,
-      `Failed to read from Local Storage: ${key}`,
-      error as Error
-    );
+    throw new StorageError(StorageErrorType.UNKNOWN, `Failed to read from Local Storage: ${key}`, error as Error);
   }
 };
 
@@ -65,10 +58,7 @@ export const getStorageItem = <T>(key: string): T | null => {
  */
 export const setStorageItem = <T>(key: string, value: T): void => {
   if (!isStorageAvailable()) {
-    throw new StorageError(
-      StorageErrorType.STORAGE_UNAVAILABLE,
-      'Local Storage is not available in this browser'
-    );
+    throw new StorageError(StorageErrorType.STORAGE_UNAVAILABLE, 'Local Storage is not available in this browser');
   }
 
   try {
@@ -82,11 +72,7 @@ export const setStorageItem = <T>(key: string, value: T): void => {
         error
       );
     }
-    throw new StorageError(
-      StorageErrorType.UNKNOWN,
-      `Failed to write to Local Storage: ${key}`,
-      error as Error
-    );
+    throw new StorageError(StorageErrorType.UNKNOWN, `Failed to write to Local Storage: ${key}`, error as Error);
   }
 };
 
@@ -139,11 +125,9 @@ export const initializeStorage = (): StorageStructure => {
 
   const goalsByType = getStorageItem<StorageStructure['goalsByType']>(STORAGE_KEYS.GOALS_BY_TYPE) || {};
 
-  const goalsByStatus =
-    getStorageItem<StorageStructure['goalsByStatus']>(STORAGE_KEYS.GOALS_BY_STATUS) || {};
+  const goalsByStatus = getStorageItem<StorageStructure['goalsByStatus']>(STORAGE_KEYS.GOALS_BY_STATUS) || {};
 
-  const goalsByCategory =
-    getStorageItem<StorageStructure['goalsByCategory']>(STORAGE_KEYS.GOALS_BY_CATEGORY) || {};
+  const goalsByCategory = getStorageItem<StorageStructure['goalsByCategory']>(STORAGE_KEYS.GOALS_BY_CATEGORY) || {};
 
   const goalsByTag = getStorageItem<StorageStructure['goalsByTag']>(STORAGE_KEYS.GOALS_BY_TAG) || {};
 
@@ -193,4 +177,3 @@ export const isStorageNearLimit = (): boolean => {
   const { used, available } = getStorageSize();
   return available > 0 && used / available > 0.8;
 };
-

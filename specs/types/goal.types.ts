@@ -280,13 +280,7 @@ export interface HabitGoal extends BaseGoal {
 /**
  * Main Goal type - union of all goal type interfaces
  */
-export type Goal =
-  | QuantitativeGoal
-  | QualitativeGoal
-  | BinaryGoal
-  | MilestoneGoal
-  | RecurringGoal
-  | HabitGoal;
+export type Goal = QuantitativeGoal | QualitativeGoal | BinaryGoal | MilestoneGoal | RecurringGoal | HabitGoal;
 
 // ============================================================================
 // Utility Types
@@ -378,13 +372,7 @@ export interface GoalFilters {
 /**
  * Goal sort options
  */
-export type GoalSortField =
-  | 'createdAt'
-  | 'updatedAt'
-  | 'deadline'
-  | 'priority'
-  | 'progress'
-  | 'title';
+export type GoalSortField = 'createdAt' | 'updatedAt' | 'deadline' | 'priority' | 'progress' | 'title';
 
 export type SortOrder = 'asc' | 'desc';
 
@@ -412,4 +400,3 @@ export interface ProgressCalculation {
 // ============================================================================
 // All types are already exported above
 // ============================================================================
-

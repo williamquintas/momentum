@@ -3,6 +3,7 @@
 ## Overview
 
 This document provides a step-by-step implementation guide based on:
+
 - **GOALS_TRACKING_SYSTEM_PLAN.md** - Phase 1 requirements
 - **specs/** - Complete specifications (types, validation, business rules, features)
 - **.cursor/rules/** - Architecture, file organization, and coding standards
@@ -14,16 +15,19 @@ This document provides a step-by-step implementation guide based on:
 **Goal**: Build the core infrastructure and basic CRUD operations
 
 #### Step 1: Local Storage Service Layer ✅
+
 **Priority**: 🔴 Critical - Everything depends on this
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/services/storage/localStorageService.ts` - Core Local Storage wrapper
 - ✅ `src/services/storage/goalStorageService.ts` - Goal-specific storage operations
 - ✅ `src/services/storage/storageTypes.ts` - Storage data structures
 - ✅ `src/services/storage/index.ts` - Service exports
 
 **Implemented**:
+
 - ✅ Normalized storage structure (goals index, individual goal storage)
 - ✅ CRUD operations (create, read, update, delete)
 - ✅ Index management (by type, status, category, tags)
@@ -37,14 +41,17 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 2: Type System Setup ✅
+
 **Priority**: 🔴 Critical - Type safety foundation
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/features/goals/types/index.ts` - Re-export from specs
 - ✅ Updated `tsconfig.json` to include specs directory
 
 **Implemented**:
+
 - ✅ Import and re-export all types from `specs/types/goal.types.ts`
 - ✅ Re-export enums (GoalType, GoalStatus, Priority, etc.)
 - ✅ Re-export all type interfaces (BaseGoal, QuantitativeGoal, etc.)
@@ -57,13 +64,16 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 3: Validation Setup ✅
+
 **Priority**: 🔴 Critical - Data integrity
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/features/goals/utils/validation.ts` - Validation utilities
 
 **Implemented**:
+
 - ✅ Re-exported all Zod schemas from `specs/validation/goal.schemas.ts`
 - ✅ Created validation helper functions (validate, safeValidate)
 - ✅ Implemented validation for Goal, CreateGoalInput, UpdateGoalInput, GoalFilters, UpdateProgressInput
@@ -76,10 +86,12 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 4: React Query Setup for Local Storage ✅
+
 **Priority**: 🟡 High - State management
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/services/api/goalService.ts` - Service layer (wraps storage)
 - ✅ `src/features/goals/hooks/useGoals.ts` - React Query hooks
 - ✅ `src/features/goals/hooks/useCreateGoal.ts`
@@ -88,6 +100,7 @@ This document provides a step-by-step implementation guide based on:
 - ✅ `src/utils/queryKeys.ts` - Query key factory
 
 **Implemented**:
+
 - ✅ Service functions that call Local Storage service
 - ✅ React Query hooks for CRUD operations
 - ✅ Query key factory for consistent cache keys
@@ -101,13 +114,16 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 5: Progress Calculation Utilities ✅
+
 **Priority**: 🟡 High - Core business logic
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/features/goals/utils/calculateProgress.ts` - Progress calculation functions
 
 **Implemented**:
+
 - ✅ Quantitative goal progress calculation (BR-009)
 - ✅ Binary goal progress calculation (BR-011)
 - ✅ Qualitative goal progress calculation (BR-012)
@@ -123,10 +139,12 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 6: Basic Goal Components ✅
+
 **Priority**: 🟡 High - UI foundation
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/features/goals/components/GoalCard/GoalCard.tsx` - Display single goal
 - ✅ `src/features/goals/components/GoalCard/index.ts`
 - ✅ `src/features/goals/components/GoalCard/GoalCard.css` - Component styles
@@ -136,6 +154,7 @@ This document provides a step-by-step implementation guide based on:
 - ✅ `src/features/goals/components/GoalForm/index.ts`
 
 **Implemented**:
+
 - ✅ GoalCard: Display goal title, type, status, progress bar with Ant Design Card
 - ✅ GoalList: Display multiple goals with Ant Design List component
 - ✅ GoalForm: Basic form for creating goals (quantitative, qualitative, binary)
@@ -151,16 +170,19 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 7: Goal List Page ✅
+
 **Priority**: 🟡 High - Main user interface
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/pages/GoalsPage.tsx` - Main goals list page
 - ✅ `src/features/goals/components/CreateGoalModal/CreateGoalModal.tsx` - Create goal modal
 - ✅ `src/features/goals/components/CreateGoalModal/index.ts` - Modal exports
 - ✅ Updated `src/App.tsx` to include `/goals` route
 
 **Implemented**:
+
 - ✅ Page layout with Ant Design Layout and Card components
 - ✅ Goal list display using GoalList component
 - ✅ Basic filtering (by status, type, priority, category)
@@ -179,15 +201,18 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 8: Goal Creation Flow ✅
+
 **Priority**: 🟡 High - Core feature
 **Status**: ✅ **COMPLETED**
 
 **Files Created**:
+
 - ✅ `src/pages/GoalDetailPage.tsx` - Goal detail page (placeholder for Step 9)
 - ✅ Updated `src/pages/GoalsPage.tsx` - Enhanced goal creation flow with navigation
 - ✅ Updated `src/App.tsx` - Added goal detail route
 
 **Implemented**:
+
 - ✅ Single form for goal creation (using existing CreateGoalModal and GoalForm)
 - ✅ Support for quantitative, qualitative, binary goals (already implemented in Step 6)
 - ✅ Form validation using Zod schemas (already implemented in Step 3)
@@ -203,14 +228,17 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 9: Goal Detail Page
+
 **Priority**: 🟢 Medium - View individual goals
 
 **Files to Create**:
+
 - `src/pages/GoalDetailPage.tsx` - Goal detail view
 - `src/features/goals/components/GoalDetail/GoalDetail.tsx`
 - Update routes
 
 **What to Implement**:
+
 - Display all goal information
 - Progress visualization
 - Edit goal button
@@ -222,13 +250,16 @@ This document provides a step-by-step implementation guide based on:
 ---
 
 #### Step 10: Progress Update Functionality
+
 **Priority**: 🟢 Medium - Core tracking feature
 
 **Files to Create**:
+
 - `src/features/goals/components/UpdateProgressModal/UpdateProgressModal.tsx`
 - `src/features/goals/hooks/useUpdateProgress.ts`
 
 **What to Implement**:
+
 - Modal/form for updating progress
 - Type-specific update forms:
   - Quantitative: Update currentValue
@@ -254,6 +285,7 @@ This document provides a step-by-step implementation guide based on:
 ## Recommended Implementation Order
 
 ### Week 1: Foundation
+
 1. ✅ **Local Storage Service Layer** (Step 1) - **COMPLETED**
 2. ✅ **Type System Setup** (Step 2) - **COMPLETED**
 3. ✅ **Validation Setup** (Step 3) - **COMPLETED**
@@ -261,11 +293,13 @@ This document provides a step-by-step implementation guide based on:
 5. ✅ **Progress Calculation** (Step 5) - **COMPLETED**
 
 ### Week 2: Basic UI
+
 6. ✅ **Basic Goal Components** (Step 6) - **COMPLETED**
 7. ✅ **Goal List Page** (Step 7) - **COMPLETED**
 8. ✅ **Goal Creation Flow** (Step 8) - **COMPLETED**
 
 ### Week 3: Core Features
+
 9. ✅ **Goal Detail Page** (Step 9)
 10. ✅ **Progress Update** (Step 10)
 
@@ -313,27 +347,32 @@ src/
 ## Important Considerations
 
 ### 1. Local Storage vs Backend API
+
 - **This project uses Local Storage** (per specs)
 - React Query is still used for caching and state management
 - Service layer abstracts storage operations
 - Future migration to API: Only change service layer
 
 ### 2. Type Safety
+
 - All types are already defined in `specs/types/goal.types.ts`
 - Use these types throughout the application
 - Don't duplicate type definitions
 
 ### 3. Validation
+
 - All validation schemas are in `specs/validation/goal.schemas.ts`
 - Use Zod for runtime validation
 - Validate before storing in Local Storage
 
 ### 4. Business Rules
+
 - All business rules are in `specs/business-rules/goal-business-rules.md`
 - Reference these when implementing logic
 - Progress calculations must follow BR-009 through BR-015
 
 ### 5. Architecture
+
 - Follow feature-based organization
 - Use React Query for server state (even though it's Local Storage)
 - Use Zustand for UI state (filters, modals, etc.)
@@ -344,17 +383,20 @@ src/
 ## Testing Strategy
 
 ### Unit Tests
+
 - Storage service functions
 - Progress calculation utilities
 - Validation functions
 - Business rule implementations
 
 ### Component Tests
+
 - GoalCard rendering
 - GoalForm validation
 - GoalList display
 
 ### Integration Tests
+
 - Create goal flow
 - Update progress flow
 - Filter/search functionality
@@ -380,4 +422,3 @@ src/
 - ✅ File organization clear? → Yes, in `.cursor/rules/file-organization.md`
 
 **You're ready to start! Begin with Step 1: Local Storage Service Layer.**
-

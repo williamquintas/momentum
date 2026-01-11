@@ -1,6 +1,7 @@
 # Environment Configuration
 
 ## Environment Variables
+
 - Use environment variables for configuration
 - Never commit secrets to repository
 - Use `.env` files for local development
@@ -8,6 +9,7 @@
 - Validate environment variables at startup
 
 ## Environment Files
+
 - `.env.local`: Local overrides (gitignored, highest priority)
 - `.env.development`: Development defaults
 - `.env.staging`: Staging configuration
@@ -16,7 +18,9 @@
 - `.env.example`: Example file with documentation (committed to repo)
 
 ### File Loading Precedence
+
 Environment files are loaded in the following order (later files override earlier ones):
+
 1. `.env` (base defaults)
 2. `.env.[mode]` (e.g., `.env.development`, `.env.production`)
 3. `.env.local` (local overrides, always loaded except in test mode)
@@ -25,6 +29,7 @@ Environment files are loaded in the following order (later files override earlie
 **Note**: `.env.local` is typically gitignored and should never be committed. It takes precedence over all other `.env` files except platform-specific variables.
 
 ## Configuration Structure
+
 - Group related configs
 - Use descriptive names
 - Document each variable
@@ -32,6 +37,7 @@ Environment files are loaded in the following order (later files override earlie
 - Validate required variables
 
 ### Naming Conventions
+
 - **Format**: UPPER_SNAKE_CASE (e.g., `API_BASE_URL`)
 - **Grouping**: Use prefixes to group related variables:
   - `API_*`: API-related configuration
@@ -48,7 +54,9 @@ Environment files are loaded in the following order (later files override earlie
 - **IDs/Keys**: Suffix with `_ID`, `_KEY`, or `_SECRET` (e.g., `ANALYTICS_ID`, `API_KEY`)
 
 ## Build Tool Prefixes
+
 Different build tools require different prefixes for environment variables:
+
 - **Vite**: `VITE_*` prefix (e.g., `VITE_API_URL`)
 - **Create React App**: `REACT_APP_*` prefix (e.g., `REACT_APP_API_URL`)
 - **Next.js**: `NEXT_PUBLIC_*` prefix for client-side (e.g., `NEXT_PUBLIC_API_URL`)
@@ -61,6 +69,7 @@ Different build tools require different prefixes for environment variables:
 Choose a consistent prefix based on your build tool and use it throughout the project.
 
 ### Client-Side vs Server-Side Variables
+
 - **Client-Side Variables**: Must use the build tool's prefix (e.g., `VITE_*`, `REACT_APP_*`)
   - These are embedded in the JavaScript bundle
   - **Visible to anyone** who inspects the bundle
@@ -72,6 +81,7 @@ Choose a consistent prefix based on your build tool and use it throughout the pr
   - Use for: Database credentials, secret keys, internal services
 
 ## Common Environment Variables
+
 - **API Configuration**:
   - `API_URL` (with appropriate prefix): API base URL
   - `API_TIMEOUT` (with appropriate prefix): Request timeout in milliseconds
@@ -85,6 +95,7 @@ Choose a consistent prefix based on your build tool and use it throughout the pr
   - `APP_VERSION` (with appropriate prefix): Application version string
 
 ## Configuration Management
+
 - Load config at application startup
 - Validate required variables
 - Provide sensible defaults
@@ -92,6 +103,7 @@ Choose a consistent prefix based on your build tool and use it throughout the pr
 - Document all variables
 
 ## Type-Safe Configuration
+
 - Create TypeScript interface for config
 - Validate config structure
 - Provide type-safe access
@@ -100,6 +112,7 @@ Choose a consistent prefix based on your build tool and use it throughout the pr
 ### Basic Examples
 
 #### Vite Example
+
 ```typescript
 interface AppConfig {
   apiUrl: string;
@@ -115,6 +128,7 @@ const config: AppConfig = {
 ```
 
 #### Create React App Example
+
 ```typescript
 interface AppConfig {
   apiUrl: string;
@@ -130,6 +144,7 @@ const config: AppConfig = {
 ```
 
 #### Framework-Agnostic Helper
+
 ```typescript
 interface AppConfig {
   apiUrl: string;
@@ -152,13 +167,14 @@ function getEnvVar(key: string, defaultValue?: string): string {
 const config: AppConfig = {
   apiUrl: getEnvVar('API_URL'),
   apiTimeout: Number(getEnvVar('API_TIMEOUT', '30000')),
-  env: (getEnvVar('ENV', 'development') as AppConfig['env']),
+  env: getEnvVar('ENV', 'development') as AppConfig['env'],
 };
 ```
 
 ### Validation Library Examples
 
 #### Zod Validation (Recommended)
+
 ```typescript
 import { z } from 'zod';
 
@@ -182,6 +198,7 @@ const config = {
 ```
 
 #### Envalid Validation
+
 ```typescript
 import { cleanEnv, str, num, url, bool } from 'envalid';
 
@@ -205,12 +222,13 @@ const config = {
 ```
 
 #### Custom Validation with Type Safety
+
 ```typescript
 function validateEnv<T extends Record<string, (value: string) => any>>(
   schema: T
 ): { [K in keyof T]: ReturnType<T[K]> } {
   const result = {} as any;
-  
+
   for (const [key, validator] of Object.entries(schema)) {
     const value = import.meta.env[key];
     if (!value) {
@@ -218,7 +236,7 @@ function validateEnv<T extends Record<string, (value: string) => any>>(
     }
     result[key] = validator(value);
   }
-  
+
   return result;
 }
 
@@ -236,6 +254,7 @@ const env = validateEnv({
 ```
 
 ## Environment Detection
+
 - Detect environment at runtime
 - Use for conditional logic
 - Enable/disable features by environment
@@ -245,6 +264,7 @@ const env = validateEnv({
 ## Secret Management
 
 ### Core Principles
+
 - Never commit secrets to repository
 - Use secret management service (if applicable)
 - Rotate secrets regularly
@@ -252,7 +272,9 @@ const env = validateEnv({
 - Document secret requirements (without exposing values)
 
 ### Client-Side Security Warning
+
 ⚠️ **Critical**: Client-side environment variables are visible in the JavaScript bundle. Never expose:
+
 - API keys or tokens
 - Database credentials
 - Private keys or secrets
@@ -260,6 +282,7 @@ const env = validateEnv({
 - Any sensitive information
 
 ### Server-Side Secrets
+
 - Store secrets server-side only
 - Use environment variables on server
 - Use secret management services (AWS Secrets Manager, HashiCorp Vault, etc.)
@@ -267,6 +290,7 @@ const env = validateEnv({
 - Monitor for exposed secrets
 
 ### Secret Management Services
+
 - **AWS Secrets Manager**: For AWS deployments
 - **HashiCorp Vault**: Enterprise secret management
 - **Azure Key Vault**: For Azure deployments
@@ -274,6 +298,7 @@ const env = validateEnv({
 - **Platform Secrets**: Vercel, Netlify built-in secret management
 
 ### Secret Rotation
+
 - Rotate secrets regularly (quarterly or as needed)
 - Document rotation process
 - Test rotation in staging first
@@ -283,25 +308,28 @@ const env = validateEnv({
 ## Configuration Validation
 
 ### Validation Libraries
+
 Use validation libraries for robust environment variable validation:
 
 - **Zod** (recommended): Schema-based validation with TypeScript support
+
   ```typescript
   import { z } from 'zod';
-  
+
   const envSchema = z.object({
     VITE_API_URL: z.string().url(),
     VITE_API_TIMEOUT: z.coerce.number().positive().default(30000),
     VITE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
   });
-  
+
   const env = envSchema.parse(import.meta.env);
   ```
 
 - **envalid**: Purpose-built for environment variable validation
+
   ```typescript
   import { cleanEnv, str, num, url } from 'envalid';
-  
+
   const env = cleanEnv(import.meta.env, {
     VITE_API_URL: url(),
     VITE_API_TIMEOUT: num({ default: 30000 }),
@@ -310,9 +338,10 @@ Use validation libraries for robust environment variable validation:
   ```
 
 - **dotenv-safe**: Ensures all required variables are present
+
   ```typescript
   import dotenvSafe from 'dotenv-safe';
-  
+
   dotenvSafe.config({
     allowEmptyValues: false,
     example: '.env.example',
@@ -320,6 +349,7 @@ Use validation libraries for robust environment variable validation:
   ```
 
 ### Validation Best Practices
+
 - Validate on application startup
 - Fail fast on invalid config
 - Provide clear error messages
@@ -332,6 +362,7 @@ Use validation libraries for robust environment variable validation:
 ## Build-Time vs Runtime
 
 ### Build-Time Configuration
+
 - **Build-Time**: Values baked into bundle at build time (e.g., Vite, Webpack, Create React App)
   - Environment variables are replaced during build
   - Values are embedded in the JavaScript bundle
@@ -339,6 +370,7 @@ Use validation libraries for robust environment variable validation:
   - Use for: API URLs, feature flags, static configuration
 
 ### Runtime Configuration
+
 - **Runtime**: Values loaded at runtime (e.g., API configuration endpoint)
   - Values fetched from external source after application loads
   - Can be changed without rebuilding
@@ -346,6 +378,7 @@ Use validation libraries for robust environment variable validation:
   - Use for: Feature flags that change frequently, A/B test configuration, dynamic API endpoints
 
 ### Runtime Configuration Example
+
 ```typescript
 // Fetch configuration from API at runtime
 async function loadRuntimeConfig() {
@@ -360,6 +393,7 @@ const apiUrl = runtimeConfig.apiUrl || import.meta.env.VITE_API_URL;
 ```
 
 ### Hybrid Approach
+
 - Use build-time for static configuration
 - Use runtime for dynamic configuration
 - Fallback to build-time values if runtime fetch fails
@@ -368,11 +402,13 @@ const apiUrl = runtimeConfig.apiUrl || import.meta.env.VITE_API_URL;
 ## Testing Environment Variables
 
 ### Test Configuration
+
 - Create `.env.test` file for test-specific configuration
 - Use test-specific values (e.g., mock API URLs, test database)
 - Isolate test environment from development/production
 
 ### Mocking in Tests
+
 ```typescript
 // jest.setupFilesAfterEnv or vitest setup
 import { vi } from 'vitest';
@@ -387,6 +423,7 @@ dotenv.config({ path: '.env.test' });
 ```
 
 ### Test Isolation
+
 - Reset environment variables between tests if needed
 - Use test-specific configuration files
 - Don't rely on development environment variables in tests
@@ -395,12 +432,14 @@ dotenv.config({ path: '.env.test' });
 ## CI/CD Integration
 
 ### Setting Environment Variables
+
 - **GitHub Actions**:
+
   ```yaml
   env:
     VITE_API_URL: ${{ secrets.API_URL }}
     VITE_ENV: production
-  
+
   # Or in workflow file
   - name: Build
     env:
@@ -409,6 +448,7 @@ dotenv.config({ path: '.env.test' });
   ```
 
 - **GitLab CI**:
+
   ```yaml
   variables:
     VITE_API_URL: $API_URL
@@ -418,6 +458,7 @@ dotenv.config({ path: '.env.test' });
 - **Vercel/Netlify**: Set in platform dashboard under Environment Variables
 
 ### Secret Management in CI/CD
+
 - Use platform secret management (GitHub Secrets, GitLab Variables)
 - Never hardcode secrets in CI/CD files
 - Use different secrets per environment
@@ -425,6 +466,7 @@ dotenv.config({ path: '.env.test' });
 - Validate required variables in CI/CD pipeline
 
 ### Validation in CI/CD
+
 ```yaml
 # Example: Validate env vars in CI
 - name: Validate environment variables
@@ -435,16 +477,19 @@ dotenv.config({ path: '.env.test' });
 ## Hot Reloading & Development
 
 ### Development Server Behavior
+
 - **Vite**: Requires restart to pick up `.env` file changes
 - **Create React App**: Requires restart to pick up `.env` file changes
 - **Next.js**: Requires restart for most env changes (some can be hot-reloaded)
 
 ### Watching Environment Files
+
 - Most build tools don't watch `.env` files automatically
 - Restart dev server after changing `.env` files
 - Use `.env.local` for local overrides that don't need to be shared
 
 ### Development Tips
+
 - Use `.env.local` for personal development settings
 - Document required variables in `.env.example`
 - Provide sensible defaults for development
@@ -453,6 +498,7 @@ dotenv.config({ path: '.env.test' });
 ## Default Values Strategy
 
 ### When to Use Defaults
+
 - **Safe Defaults**: Use for non-critical configuration
   - Development API URLs
   - Timeout values
@@ -460,6 +506,7 @@ dotenv.config({ path: '.env.test' });
   - Logging levels
 
 ### When to Fail Fast
+
 - **Required Variables**: Fail immediately if missing
   - Production API URLs
   - Authentication keys
@@ -467,6 +514,7 @@ dotenv.config({ path: '.env.test' });
   - Database connections (server-side)
 
 ### Default Value Examples
+
 ```typescript
 // Safe defaults
 const config = {
@@ -485,12 +533,14 @@ if (!apiUrl) {
 ## Multi-Environment Management
 
 ### Environment-Specific Configuration
+
 - Use separate `.env` files for each environment
 - Share common variables in base `.env` file
 - Override environment-specific values in `.env.[mode]` files
 - Use platform-specific overrides for deployment
 
 ### Managing Multiple Environments
+
 - **Shared Variables**: Common across all environments
   - Feature flags structure
   - Service names
@@ -502,6 +552,7 @@ if (!apiUrl) {
   - Logging levels
 
 ### Tools for Environment Management
+
 - Use environment variable management tools (if applicable)
 - Document environment differences
 - Keep `.env.example` synchronized with all environments
@@ -510,12 +561,14 @@ if (!apiUrl) {
 ## Migration & Deprecation
 
 ### Deprecating Environment Variables
+
 - Document deprecated variables in `.env.example` with deprecation notice
 - Provide migration path in comments
 - Support both old and new variables during transition
 - Remove old variables after migration period
 
 ### Example Deprecation
+
 ```bash
 # .env.example
 # DEPRECATED: Use VITE_API_URL instead
@@ -524,6 +577,7 @@ VITE_API_URL=http://api.example.com
 ```
 
 ### Migration Strategy
+
 1. Add new variable alongside old one
 2. Support both in code with deprecation warning
 3. Update documentation
@@ -533,14 +587,15 @@ VITE_API_URL=http://api.example.com
 ## Error Messages & Debugging
 
 ### Clear Error Messages
+
 ```typescript
 function getRequiredEnv(key: string): string {
   const value = import.meta.env[key];
   if (!value) {
     throw new Error(
       `Missing required environment variable: ${key}\n` +
-      `Please set ${key} in your .env file or environment.\n` +
-      `See .env.example for required variables.`
+        `Please set ${key} in your .env file or environment.\n` +
+        `See .env.example for required variables.`
     );
   }
   return value;
@@ -548,6 +603,7 @@ function getRequiredEnv(key: string): string {
 ```
 
 ### Debugging Tips
+
 - Log loaded configuration in development (never in production)
 - Validate configuration on startup
 - Provide helpful error messages with variable names
@@ -555,6 +611,7 @@ function getRequiredEnv(key: string): string {
 - Check file loading order if variables aren't loading
 
 ### Common Issues
+
 - **Variable not loading**: Check prefix, file location, restart dev server
 - **Wrong value**: Check file precedence, platform overrides
 - **Type errors**: Validate types, use coercion functions
@@ -563,6 +620,7 @@ function getRequiredEnv(key: string): string {
 ## Type Generation & Auto-Documentation
 
 ### Auto-Generating Types
+
 ```typescript
 // scripts/generate-env-types.ts
 import { writeFileSync } from 'fs';
@@ -573,19 +631,23 @@ const envExample = parse(fs.readFileSync('.env.example', 'utf-8'));
 
 // Generate TypeScript types
 const typeDefinitions = Object.keys(envExample)
-  .map(key => `  ${key}: string;`)
+  .map((key) => `  ${key}: string;`)
   .join('\n');
 
-writeFileSync('src/types/env.d.ts', `
+writeFileSync(
+  'src/types/env.d.ts',
+  `
 declare namespace NodeJS {
   interface ProcessEnv {
 ${typeDefinitions}
   }
 }
-`);
+`
+);
 ```
 
 ### Documentation Generation
+
 - Keep `.env.example` as source of truth
 - Generate documentation from `.env.example`
 - Include descriptions and examples
@@ -595,12 +657,14 @@ ${typeDefinitions}
 ## Secret Scanning & Prevention
 
 ### Preventing Secret Commits
+
 - Use pre-commit hooks to scan for secrets
 - Tools: `git-secrets`, `truffleHog`, `gitleaks`
 - Scan before commits
 - Block commits containing secrets
 
 ### Pre-Commit Hook Example
+
 ```bash
 #!/bin/sh
 # .git/hooks/pre-commit
@@ -611,6 +675,7 @@ fi
 ```
 
 ### If Secrets Are Committed
+
 1. **Immediately**: Rotate the exposed secret
 2. **Remove**: Remove from git history (if possible)
 3. **Notify**: Notify team and affected services
@@ -618,12 +683,14 @@ fi
 5. **Prevent**: Strengthen prevention measures
 
 ### Secret Detection Tools
+
 - **git-secrets**: AWS tool for detecting secrets
 - **truffleHog**: Scans git history for secrets
 - **gitleaks**: Fast secret scanner
 - **GitHub Secret Scanning**: Automatic scanning (if using GitHub)
 
 ## Best Practices
+
 - Document all environment variables
 - Use consistent naming convention
 - Group related variables
@@ -637,4 +704,3 @@ fi
 - Monitor for exposed secrets
 - Rotate secrets regularly
 - Use different secrets per environment
-

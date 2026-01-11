@@ -87,40 +87,48 @@ src/
 ## File Naming Conventions
 
 ### Components
+
 - **Format**: PascalCase with matching directory name
 - **Example**: `GoalCard.tsx` in `GoalCard/` directory
 - **Test files**: `GoalCard.test.tsx` (co-located)
 - **Style files**: `GoalCard.styles.ts` or `GoalCard.module.css` (if co-located)
 
 ### Utilities & Helpers
+
 - **Format**: camelCase
 - **Example**: `calculateProgress.ts`, `formatDate.ts`
 - **Test files**: `calculateProgress.test.ts` (co-located)
 
 ### Constants
+
 - **Format**: UPPER_SNAKE_CASE for file names, constants inside use UPPER_SNAKE_CASE
 - **Example**: `MAX_GOAL_COUNT.ts`, `API_ENDPOINTS.ts`
 - **Content**: `export const MAX_GOAL_COUNT = 100;`
 
 ### Types & Interfaces
+
 - **Format**: PascalCase for files and types
 - **Example**: `Goal.ts`, `GoalStatus.ts`, `api.types.ts`
 - **Naming**: Types use PascalCase (`Goal`, `GoalStatus`)
 
 ### Hooks
+
 - **Format**: camelCase with `use` prefix
 - **Example**: `useGoalProgress.ts`, `useAuth.ts`
 - **Test files**: `useGoalProgress.test.ts` (co-located)
 
 ### Services
+
 - **Format**: camelCase with descriptive suffix (`Service`, `Api`, `Client`)
 - **Example**: `goalService.ts`, `apiClient.ts`, `authApi.ts`
 
 ### Pages
+
 - **Format**: PascalCase with `Page` suffix
 - **Example**: `GoalsPage.tsx`, `GoalDetailPage.tsx`
 
 ### Test Files
+
 - **Format**: `{filename}.test.{ext}` or `{filename}.spec.{ext}`
 - **Location**: Co-located with source files
 - **Example**: `GoalCard.test.tsx` next to `GoalCard.tsx`
@@ -128,11 +136,13 @@ src/
 ## Index Files (Barrel Exports)
 
 ### Purpose
+
 - Create clean public APIs for modules
 - Reduce import path complexity
 - Control what's exported from a directory
 
 ### When to Use
+
 - **Feature modules**: Always include `index.ts` in feature root
 - **Component directories**: Include `index.ts` for multi-file components
 - **Utility directories**: Optional, use when exporting multiple utilities
@@ -156,6 +166,7 @@ export { validateEmail, validateUrl } from './validation';
 ```
 
 ### Rules
+
 - **Only export what's needed**: Don't export internal implementation details
 - **Re-export types explicitly**: Use `export type` for TypeScript types
 - **Group related exports**: Organize exports logically
@@ -164,7 +175,9 @@ export { validateEmail, validateUrl } from './validation';
 ## TypeScript Path Aliases
 
 ### Configuration
+
 Configure in `tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -184,6 +197,7 @@ Configure in `tsconfig.json`:
 ```
 
 ### Usage
+
 ```typescript
 // ✅ Good - Use aliases for imports beyond 2 levels
 import { GoalCard } from '@/features/goals';
@@ -201,12 +215,14 @@ import { GoalCard } from '../../../features/goals/components/GoalCard';
 ## Import Organization
 
 ### Order
+
 1. **External libraries** (React, React DOM, third-party)
 2. **Internal absolute imports** (using `@/` aliases)
 3. **Relative imports** (same directory or parent)
 4. **Type-only imports** (group separately if needed)
 
 ### Grouping
+
 ```typescript
 // 1. External libraries
 import React, { useState, useEffect } from 'react';
@@ -228,6 +244,7 @@ import type { GoalCardProps } from './GoalCard.types';
 ```
 
 ### Rules
+
 - **One import per line** for external libraries (easier to read and maintain)
 - **Group related imports** together
 - **Use absolute imports** (`@/`) for imports beyond 2 directory levels
@@ -237,11 +254,13 @@ import type { GoalCardProps } from './GoalCard.types';
 ## Test File Organization
 
 ### Co-location Strategy
+
 - **Preferred**: Co-locate test files with source files
 - **Location**: Same directory as source file
 - **Naming**: `{filename}.test.{ext}` or `{filename}.spec.{ext}`
 
 ### Structure
+
 ```
 features/
   goals/
@@ -258,17 +277,20 @@ features/
 ```
 
 ### Test Utilities
+
 - **Global test utilities**: `src/__tests__/helpers/`
 - **Mock data**: `src/__tests__/mocks/`
 - **Test setup**: `src/__tests__/setup.ts`
 
 ### E2E Tests
+
 - **Location**: `e2e/` or `tests/e2e/` (root level)
 - **Structure**: Mirror app structure or organize by user flows
 
 ## Asset Organization
 
 ### Images
+
 ```
 src/assets/
   images/
@@ -281,10 +303,12 @@ src/assets/
 ```
 
 ### Naming
+
 - **Format**: kebab-case
 - **Example**: `goal-icon.svg`, `logo-primary.png`
 
 ### Usage
+
 ```typescript
 // Import assets
 import logo from '@/assets/images/logos/logo-primary.png';
@@ -296,12 +320,14 @@ import GoalIcon from '@/assets/icons/goal/goal-icon.svg';
 ### Feature-Specific vs Shared
 
 **Feature-specific** (`features/{feature}/`):
+
 - Used only within one feature
 - Feature-specific business logic
 - Feature-specific components
 - Feature-specific types
 
 **Shared** (`components/common/`, `utils/`, `hooks/`):
+
 - Used by 2+ features
 - Generic, reusable utilities
 - Common UI components
@@ -310,11 +336,13 @@ import GoalIcon from '@/assets/icons/goal/goal-icon.svg';
 ### When to Move Code
 
 **Move to shared when:**
+
 - Code is used by 2+ features
 - Code is generic and reusable
 - Code represents a common pattern
 
 **Keep in feature when:**
+
 - Code is specific to one feature
 - Moving would create unnecessary coupling
 - Code is still evolving
@@ -322,16 +350,19 @@ import GoalIcon from '@/assets/icons/goal/goal-icon.svg';
 ### Component Location
 
 **`components/common/`**:
+
 - Generic UI components (Button, Modal, LoadingSpinner)
 - Used across multiple features
 - No business logic
 
 **`features/{feature}/components/`**:
+
 - Feature-specific components
 - Contains feature business logic
 - Used primarily within the feature
 
 **`pages/`**:
+
 - Route-level components
 - Page composition and layout
 - Data fetching orchestration
@@ -339,27 +370,32 @@ import GoalIcon from '@/assets/icons/goal/goal-icon.svg';
 ## File Size Guidelines
 
 ### Components
+
 - **Target**: < 200 lines
 - **Action**: Split if exceeding 300 lines or multiple responsibilities
 - **Split strategy**: Extract sub-components, hooks, or utilities
 
 ### Utilities
+
 - **Target**: < 150 lines per function
 - **Action**: Split into smaller, focused functions
 
 ### Hooks
+
 - **Target**: < 100 lines
 - **Action**: Extract sub-hooks or utilities if complex
 
 ## Circular Dependency Prevention
 
 ### Rules
+
 - **Features should NOT import from other features directly**
 - **Use shared utilities** for cross-feature functionality
 - **Import from feature public API** (`index.ts`) when absolutely necessary
 - **Avoid**: Feature A → Feature B → Feature A
 
 ### Detection
+
 - Use tools like `madge` to detect circular dependencies
 - Review import graphs regularly
 - Refactor when circular dependencies are detected
@@ -367,6 +403,7 @@ import GoalIcon from '@/assets/icons/goal/goal-icon.svg';
 ## Examples
 
 ### Good Structure
+
 ```typescript
 // features/goals/components/GoalCard/GoalCard.tsx
 import React from 'react';
@@ -386,6 +423,7 @@ export type { GoalCardProps } from './GoalCard';
 ```
 
 ### Bad Structure
+
 ```typescript
 // ❌ Deep relative imports
 import { GoalCard } from '../../../features/goals/components/GoalCard/GoalCard';
@@ -409,9 +447,9 @@ import { GoalCard } from '@/features/goals/components/GoalCard/GoalCard';
 5. **Commit**: Make it a separate commit for clarity
 
 ### Refactoring Checklist
+
 - [ ] All imports updated
 - [ ] Index files updated
 - [ ] Tests moved and passing
 - [ ] No circular dependencies introduced
 - [ ] Documentation updated (if needed)
-

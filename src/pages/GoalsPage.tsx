@@ -16,17 +16,7 @@
 import React, { useState, useMemo } from 'react';
 
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import {
-  Card,
-  Space,
-  Input,
-  Select,
-  Button,
-  Row,
-  Col,
-  Typography,
-  message,
-} from 'antd';
+import { Card, Space, Input, Select, Button, Row, Col, Typography, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 import { CreateGoalModal } from '@/features/goals/components/CreateGoalModal';
@@ -143,11 +133,7 @@ export const GoalsPage: React.FC = () => {
           <Col>
             <Space>
               <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setIsCreateModalOpen(true)}
-              >
+              <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
                 Create Goal
               </Button>
             </Space>
@@ -240,12 +226,7 @@ export const GoalsPage: React.FC = () => {
           </Row>
 
           {/* Goals List */}
-          <GoalList
-            goals={goals}
-            loading={isLoading}
-            onGoalClick={handleGoalClick}
-            viewMode={viewMode}
-          />
+          <GoalList goals={goals} loading={isLoading} onGoalClick={handleGoalClick} viewMode={viewMode} />
         </Space>
       </Card>
 
@@ -259,4 +240,3 @@ export const GoalsPage: React.FC = () => {
     </div>
   );
 };
-

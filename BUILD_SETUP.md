@@ -189,4 +189,3 @@ nvm use
 
 - Run `npm run format` to format all files
 - Check `.prettierrc` for formatting rules
-

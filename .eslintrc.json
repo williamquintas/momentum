@@ -19,14 +19,7 @@
     "plugin:import/typescript",
     "prettier"
   ],
-  "plugins": [
-    "@typescript-eslint",
-    "react",
-    "react-hooks",
-    "jsx-a11y",
-    "import",
-    "security"
-  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "jsx-a11y", "import", "security"],
   "settings": {
     "react": {
       "version": "detect"
@@ -49,14 +42,7 @@
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index"
-        ],
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
         "pathGroups": [
           {
             "pattern": "react",
@@ -135,4 +121,3 @@
     }
   ]
 }
-

@@ -339,9 +339,7 @@ export function applyZodErrorsToForm(form: FormInstance, error: z.ZodError): voi
  * @param schema - The Zod schema to use for validation
  * @returns An Ant Design Form validator function
  */
-export function zodValidator<T extends z.ZodTypeAny>(
-  schema: T
-): (_: unknown, value: unknown) => Promise<void> {
+export function zodValidator<T extends z.ZodTypeAny>(schema: T): (_: unknown, value: unknown) => Promise<void> {
   return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
@@ -413,4 +411,3 @@ export function isValidCreateGoalInput(data: unknown): data is CreateGoalInput {
 export function isValidUpdateGoalInput(data: unknown): data is UpdateGoalInput {
   return UpdateGoalInputSchema.safeParse(data).success;
 }
-

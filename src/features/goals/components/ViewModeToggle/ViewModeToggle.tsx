@@ -31,11 +31,7 @@ export interface ViewModeToggleProps {
 /**
  * ViewModeToggle Component
  */
-export const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
-  viewMode,
-  onViewModeChange,
-  className,
-}) => {
+export const ViewModeToggle: React.FC<ViewModeToggleProps> = ({ viewMode, onViewModeChange, className }) => {
   return (
     <Space className={className}>
       <Button.Group>
@@ -57,4 +53,3 @@ export const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
     </Space>
   );
 };
-

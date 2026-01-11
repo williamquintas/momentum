@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 
 import type { CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/goals/types';
-import { CreateGoalInputSchema , applyZodErrorsToForm } from '@/features/goals/utils/validation';
+import { CreateGoalInputSchema, applyZodErrorsToForm } from '@/features/goals/utils/validation';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -89,7 +89,16 @@ export const GoalForm: React.FC<GoalFormProps> = ({
       // Remove fields that shouldn't be in CreateGoalInput (progress, id, createdAt, updatedAt, etc.)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const formValues = values as Record<string, unknown>;
-      const { progress: _progress, id: _id, createdAt: _createdAt, updatedAt: _updatedAt, progressHistory: _progressHistory, notes: _notes, attachments: _attachments, ...valuesWithoutExcluded } = formValues;
+      const {
+        progress: _progress,
+        id: _id,
+        createdAt: _createdAt,
+        updatedAt: _updatedAt,
+        progressHistory: _progressHistory,
+        notes: _notes,
+        attachments: _attachments,
+        ...valuesWithoutExcluded
+      } = formValues;
 
       // Helper to convert dayjs to Date
       const toDate = (value: unknown): Date | undefined => {
@@ -109,7 +118,8 @@ export const GoalForm: React.FC<GoalFormProps> = ({
         // Type-specific defaults
         ...(formValues.type === GoalType.QUANTITATIVE && {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          currentValue: (formValues.currentValue as number | undefined) ?? (formValues.startValue as number | undefined) ?? 0,
+          currentValue:
+            (formValues.currentValue as number | undefined) ?? (formValues.startValue as number | undefined) ?? 0,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           allowDecimals: (formValues.allowDecimals as boolean | undefined) ?? false,
         }),
@@ -121,7 +131,8 @@ export const GoalForm: React.FC<GoalFormProps> = ({
         }),
         ...(formValues.type === GoalType.QUALITATIVE && {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          qualitativeStatus: (formValues.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
+          qualitativeStatus:
+            (formValues.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           selfAssessments: (formValues.selfAssessments as unknown[] | undefined) ?? [],
         }),
@@ -176,11 +187,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
 
       <Row gutter={16}>
         <Col xs={24} sm={12}>
-          <Form.Item
-            name="type"
-            label="Goal Type"
-            rules={[{ required: true, message: 'Goal type is required' }]}
-          >
+          <Form.Item name="type" label="Goal Type" rules={[{ required: true, message: 'Goal type is required' }]}>
             <Select placeholder="Select goal type">
               <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
               <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
@@ -190,11 +197,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
         </Col>
 
         <Col xs={24} sm={12}>
-          <Form.Item
-            name="status"
-            label="Status"
-            rules={[{ required: true, message: 'Status is required' }]}
-          >
+          <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Status is required' }]}>
             <Select placeholder="Select status">
               <Option value={GoalStatus.ACTIVE}>Active</Option>
               <Option value={GoalStatus.PAUSED}>Paused</Option>
@@ -205,11 +208,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
 
       <Row gutter={16}>
         <Col xs={24} sm={12}>
-          <Form.Item
-            name="priority"
-            label="Priority"
-            rules={[{ required: true, message: 'Priority is required' }]}
-          >
+          <Form.Item name="priority" label="Priority" rules={[{ required: true, message: 'Priority is required' }]}>
             <Select placeholder="Select priority">
               <Option value={Priority.HIGH}>High</Option>
               <Option value={Priority.MEDIUM}>Medium</Option>
@@ -391,4 +390,3 @@ export const GoalForm: React.FC<GoalFormProps> = ({
     </Form>
   );
 };
-

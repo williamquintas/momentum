@@ -66,13 +66,7 @@ export const GoalList: React.FC<GoalListProps> = ({
   }
 
   if (goals.length === 0) {
-    return (
-      <Empty
-        description="No goals found"
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-        style={{ padding: '50px' }}
-      />
-    );
+    return <Empty description="No goals found" image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ padding: '50px' }} />;
   }
 
   // Table view (default)
@@ -110,9 +104,7 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: status,
         })),
         onFilter: (value, record) => record.status === value,
-        render: (status: GoalStatus) => (
-          <Tag color={getStatusColor(status)}>{status}</Tag>
-        ),
+        render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{status}</Tag>,
       },
       {
         title: 'Priority',
@@ -124,9 +116,7 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: priority,
         })),
         onFilter: (value, record) => record.priority === value,
-        render: (priority: Priority) => (
-          <Tag color={getPriorityColor(priority)}>{priority}</Tag>
-        ),
+        render: (priority: Priority) => <Tag color={getPriorityColor(priority)}>{priority}</Tag>,
       },
       {
         title: 'Progress',
@@ -136,12 +126,7 @@ export const GoalList: React.FC<GoalListProps> = ({
           const progress = getProgressValue(goal);
           return (
             <div style={{ minWidth: 100 }}>
-              <Progress
-                percent={progress}
-                format={() => formatProgress(goal)}
-                size="small"
-                showInfo
-              />
+              <Progress percent={progress} format={() => formatProgress(goal)} size="small" showInfo />
             </div>
           );
         },
@@ -236,4 +221,3 @@ export const GoalList: React.FC<GoalListProps> = ({
     />
   );
 };
-

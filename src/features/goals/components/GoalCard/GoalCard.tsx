@@ -102,12 +102,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) 
 
         {/* Progress Bar */}
         <div>
-          <Progress
-            percent={progress}
-            status={progressStatus}
-            format={() => formatProgress(goal)}
-            showInfo
-          />
+          <Progress percent={progress} status={progressStatus} format={() => formatProgress(goal)} showInfo />
         </div>
 
         {/* Deadline and Assignee */}
@@ -118,9 +113,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) 
               <Text type="secondary" style={{ fontSize: '12px' }}>
                 Deadline: {formatDate(goal.deadline)}
               </Text>
-              {isOverdue(goal.deadline) && (
-                <Tag color="red">{getDeadlineStatusText(goal.deadline)}</Tag>
-              )}
+              {isOverdue(goal.deadline) && <Tag color="red">{getDeadlineStatusText(goal.deadline)}</Tag>}
               {isDueSoon(goal.deadline) && !isOverdue(goal.deadline) && (
                 <Tag color="orange">{getDeadlineStatusText(goal.deadline)}</Tag>
               )}
@@ -153,4 +146,3 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) 
     </Card>
   );
 };
-

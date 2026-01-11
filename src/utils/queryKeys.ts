@@ -49,4 +49,3 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.goals.details(), id] as const,
   },
 } as const;
-

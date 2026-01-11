@@ -11,21 +11,9 @@
  * - All goal operations go through this service
  */
 
-import type {
-  Goal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-} from '@specs/types/goal.types';
+import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '@specs/types/goal.types';
 
-import {
-  createGoal,
-  getGoal,
-  getAllGoals,
-  updateGoal,
-  deleteGoal,
-  queryGoals,
-} from '../storage/goalStorageService';
+import { createGoal, getGoal, getAllGoals, updateGoal, deleteGoal, queryGoals } from '../storage/goalStorageService';
 
 /**
  * Goal Service API
@@ -94,4 +82,3 @@ export const goalService = {
     return Promise.resolve(queryGoals(filters));
   },
 };
-

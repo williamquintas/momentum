@@ -139,4 +139,3 @@ export const getDeadlineCountdown = (deadline: Date | undefined | null): string 
   }
   return 'Due now';
 };
-

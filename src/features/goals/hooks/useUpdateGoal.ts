@@ -41,8 +41,7 @@ export const useUpdateGoal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: UpdateGoalInput }) =>
-      goalService.update(id, updates),
+    mutationFn: ({ id, updates }: { id: string; updates: UpdateGoalInput }) => goalService.update(id, updates),
     onMutate: async ({ id, updates }) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.goals.detail(id) });
@@ -94,4 +93,3 @@ export const useUpdateGoal = () => {
     },
   });
 };
-

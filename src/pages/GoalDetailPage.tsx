@@ -106,9 +106,7 @@ export const GoalDetailPage: React.FC = () => {
             <Title level={2} style={{ margin: 0 }}>
               {goal.title}
             </Title>
-            {goal.description && (
-              <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>
-            )}
+            {goal.description && <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>}
           </div>
 
           <div>
@@ -193,8 +191,8 @@ export const GoalDetailPage: React.FC = () => {
           <div>
             <Title level={4}>Additional Features</Title>
             <Paragraph type="secondary">
-              Full goal detail view with progress visualization, edit/delete actions, and
-              type-specific displays will be implemented in Step 9.
+              Full goal detail view with progress visualization, edit/delete actions, and type-specific displays will be
+              implemented in Step 9.
             </Paragraph>
           </div>
         </Space>
@@ -202,4 +200,3 @@ export const GoalDetailPage: React.FC = () => {
     </div>
   );
 };
-

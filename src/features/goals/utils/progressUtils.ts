@@ -37,4 +37,3 @@ export const getProgressValue = (goal: Goal): number => {
 export const shouldUseCountFormat = (goal: Goal): goal is BinaryGoal => {
   return isBinaryGoal(goal) && goal.targetCount !== undefined && goal.targetCount > 0;
 };
-

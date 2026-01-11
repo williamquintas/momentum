@@ -5,6 +5,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 ## 🎯 Features
 
 ### Multiple Goal Types
+
 - **Quantitative Goals**: Track numeric targets with progress bars and percentage completion
 - **Qualitative Goals**: Monitor descriptive achievements with milestone checkpoints
 - **Binary/Checkbox Goals**: Simple done/not-done tracking with count-based progress
@@ -14,6 +15,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 - **Time-Bound Goals**: Goals with specific deadlines and countdown timers
 
 ### Key Capabilities
+
 - 📊 **Dashboard Overview**: Immediate insight into overall goal performance
 - 📋 **Goal List View**: Comprehensive list with filtering, sorting, and search
 - 📈 **Progress Tracking**: Visual progress indicators and completion metrics
@@ -42,12 +44,14 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd goals-tracking
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 # or
@@ -55,12 +59,14 @@ yarn install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env.local
 # Edit .env.local with your configuration
 ```
 
 4. Start the development server:
+
 ```bash
 npm run dev
 # or
@@ -118,6 +124,7 @@ For detailed system requirements and planning, see [GOALS_TRACKING_SYSTEM_PLAN.m
 ### UI Mockups
 
 UI mockups and design references are available in the [docs/mockups](./docs/mockups/) directory:
+
 - **[Dashboard Mockup](./docs/mockups/dashboard-mockup.md)** - Comprehensive dashboard interface mockup with four panel views
 
 ## 🧪 Development
@@ -170,4 +177,3 @@ npm run type-check   # Run TypeScript type checking
 ---
 
 Built with ❤️ using React, TypeScript, and Ant Design
-

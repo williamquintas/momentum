@@ -3,6 +3,7 @@
 ## Component-Specific Guidelines
 
 ### Form Components
+
 - Use Ant Design Form with proper validation
 - Use Ant Design Form validation rules
 - Implement proper form layout
@@ -37,6 +38,7 @@
   ```
 
 ### Table Components
+
 - Use Ant Design Table with proper typing
 - Implement sorting, filtering, and pagination
 - Use virtual scrolling for large datasets (Table.virtual)
@@ -62,6 +64,7 @@
   ```
 
 ### Progress Components
+
 - Use Ant Design Progress component
 - Calculate progress percentage accurately
 - Show appropriate progress type (line, circle, dashboard)
@@ -81,6 +84,7 @@
   ```
 
 ### Card Components
+
 - Use Ant Design Card for goal displays
 - Include action buttons in Card actions
 - Show relevant metadata (tags, status, priority)
@@ -106,6 +110,7 @@
   ```
 
 ### Navigation Components
+
 - Use Ant Design Menu for navigation
 - Implement breadcrumbs for deep navigation
 - Use Tabs for different view modes
@@ -127,6 +132,7 @@
   ```
 
 ### Modal and Dialog Components
+
 - Use Ant Design Modal for confirmations and forms
 - Use Drawer for side panels (better on mobile)
 - Trap focus within modal (Ant Design handles this)
@@ -151,6 +157,7 @@
   ```
 
 ### Dropdown and Select Components
+
 - Use Select for single/multiple choice selections
 - Use Dropdown for action menus
 - Implement search/filtering in Select
@@ -174,6 +181,7 @@
   ```
 
 ### Date and Time Pickers
+
 - Use DatePicker for date selection
 - Use RangePicker for date ranges
 - Use TimePicker for time selection
@@ -193,6 +201,7 @@
   ```
 
 ### Notification and Alert Components
+
 - Use Message for brief notifications (auto-dismiss)
 - Use Notification for detailed notifications
 - Use Alert for persistent important messages
@@ -211,6 +220,7 @@
   ```
 
 ### Tooltip and Popover Components
+
 - Use Tooltip for brief hover information
 - Use Popover for rich content on hover/click
 - Keep tooltip text concise
@@ -225,6 +235,7 @@
   ```
 
 ### Empty States
+
 - Use Ant Design Empty component
 - Provide helpful messaging and actions
 - Show illustrations or icons
@@ -243,6 +254,7 @@
   ```
 
 ### Loading States
+
 - Use Spin for inline loading
 - Use Skeleton for content placeholders
 - Use Table loading prop for table loading states
@@ -259,6 +271,7 @@
   ```
 
 ### Error States
+
 - Display clear error messages
 - Use Alert component for error display
 - Provide recovery actions (retry, go back, contact support)
@@ -280,6 +293,7 @@
   ```
 
 ### Timeline Components
+
 - Use Timeline for progress history
 - Use Steps for milestone progression
 - Show chronological order clearly
@@ -302,6 +316,7 @@
   ```
 
 ### Calendar Components
+
 - Use Calendar for date-based views
 - Use DatePicker.Calendar for custom calendar views
 - Highlight important dates (deadlines, milestones)
@@ -321,6 +336,7 @@
   ```
 
 ### Tag and Badge Components
+
 - Use Tag for categories, status, priority
 - Use Badge for counts and notifications
 - Use color coding consistently (green=success, red=error, etc.)
@@ -340,6 +356,7 @@
   ```
 
 ### Upload Components
+
 - Use Upload for file attachments
 - Validate file types and sizes
 - Show upload progress
@@ -369,6 +386,7 @@
   ```
 
 ### Search and Filter Components
+
 - Use Input.Search for search functionality
 - Implement debouncing for search input
 - Show search results with highlighting
@@ -386,6 +404,7 @@
   ```
 
 ### Statistic Components
+
 - Use Statistic for displaying key metrics
 - Show current value, target value, and percentage
 - Use Statistic.Countdown for deadline countdowns
@@ -414,17 +433,19 @@
 ## Component Composition Patterns
 
 ### Container/Presentational Pattern
+
 - Separate data fetching (containers) from presentation (components)
 - Containers handle state and side effects
 - Presentational components receive props and render UI
 - Example:
+
   ```typescript
   // Container
   const GoalsContainer = () => {
     const { data, isLoading } = useGoals();
     return <GoalsList goals={data} loading={isLoading} />;
   };
-  
+
   // Presentational
   const GoalsList = ({ goals, loading }: GoalsListProps) => {
     return <Table dataSource={goals} loading={loading} />;
@@ -432,12 +453,14 @@
   ```
 
 ### Compound Components
+
 - Group related components together
 - Share implicit state between components
 - Use React Context for compound component state
 - Example: Card with Card.Header, Card.Body, Card.Footer
 
 ### Render Props Pattern
+
 - Use when component needs flexible rendering
 - Pass render function as prop
 - Useful for data fetching and state management
@@ -452,6 +475,7 @@
   ```
 
 ### Higher-Order Components (HOCs)
+
 - Use sparingly (prefer hooks)
 - Useful for cross-cutting concerns
 - Example: withErrorBoundary, withLoadingState
@@ -459,6 +483,7 @@
 ## Props Design
 
 ### TypeScript Props
+
 - Always define Props interface
 - Use descriptive names (GoalCardProps, not Props)
 - Mark optional props with `?`
@@ -476,36 +501,36 @@
   ```
 
 ### Default Props
+
 - Prefer default parameters over defaultProps
 - Use default parameters in function signature
 - Example:
   ```typescript
-  const GoalCard = ({
-    goal,
-    showActions = true,
-    variant = 'default'
-  }: GoalCardProps) => {
+  const GoalCard = ({ goal, showActions = true, variant = 'default' }: GoalCardProps) => {
     // ...
   };
   ```
 
 ### Prop Validation
+
 - Use TypeScript for compile-time validation
 - Use runtime validation with Zod for API data
 - Validate required props at component level
 - Provide helpful error messages for invalid props
 
 ### Event Handler Props
+
 - Use descriptive names: `onClick`, `onSubmit`, `onChange`
 - Pass event object or relevant data
 - Use consistent naming: `handle*` for internal, `on*` for props
 - Example:
+
   ```typescript
   interface GoalCardProps {
     onEdit: (goal: Goal) => void;
     onDelete: (goalId: string) => void;
   }
-  
+
   const GoalCard = ({ onEdit, onDelete }: GoalCardProps) => {
     const handleEdit = () => onEdit(goal);
     const handleDelete = () => onDelete(goal.id);
@@ -516,6 +541,7 @@
 ## State Management in Components
 
 ### Local State
+
 - Use useState for simple component state
 - Use useReducer for complex state logic
 - Keep state as local as possible
@@ -527,23 +553,23 @@
   ```
 
 ### Derived State
+
 - Calculate derived values in render or useMemo
 - Avoid storing derived state separately
 - Example:
   ```typescript
-  const progress = useMemo(
-    () => calculateProgress(current, target),
-    [current, target]
-  );
+  const progress = useMemo(() => calculateProgress(current, target), [current, target]);
   ```
 
 ### Form State
+
 - Use Ant Design Form for form state management
 - Use Form.useForm() for programmatic control
 - Use Form.useWatch() for dependent fields
 - Handle form reset and cleanup
 
 ### URL State
+
 - Use URL parameters for shareable/filterable state
 - Use React Router or similar for URL state
 - Sync URL state with component state
@@ -552,6 +578,7 @@
 ## Event Handling
 
 ### Click Events
+
 - Use onClick for button clicks
 - Prevent default behavior when needed
 - Stop propagation to prevent bubbling
@@ -566,6 +593,7 @@
   ```
 
 ### Form Events
+
 - Use onSubmit for form submission
 - Prevent default form submission
 - Validate before submission
@@ -586,6 +614,7 @@
   ```
 
 ### Input Events
+
 - Use onChange for controlled inputs
 - Debounce search/filter inputs
 - Validate on blur for better UX
@@ -594,40 +623,42 @@
 ## Performance Optimization
 
 ### Memoization
+
 - Use React.memo for expensive components
 - Use useMemo for expensive calculations
 - Use useCallback for stable function references
 - Only memoize when profiling shows it's needed
 - Example:
+
   ```typescript
   const GoalCard = React.memo(({ goal }: GoalCardProps) => {
     // ...
   });
-  
-  const expensiveValue = useMemo(
-    () => calculateExpensiveValue(data),
-    [data]
-  );
-  
+
+  const expensiveValue = useMemo(() => calculateExpensiveValue(data), [data]);
+
   const handleClick = useCallback(() => {
     onAction();
   }, [onAction]);
   ```
 
 ### Lazy Loading
+
 - Use React.lazy() for code splitting
 - Use Suspense for loading states
 - Lazy load routes and heavy components
 - Example:
+
   ```typescript
   const GoalsPage = React.lazy(() => import('./pages/GoalsPage'));
-  
+
   <Suspense fallback={<Spin />}>
     <GoalsPage />
   </Suspense>
   ```
 
 ### Virtual Scrolling
+
 - Use for large lists (1000+ items)
 - Ant Design Table supports virtual scrolling
 - Use react-window or react-virtualized for custom lists
@@ -641,15 +672,17 @@
   ```
 
 ### Debouncing and Throttling
+
 - Debounce search inputs (300-500ms)
 - Throttle scroll events
 - Use lodash.debounce or custom hooks
 - Example:
   ```typescript
   const debouncedSearch = useMemo(
-    () => debounce((value: string) => {
-      onSearch(value);
-    }, 300),
+    () =>
+      debounce((value: string) => {
+        onSearch(value);
+      }, 300),
     [onSearch]
   );
   ```
@@ -657,21 +690,25 @@
 ## Animation and Transitions
 
 ### CSS Transitions
+
 - Use CSS transitions for simple animations
 - Prefer transform and opacity for performance
 - Keep animations subtle and purposeful
 - Example:
   ```css
   .card {
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
   }
   .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
   ```
 
 ### Ant Design Animations
+
 - Use Ant Design's built-in animations
 - Use ConfigProvider for global animation settings
 - Use Transition components for enter/exit animations
@@ -690,6 +727,7 @@
   ```
 
 ### Animation Best Practices
+
 - Keep animations under 300ms for interactions
 - Use easing functions for natural motion
 - Respect prefers-reduced-motion
@@ -699,6 +737,7 @@
 ## Ant Design Usage
 
 ### Spacing & Layout
+
 - Use Ant Design's spacing system (8px base)
 - Use Space component for component spacing
 - Follow Ant Design's grid system
@@ -706,12 +745,13 @@
 - Maintain consistent margins and padding
 - Use gap property for flex layouts
 - Example:
+
   ```typescript
   <Space direction="vertical" size="large">
     <Card>Goal 1</Card>
     <Card>Goal 2</Card>
   </Space>
-  
+
   <Row gutter={[16, 16]}>
     <Col xs={24} sm={12} md={8} lg={6}>
       <Card>Goal Card</Card>
@@ -720,6 +760,7 @@
   ```
 
 ### Colors & Theming
+
 - Follow Ant Design's color palette
 - Use theme customization via ConfigProvider
 - Maintain color consistency
@@ -741,6 +782,7 @@
   ```
 
 ### Icons
+
 - Use Ant Design icons from `@ant-design/icons`
 - Use appropriate icon sizes
 - Maintain icon consistency
@@ -755,6 +797,7 @@
   ```
 
 ### Responsive Design
+
 - Use Ant Design's responsive breakpoints
 - Test on mobile, tablet, and desktop
 - Use responsive props (xs, sm, md, lg, xl, xxl)
@@ -762,9 +805,10 @@
 - Test touch interactions
 - Use responsive utilities for conditional rendering
 - Example:
+
   ```typescript
   const { xs, sm, md } = Grid.useBreakpoint();
-  
+
   return (
     <Col xs={24} sm={12} md={8} lg={6}>
       {/* Responsive column */}
@@ -773,6 +817,7 @@
   ```
 
 ### Component Usage
+
 - Use ConfigProvider for theme customization
 - Leverage Ant Design's built-in features
 - Follow Ant Design's component patterns
@@ -786,6 +831,7 @@
   ```
 
 ### Customization
+
 - Customize theme via ConfigProvider
 - Use CSS-in-JS for component-specific styles
 - Override Ant Design styles when needed
@@ -794,13 +840,14 @@
 - Use CSS modules or styled-components for scoped styles
 - Avoid inline styles for complex styling
 - Example:
+
   ```typescript
   // styles.module.css
   .customCard {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
-  
+
   // Component
   <Card className={styles.customCard}>
     {/* content */}
@@ -810,24 +857,28 @@
 ## Mobile-First Patterns
 
 ### Touch Targets
+
 - Minimum 44x44px touch targets
 - Adequate spacing between interactive elements
 - Use full-width buttons on mobile
 - Test on actual devices
 
 ### Mobile Navigation
+
 - Use Drawer for mobile navigation
 - Collapse menu items on small screens
 - Use bottom navigation for primary actions
 - Implement swipe gestures where appropriate
 
 ### Responsive Tables
+
 - Use horizontal scroll on mobile
 - Consider card view for mobile tables
 - Hide less important columns on small screens
 - Use responsive column visibility
 
 ### Mobile Forms
+
 - Use full-width inputs on mobile
 - Show labels above inputs (not inline)
 - Use native date/time pickers on mobile
@@ -844,6 +895,7 @@
 ## Testing UI Components
 
 ### Component Testing
+
 - Test user interactions, not implementation
 - Test accessibility (keyboard navigation, screen readers)
 - Test error states and edge cases
@@ -860,6 +912,7 @@
   ```
 
 ### Visual Regression Testing
+
 - Use tools like Chromatic or Percy
 - Test component variations
 - Test responsive breakpoints
@@ -868,19 +921,22 @@
 ## Internationalization (i18n)
 
 ### Text Content
+
 - Extract all user-facing text to translation files
 - Use translation keys, not hardcoded strings
 - Handle pluralization correctly
 - Format dates and numbers according to locale
 - Example:
+
   ```typescript
   import { useTranslation } from 'react-i18next';
-  
+
   const { t } = useTranslation();
   return <Button>{t('goals.create')}</Button>;
   ```
 
 ### RTL Support
+
 - Test with RTL languages (Arabic, Hebrew)
 - Use logical CSS properties (margin-inline, padding-inline)
 - Ant Design supports RTL via ConfigProvider
@@ -894,6 +950,7 @@
 ## Best Practices Summary
 
 ### Do's
+
 - ✅ Use TypeScript for all components
 - ✅ Follow Ant Design patterns and conventions
 - ✅ Implement proper error and loading states
@@ -906,6 +963,7 @@
 - ✅ Document complex components
 
 ### Don'ts
+
 - ❌ Don't create custom components when Ant Design provides one
 - ❌ Don't ignore accessibility requirements
 - ❌ Don't use inline styles for complex styling
@@ -916,4 +974,3 @@
 - ❌ Don't create components that are too large or complex
 - ❌ Don't use any type (use proper TypeScript types)
 - ❌ Don't forget to handle edge cases
-

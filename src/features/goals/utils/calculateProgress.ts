@@ -121,8 +121,7 @@ export const calculateQualitativeProgress = (goal: QualitativeGoal): number => {
   // If self-assessments exist, use average rating
   if (selfAssessments && selfAssessments.length > 0) {
     const averageRating =
-      selfAssessments.reduce((sum, assessment) => sum + assessment.rating, 0) /
-      selfAssessments.length;
+      selfAssessments.reduce((sum, assessment) => sum + assessment.rating, 0) / selfAssessments.length;
 
     // If target rating is set, calculate progress relative to target
     if (targetRating !== undefined) {
@@ -169,9 +168,7 @@ export const calculateMilestoneProgress = (goal: MilestoneGoal): number => {
   }
 
   // Count completed milestones (excluding skipped)
-  const completedCount = milestones.filter(
-    (milestone) => milestone.status === 'completed'
-  ).length;
+  const completedCount = milestones.filter((milestone) => milestone.status === 'completed').length;
 
   // Count total milestones (excluding skipped)
   const totalCount = milestones.filter((milestone) => milestone.status !== 'skipped').length;
@@ -202,8 +199,7 @@ export const calculateRecurringProgress = (goal: RecurringGoal): number => {
     return 0;
   }
 
-  const progress =
-    (completionStats.completedOccurrences / completionStats.totalOccurrences) * 100;
+  const progress = (completionStats.completedOccurrences / completionStats.totalOccurrences) * 100;
   return clampProgress(progress);
 };
 
@@ -226,8 +222,7 @@ export const calculateHabitProgress = (goal: HabitGoal): number => {
     return 0;
   }
 
-  const progress =
-    (completionStats.completedOccurrences / completionStats.totalOccurrences) * 100;
+  const progress = (completionStats.completedOccurrences / completionStats.totalOccurrences) * 100;
   return clampProgress(progress);
 };
 
@@ -266,4 +261,3 @@ export const calculateProgress = (goal: Goal): number => {
   // Fallback: return 0 for unknown goal types
   return 0;
 };
-

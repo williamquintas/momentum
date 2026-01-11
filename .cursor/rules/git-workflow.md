@@ -1,6 +1,7 @@
 # Git Workflow
 
 ## Branching Strategy
+
 - **main**: Production-ready code
 - **develop**: Integration branch for features
 - **feature/**: Feature branches
@@ -9,6 +10,7 @@
 - **release/**: Release preparation branches
 
 ### Branch Protection
+
 - **main** and **develop** branches must be protected
 - Require pull request reviews before merging
 - Require status checks to pass (CI/CD)
@@ -18,6 +20,7 @@
 - Require linear history (no merge commits on main)
 
 ## Branch Naming
+
 - Use descriptive branch names
 - Include ticket/issue number if applicable
 - Use kebab-case: `feature/goal-progress-tracking`
@@ -27,6 +30,7 @@
   - `hotfix/critical-api-error`
 
 ## Commit Messages
+
 - Use conventional commit format
 - Format: `<type>(<scope>): <subject>`
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, `build`, `revert`
@@ -38,12 +42,14 @@
   - `ci: add automated testing workflow`
 
 ### Commit Message Body
+
 - Separate subject from body with blank line
 - Wrap body at 72 characters
 - Use body to explain what and why vs. how
 - Use bullet points with `-` for multiple points
 - Reference issues/tickets in footer
 - Example:
+
   ```
   feat(goals): add progress tracking
 
@@ -58,9 +64,11 @@
   ```
 
 ### Breaking Changes
+
 - Indicate breaking changes in commit message
 - Use `!` after type/scope: `feat(api)!: change authentication method`
 - Or include `BREAKING CHANGE:` in footer:
+
   ```
   feat(api): update authentication
 
@@ -69,6 +77,7 @@
   ```
 
 ## Commit Best Practices
+
 - Write clear, descriptive messages
 - Keep commits focused and atomic
 - Reference issues/tickets in commits
@@ -77,6 +86,7 @@
 - Add detailed description if needed
 
 ## Pull Request Process
+
 - Create PR from feature branch to develop
 - Write descriptive PR title and description
 - Link related issues
@@ -86,6 +96,7 @@
 - Squash commits if needed before merge
 
 ### Draft Pull Requests
+
 - Use draft PRs for work-in-progress features
 - Benefits: Early feedback, prevents accidental merges, shows progress
 - Convert to ready when:
@@ -95,12 +106,14 @@
 - Mark as "Ready for Review" when complete
 
 ### Issue Linking
+
 - Use keywords to auto-close issues: `Closes #123`, `Fixes #456`, `Resolves #789`
 - Reference related issues in PR description
 - Link issues in commit messages for traceability
 - Use issue numbers in branch names when applicable: `feature/123-add-goal-tracking`
 
 ## PR Description Template
+
 - **What**: What changes are being made
 - **Why**: Why these changes are needed
 - **How**: How the changes are implemented
@@ -108,6 +121,7 @@
 - **Screenshots**: Visual changes (if applicable)
 
 ## Code Review Guidelines
+
 - Review for correctness and quality
 - Check for security issues
 - Verify tests are included
@@ -116,6 +130,7 @@
 - Approve when ready
 
 ### Review Requirements
+
 - Minimum 1-2 approvals required before merge
 - At least one approval from code owner or senior developer
 - All requested reviewers must approve or explicitly dismiss
@@ -130,12 +145,14 @@
   - [ ] Breaking changes documented
 
 ### Review SLA
+
 - Respond to review requests within 24-48 hours
 - If unavailable, assign alternate reviewer
 - Ping reviewers after 3 days if no response
 - Escalate to team lead if blocking for > 1 week
 
 ## Merge Strategy
+
 - Use squash and merge for feature branches
 - Use merge commit for release branches
 - Keep commit history clean
@@ -143,6 +160,7 @@
 - Tag releases
 
 ### When to Rebase vs Merge
+
 - **Rebase** (preferred for feature branches):
   - Before creating PR to keep history linear
   - Interactive rebase to clean up commits: `git rebase -i HEAD~n`
@@ -158,12 +176,14 @@
   - Use when feature branch has many small commits
 
 ## Conflict Resolution
+
 - Rebase feature branch before PR
 - Resolve conflicts locally
 - Test after resolving conflicts
 - Communicate with team about conflicts
 
 ### Conflict Resolution Steps
+
 1. Update local branch: `git fetch origin`
 2. Rebase on target branch: `git rebase origin/develop`
 3. Resolve conflicts in affected files
@@ -174,12 +194,14 @@
 8. Communicate resolution approach with team
 
 ## Git Hooks
+
 - Pre-commit: Run linting and tests
 - Pre-push: Run full test suite
 - Commit-msg: Validate commit message format
 - Use Husky for git hooks
 
 ### Hook Configuration
+
 - **pre-commit**: Lint staged files, run unit tests
 - **pre-push**: Run full test suite, type checking
 - **commit-msg**: Validate conventional commit format
@@ -187,6 +209,7 @@
 - Skip hooks when needed: `git commit --no-verify` (use sparingly)
 
 ## Hotfix Workflow
+
 - Create hotfix branch from `main`: `git checkout -b hotfix/critical-bug main`
 - Fix the issue and add tests
 - Create PR to `main` (expedited review process)
@@ -196,6 +219,7 @@
 - Document in CHANGELOG.md
 
 ## Release Branch Workflow
+
 - Create release branch from `develop`: `git checkout -b release/v1.1.0 develop`
 - Final testing and bug fixes (only critical fixes)
 - Update version numbers and CHANGELOG.md
@@ -206,6 +230,7 @@
 - Deploy to production
 
 ## Tagging Releases
+
 - Tag releases with semantic versioning
 - Format: `v1.0.0`, `v1.1.0`, `v2.0.0`
 - Include release notes
@@ -216,6 +241,7 @@
 - Create GitHub release with detailed notes
 
 ### Release Checklist
+
 - [ ] All tests passing
 - [ ] Documentation updated
 - [ ] CHANGELOG.md updated
@@ -225,6 +251,7 @@
 - [ ] Deployment plan ready
 
 ## CI/CD Integration
+
 - All PRs trigger CI pipeline automatically
 - Required checks must pass before merge:
   - Unit tests
@@ -239,6 +266,7 @@
 - Re-run failed checks after fixes
 
 ## Branch Lifecycle Management
+
 - Delete merged branches automatically (GitHub setting) or manually
 - Keep feature branches for max 30 days after merge
 - Archive old branches if needed for reference
@@ -249,6 +277,7 @@
 ## Additional Git Operations
 
 ### Cherry-Picking
+
 - Use to apply specific commits to different branches
 - Example: `git cherry-pick <commit-hash>`
 - Useful for hotfixes that need to go to multiple branches
@@ -256,6 +285,7 @@
 - Use `-x` flag to include original commit reference
 
 ### Stashing
+
 - Save uncommitted changes: `git stash`
 - List stashes: `git stash list`
 - Apply stash: `git stash apply` or `git stash pop`
@@ -263,6 +293,7 @@
 - Clean up old stashes: `git stash clear`
 
 ### Git Aliases
+
 - Useful shortcuts for common operations:
   - `git config --global alias.co checkout`
   - `git config --global alias.br branch`
@@ -272,6 +303,7 @@
   - `git config --global alias.last 'log -1 HEAD'`
 
 ### Interactive Rebase
+
 - Clean up commit history: `git rebase -i HEAD~n`
 - Squash commits together
 - Reword commit messages
@@ -282,6 +314,7 @@
 ## Emergency Procedures
 
 ### Critical Bug in Production
+
 1. Create hotfix branch immediately from `main`
 2. Fix the issue with minimal changes
 3. Request expedited review (ping team lead)
@@ -291,6 +324,7 @@
 7. Create follow-up issue for proper fix if needed
 
 ### Rollback Procedure
+
 1. Identify last known good commit/tag
 2. Revert commit: `git revert <commit-hash>`
 3. Or reset to previous tag: `git reset --hard <tag>`
@@ -300,6 +334,7 @@
 7. Document rollback in CHANGELOG.md
 
 ### After-Hours Process
+
 - On-call engineer handles critical issues
 - Create hotfix branch and PR
 - Request emergency review from on-call reviewer
@@ -308,6 +343,7 @@
 - Follow up with proper fix during business hours
 
 ## Code Freeze Periods
+
 - Implement before major releases
 - Purpose: Stabilize codebase, focus on testing
 - Duration: Typically 1-3 days before release
@@ -316,6 +352,7 @@
 - Communicate freeze dates to team in advance
 
 ## Changelog Management
+
 - Maintain CHANGELOG.md following [Keep a Changelog](https://keepachangelog.com/) format
 - Sections: Added, Changed, Deprecated, Removed, Fixed, Security
 - Update changelog in same PR as changes
@@ -324,24 +361,30 @@
 - Generate changelog from commit messages when possible
 
 ### Changelog Format
+
 ```markdown
 ## [1.1.0] - 2024-01-15
 
 ### Added
+
 - Progress tracking for quantitative goals
 - Milestone goal type support
 
 ### Changed
+
 - Improved goal creation UI
 
 ### Fixed
+
 - Progress calculation bug for recurring goals
 
 ### Security
+
 - Updated dependencies to fix vulnerabilities
 ```
 
 ## Best Practices
+
 - Commit often with meaningful messages
 - Keep branches up to date
 - Review code before committing
@@ -356,4 +399,3 @@
 - Keep commits focused and atomic
 - Use feature flags for risky changes
 - Monitor deployments after merge
-

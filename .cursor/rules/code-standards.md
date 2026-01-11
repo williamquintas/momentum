@@ -1,6 +1,7 @@
 # Code Standards
 
 ## TypeScript
+
 - Use strict TypeScript configuration
 - Prefer interfaces over types for object shapes
 - Use enums for fixed sets of values (goal types, statuses, priorities)
@@ -16,6 +17,7 @@
 - Use `satisfies` operator when you need type checking without widening types
 
 ## React Patterns
+
 - Use functional components with hooks
 - Prefer named exports for components
 - Use React.memo for expensive components (only when profiling shows it's needed)
@@ -32,6 +34,7 @@
 - Keep components pure: avoid side effects in render
 
 ## Component Structure
+
 - One component per file
 - File names: PascalCase (e.g., `GoalCard.tsx`)
 - Component names match file names
@@ -43,6 +46,7 @@
 - Keep component files focused: co-locate related types, utilities, and hooks when they're only used by that component
 
 ## Ant Design Usage
+
 - Import components directly: `import { Card, Button } from 'antd'`
 - Use Ant Design's built-in types (e.g., `FormInstance`, `TableColumnsType`)
 - Follow Ant Design's design patterns and spacing
@@ -51,6 +55,7 @@
 - Use appropriate Ant Design components as specified in the plan
 
 ## Naming Conventions
+
 - Components: PascalCase (`GoalCard`)
 - Functions: camelCase (`calculateProgress`)
 - Constants: UPPER_SNAKE_CASE (`MAX_GOAL_COUNT`)
@@ -59,6 +64,7 @@
 - Boolean variables: Use `is`, `has`, `should` prefix (`isActive`, `hasProgress`)
 
 ## Comments & Documentation
+
 - Only keep necessary comments
 - Use JSDoc for function documentation
 - Explain complex logic
@@ -80,6 +86,7 @@
   ```
 
 ## Code Organization
+
 - Keep functions small and focused
 - Extract complex logic into utilities
 - Avoid deep nesting
@@ -91,6 +98,7 @@
 - Separate concerns: business logic in hooks/utils, presentation in components
 
 ## Refactoring
+
 - Remove dead code
 - Extract repeated code
 - Simplify complex expressions
@@ -98,12 +106,14 @@
 - Update types as code evolves
 
 ## Error Handling
+
 - For comprehensive error handling guidelines, see [Error Handling](./error-handling.md)
 - Always handle async errors with try/catch or .catch()
 - Use error boundaries for component tree error isolation
 - Provide meaningful error messages for debugging
 
 ## Async/Await Patterns
+
 - Prefer async/await over Promise chains for readability
 - Always handle errors in async functions
 - Use Promise.all() for parallel operations, Promise.allSettled() when some failures are acceptable
@@ -111,6 +121,7 @@
 - Consider loading states and error states in async operations
 
 ## Null Safety
+
 - Use optional chaining (`?.`) for safe property access
 - Use nullish coalescing (`??`) for default values (prefer over `||` for null/undefined checks)
 - Explicitly handle null/undefined cases rather than relying on truthy/falsy checks
@@ -118,6 +129,7 @@
 - Consider using non-null assertion (`!`) only when you're certain a value exists (prefer type guards)
 
 ## Constants & Configuration
+
 - Define constants at the top of files or in dedicated constants files
 - Use `const` assertions for immutable constant objects
 - Group related constants together
@@ -125,6 +137,7 @@
 - Use environment variables for configuration (see [Environment Configuration](./environment-config.md))
 
 ## Performance Optimization
+
 - Profile before optimizing (use React DevTools Profiler)
 - Memoize expensive computations with `useMemo`
 - Memoize callback functions with `useCallback` when passed to memoized children
@@ -134,6 +147,7 @@
 - Debounce/throttle expensive operations (user input, API calls)
 
 ## Testing Standards
+
 - Write tests for utilities, hooks, and complex business logic
 - Test user interactions, not implementation details
 - Use descriptive test names: `describe('ComponentName', () => { it('should do X when Y', ...) })`
@@ -141,4 +155,3 @@
 - Mock external dependencies (APIs, services)
 - Test error cases and edge cases
 - For comprehensive testing guidelines, see [Testing Considerations](./testing.md)
-
