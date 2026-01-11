@@ -25,7 +25,6 @@ import {
   Col,
   Typography,
   message,
-  Divider,
 } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { GoalList } from '@/features/goals/components/GoalList';
@@ -70,7 +69,7 @@ export const GoalsPage: React.FC = () => {
   );
 
   // Fetch goals with filters
-  const { data: goals = [], isLoading, error } = useGoals(filters);
+  const { data: goals = [], isLoading } = useGoals(filters);
 
   // Create goal mutation
   const createGoal = useCreateGoal();
@@ -83,10 +82,13 @@ export const GoalsPage: React.FC = () => {
   // Handle create goal
   const handleCreateGoal = async (values: CreateGoalInput) => {
     try {
-      await createGoal.mutateAsync(values);
+      const createdGoal = await createGoal.mutateAsync(values);
       message.success('Goal created successfully!');
       setIsCreateModalOpen(false);
+      // Navigate to goal detail page after successful creation
+      navigate(`/goals/${createdGoal.id}`);
     } catch (error) {
+      // Error handling is done by the mutation hook, but we show a user-friendly message
       message.error('Failed to create goal. Please try again.');
       console.error('Error creating goal:', error);
     }
