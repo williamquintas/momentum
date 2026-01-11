@@ -12,9 +12,10 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import type { Goal } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
-import type { Goal } from '@/features/goals/types';
 
 /**
  * Hook to delete a goal
@@ -69,7 +70,7 @@ export const useDeleteGoal = () => {
       queryClient.removeQueries({ queryKey: queryKeys.goals.detail(id) });
 
       // Invalidate list queries to ensure consistency
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.goals.lists() });
     },
   });
 };

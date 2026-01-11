@@ -12,9 +12,10 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import type { UpdateGoalInput, Goal } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
-import type { UpdateGoalInput, Goal } from '@/features/goals/types';
 
 /**
  * Hook to update an existing goal
@@ -57,7 +58,7 @@ export const useUpdateGoal = () => {
           ...previousGoal,
           ...updates,
           updatedAt: new Date(),
-        });
+        } as Goal);
       }
 
       // Optimistically update the list cache
@@ -68,7 +69,7 @@ export const useUpdateGoal = () => {
               ...goal,
               ...updates,
               updatedAt: new Date(),
-            };
+            } as Goal;
           }
           return goal;
         });
@@ -77,7 +78,7 @@ export const useUpdateGoal = () => {
       // Return context for rollback
       return { previousGoal, previousGoals };
     },
-    onError: (error, variables, context) => {
+    onError: (_error, variables, context) => {
       // Rollback optimistic updates on error
       if (context?.previousGoal) {
         queryClient.setQueryData(queryKeys.goals.detail(variables.id), context.previousGoal);
@@ -89,7 +90,7 @@ export const useUpdateGoal = () => {
     onSuccess: (data, variables) => {
       // Update both detail and list caches with real data
       queryClient.setQueryData(queryKeys.goals.detail(variables.id), data);
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.goals.lists() });
     },
   });
 };

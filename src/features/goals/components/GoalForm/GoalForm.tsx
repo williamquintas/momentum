@@ -6,13 +6,14 @@
  */
 
 import React, { useEffect } from 'react';
+
 import { Form, Input, Select, DatePicker, InputNumber, Switch, Button, Space, Row, Col } from 'antd';
 import type { FormInstance } from 'antd';
 import dayjs from 'dayjs';
+
 import type { CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/goals/types';
-import { CreateGoalInputSchema } from '@/features/goals/utils/validation';
-import { applyZodErrorsToForm } from '@/features/goals/utils/validation';
+import { CreateGoalInputSchema , applyZodErrorsToForm } from '@/features/goals/utils/validation';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -60,12 +61,12 @@ export const GoalForm: React.FC<GoalFormProps> = ({
   // Set default values
   useEffect(() => {
     if (initialValues) {
-      const { progressHistory, ...restValues } = initialValues;
+      const { progressHistory: _progressHistory, ...restValues } = initialValues;
       form.setFieldsValue({
         ...restValues,
         startDate: initialValues.startDate ? dayjs(initialValues.startDate) : undefined,
         deadline: initialValues.deadline ? dayjs(initialValues.deadline) : undefined,
-      } as any);
+      } as Parameters<typeof form.setFieldsValue>[0]);
     } else {
       // Set defaults for new goal
       form.setFieldsValue({
@@ -85,40 +86,56 @@ export const GoalForm: React.FC<GoalFormProps> = ({
 
       // Transform form values to CreateGoalInput
       // Note: Form values may include dayjs objects for dates
-      const formData = {
-        ...values,
-        startDate: values.startDate && typeof values.startDate === 'object' && 'toDate' in values.startDate
-          ? (values.startDate as any).toDate()
-          : values.startDate instanceof Date
-          ? values.startDate
-          : undefined,
-        deadline: values.deadline && typeof values.deadline === 'object' && 'toDate' in values.deadline
-          ? (values.deadline as any).toDate()
-          : values.deadline instanceof Date
-          ? values.deadline
-          : undefined,
+      // Remove fields that shouldn't be in CreateGoalInput (progress, id, createdAt, updatedAt, etc.)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const formValues = values as Record<string, unknown>;
+      const { progress: _progress, id: _id, createdAt: _createdAt, updatedAt: _updatedAt, progressHistory: _progressHistory, notes: _notes, attachments: _attachments, ...valuesWithoutExcluded } = formValues;
+
+      // Helper to convert dayjs to Date
+      const toDate = (value: unknown): Date | undefined => {
+        if (!value) return undefined;
+        if (value instanceof Date) return value;
+        if (typeof value === 'object' && value !== null && 'toDate' in value) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          return (value as { toDate: () => Date }).toDate();
+        }
+        return undefined;
+      };
+
+      const formData: CreateGoalInput = {
+        ...valuesWithoutExcluded,
+        startDate: toDate(formValues.startDate),
+        deadline: toDate(formValues.deadline),
         // Type-specific defaults
-        ...(values.type === GoalType.QUANTITATIVE && {
-          currentValue: (values as any).currentValue ?? (values as any).startValue ?? 0,
-          allowDecimals: (values as any).allowDecimals ?? false,
+        ...(formValues.type === GoalType.QUANTITATIVE && {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          currentValue: (formValues.currentValue as number | undefined) ?? (formValues.startValue as number | undefined) ?? 0,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          allowDecimals: (formValues.allowDecimals as boolean | undefined) ?? false,
         }),
-        ...(values.type === GoalType.BINARY && {
-          currentCount: (values as any).currentCount ?? 0,
-          allowPartialCompletion: (values as any).allowPartialCompletion ?? true,
+        ...(formValues.type === GoalType.BINARY && {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          currentCount: (formValues.currentCount as number | undefined) ?? 0,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          allowPartialCompletion: (formValues.allowPartialCompletion as boolean | undefined) ?? true,
         }),
-        ...(values.type === GoalType.QUALITATIVE && {
-          qualitativeStatus: (values as any).qualitativeStatus ?? QualitativeStatus.NOT_STARTED,
-          selfAssessments: (values as any).selfAssessments ?? [],
+        ...(formValues.type === GoalType.QUALITATIVE && {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          qualitativeStatus: (formValues.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+          selfAssessments: (formValues.selfAssessments as unknown[] | undefined) ?? [],
         }),
       } as CreateGoalInput;
 
-      // Validate with Zod
+      // Validate with Zod (this will ensure progress is not included)
       const validated = CreateGoalInputSchema.parse(formData);
-      onSubmit(validated);
+      // Type assertion needed because Zod validation ensures correct type
+      onSubmit(validated as CreateGoalInput);
     } catch (error) {
       // Handle Zod validation errors
       if (error && typeof error === 'object' && 'errors' in error) {
-        applyZodErrorsToForm(form, error as any);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        applyZodErrorsToForm(form, error);
       }
       // Ant Design form validation errors are already handled
     }
@@ -128,12 +145,13 @@ export const GoalForm: React.FC<GoalFormProps> = ({
     <Form
       form={form}
       layout="vertical"
-      onFinish={handleSubmit}
+      onFinish={() => {
+        void handleSubmit();
+      }}
       initialValues={{
         status: GoalStatus.ACTIVE,
         priority: Priority.MEDIUM,
         tags: [],
-        progress: 0,
       }}
     >
       {/* Common Fields */}

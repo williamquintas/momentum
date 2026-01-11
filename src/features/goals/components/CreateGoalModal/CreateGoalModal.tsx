@@ -6,9 +6,12 @@
  */
 
 import React from 'react';
+
 import { Modal } from 'antd';
-import { GoalForm } from '../GoalForm';
+
 import type { CreateGoalInput } from '@/features/goals/types';
+
+import { GoalForm } from '../GoalForm';
 
 export interface CreateGoalModalProps {
   /**
@@ -41,8 +44,8 @@ export const CreateGoalModal: React.FC<CreateGoalModalProps> = ({
   onSubmit,
   loading = false,
 }) => {
-  const handleSubmit = async (values: CreateGoalInput) => {
-    await onSubmit(values);
+  const handleSubmit = (values: CreateGoalInput) => {
+    void onSubmit(values);
   };
 
   return (

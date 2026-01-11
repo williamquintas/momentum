@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect } from 'react';
+
 import { getStorageItem, setStorageItem } from '@/services/storage/localStorageService';
 
 const VIEW_MODE_STORAGE_KEY = 'goals_view_mode';

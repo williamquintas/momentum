@@ -7,6 +7,7 @@
 
 import type { Goal, BinaryGoal } from '@/features/goals/types';
 import { isBinaryGoal } from '@/features/goals/types';
+
 import { calculateProgress } from './calculateProgress';
 
 /**

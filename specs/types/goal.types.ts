@@ -1,6 +1,6 @@
 /**
  * Goal Tracking System - TypeScript Type Definitions
- * 
+ *
  * This file contains all TypeScript type definitions for the Goals Tracking Management System.
  * All types are designed to be type-safe and support multiple goal types with comprehensive tracking.
  */
@@ -173,27 +173,27 @@ export interface BaseGoal {
   priority: Priority;
   category: string;
   tags: string[];
-  
+
   // Time-based fields
   startDate?: Date;
   deadline?: Date;
   completedDate?: Date;
-  
+
   // Progress tracking
   progress: number; // 0-100 percentage
   progressHistory: ProgressEntry[];
-  
+
   // Metadata
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
   assignee?: string;
-  
+
   // Additional
   notes: Note[];
   attachments: Attachment[];
   relatedGoals: string[];
-  
+
   // UI/Display
   archived?: boolean;
   favorite?: boolean;
@@ -410,30 +410,6 @@ export interface ProgressCalculation {
 }
 
 // ============================================================================
-// Export all types
+// All types are already exported above
 // ============================================================================
-
-export type {
-  Recurrence,
-  Milestone,
-  ProgressEntry,
-  Note,
-  Attachment,
-  SelfAssessment,
-  HabitEntry,
-  Streak,
-  CompletionStats,
-  BaseGoal,
-  QuantitativeGoal,
-  QualitativeGoal,
-  BinaryGoal,
-  MilestoneGoal,
-  RecurringGoal,
-  HabitGoal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-  GoalSortOptions,
-  ProgressCalculation,
-};
 

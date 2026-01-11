@@ -13,10 +13,12 @@
  */
 
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Space, Spin } from 'antd';
+
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
+import { Card, Typography, Button, Space, Spin } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
 
@@ -35,9 +37,12 @@ export const GoalDetailPage: React.FC = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: queryKeys.goals.detail(id!),
+    queryKey: queryKeys.goals.detail(id ?? ''),
     queryFn: async () => {
-      const goalData = await goalService.getById(id!);
+      if (!id) {
+        throw new Error('Goal ID is required');
+      }
+      const goalData = await goalService.getById(id);
       if (!goalData) {
         throw new Error('Goal not found');
       }

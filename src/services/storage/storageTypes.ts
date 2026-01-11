@@ -42,7 +42,7 @@ export type GoalsData = Record<string, SerializedGoal>;
 /**
  * Serialized goal - goal with dates converted to ISO strings for Local Storage
  */
-export type SerializedGoal = Omit<Goal, 'startDate' | 'deadline' | 'completedDate' | 'createdAt' | 'updatedAt'> & {
+export type SerializedGoal = Omit<Goal, 'startDate' | 'deadline' | 'completedDate' | 'createdAt' | 'updatedAt' | 'progressHistory'> & {
   startDate?: string; // ISO date string
   deadline?: string; // ISO date string
   completedDate?: string; // ISO date string

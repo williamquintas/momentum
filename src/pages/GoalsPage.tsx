@@ -14,7 +14,8 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   Card,
   Space,
@@ -26,15 +27,16 @@ import {
   Typography,
   message,
 } from 'antd';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+
+import { CreateGoalModal } from '@/features/goals/components/CreateGoalModal';
 import { GoalList } from '@/features/goals/components/GoalList';
 import { ViewModeToggle } from '@/features/goals/components/ViewModeToggle';
+import { useCreateGoal } from '@/features/goals/hooks/useCreateGoal';
 import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useViewMode } from '@/features/goals/hooks/useViewMode';
-import { useCreateGoal } from '@/features/goals/hooks/useCreateGoal';
 import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
-import { CreateGoalModal } from '@/features/goals/components/CreateGoalModal';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -59,8 +61,11 @@ export const GoalsPage: React.FC = () => {
   // Build filters object
   const filters: GoalFilters = useMemo(
     () => ({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       ...(statusFilter && statusFilter.length > 0 && { status: statusFilter }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       ...(typeFilter && typeFilter.length > 0 && { type: typeFilter }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       ...(priorityFilter && priorityFilter.length > 0 && { priority: priorityFilter }),
       ...(categoryFilter && categoryFilter.length > 0 && { category: categoryFilter }),
       ...(searchQuery.trim() && { search: searchQuery.trim() }),
@@ -83,13 +88,13 @@ export const GoalsPage: React.FC = () => {
   const handleCreateGoal = async (values: CreateGoalInput) => {
     try {
       const createdGoal = await createGoal.mutateAsync(values);
-      message.success('Goal created successfully!');
+      void message.success('Goal created successfully!');
       setIsCreateModalOpen(false);
       // Navigate to goal detail page after successful creation
       navigate(`/goals/${createdGoal.id}`);
     } catch (error) {
       // Error handling is done by the mutation hook, but we show a user-friendly message
-      message.error('Failed to create goal. Please try again.');
+      void message.error('Failed to create goal. Please try again.');
       console.error('Error creating goal:', error);
     }
   };
@@ -106,10 +111,10 @@ export const GoalsPage: React.FC = () => {
   // Check if any filters are active
   const hasActiveFilters = useMemo(
     () =>
-      (statusFilter && statusFilter.length > 0) ||
-      (typeFilter && typeFilter.length > 0) ||
-      (priorityFilter && priorityFilter.length > 0) ||
-      (categoryFilter && categoryFilter.length > 0) ||
+      (statusFilter !== undefined && statusFilter.length > 0) ||
+      (typeFilter !== undefined && typeFilter.length > 0) ||
+      (priorityFilter !== undefined && priorityFilter.length > 0) ||
+      (categoryFilter !== undefined && categoryFilter.length > 0) ||
       searchQuery.trim().length > 0,
     [statusFilter, typeFilter, priorityFilter, categoryFilter, searchQuery]
   );

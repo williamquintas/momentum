@@ -11,9 +11,10 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+
+import type { GoalFilters } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
-import type { GoalFilters } from '@/features/goals/types';
 
 /**
  * Hook to fetch goals with optional filters

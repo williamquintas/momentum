@@ -5,6 +5,7 @@
  * for efficient querying by type, status, category, and tags.
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '../../../specs/types/goal.types';
 
 /**
@@ -30,6 +31,8 @@ import {
   StorageError,
   StorageErrorType,
   type SerializedGoal,
+  type SerializedMilestone,
+  type SerializedHabitEntry,
   type GoalsIndex,
   type GoalsData,
   type GoalsByType,
@@ -46,54 +49,87 @@ const serializeGoal = (goal: Goal): SerializedGoal => {
     return date ? date.toISOString() : undefined;
   };
 
-  const serialized: SerializedGoal = {
-    ...goal,
+  const { progressHistory, ...goalWithoutProgressHistory } = goal;
+  const baseSerialized: Omit<SerializedGoal, 'milestones' | 'occurrences' | 'entries'> = {
+    ...goalWithoutProgressHistory,
     startDate: serializeDate(goal.startDate),
     deadline: serializeDate(goal.deadline),
     completedDate: serializeDate(goal.completedDate),
     createdAt: goal.createdAt.toISOString(),
     updatedAt: goal.updatedAt.toISOString(),
-    progressHistory: goal.progressHistory.map((entry: { date: Date; [key: string]: unknown }) => ({
-      ...entry,
+    progressHistory: progressHistory.map((entry) => ({
+      id: entry.id,
       date: entry.date.toISOString(),
+      value: entry.value,
+      note: entry.note,
+      metadata: entry.metadata,
     })),
   };
 
   // Serialize milestones if present
   if ('milestones' in goal && goal.milestones) {
-    serialized.milestones = goal.milestones.map((milestone: { dueDate?: Date; completedDate?: Date; [key: string]: unknown }) => ({
-      ...milestone,
-      dueDate: serializeDate(milestone.dueDate),
-      completedDate: serializeDate(milestone.completedDate),
-    }));
+    const serialized: SerializedGoal = {
+      ...baseSerialized,
+      milestones: goal.milestones.map((milestone) => ({
+        id: milestone.id,
+        title: milestone.title,
+        description: milestone.description,
+        status: milestone.status,
+        dueDate: serializeDate(milestone.dueDate),
+        completedDate: serializeDate(milestone.completedDate),
+        order: milestone.order,
+        dependencies: milestone.dependencies,
+        metadata: milestone.metadata,
+      })) as SerializedMilestone[],
+    };
+    return serialized;
   }
 
-  // Serialize occurrences/entries for recurring/habit goals
+  // Serialize occurrences for recurring goals
   if ('occurrences' in goal && goal.occurrences) {
-    serialized.occurrences = goal.occurrences.map((entry: { date: Date; [key: string]: unknown }) => ({
-      ...entry,
-      date: entry.date.toISOString(),
-    }));
+    const serialized: SerializedGoal = {
+      ...baseSerialized,
+      occurrences: goal.occurrences.map((entry) => ({
+        id: entry.id,
+        date: entry.date.toISOString(),
+        completed: entry.completed,
+        value: entry.value,
+        note: entry.note,
+        metadata: entry.metadata,
+      })) as SerializedHabitEntry[],
+    };
+    return serialized;
   }
 
+  // Serialize entries for habit goals
   if ('entries' in goal && goal.entries) {
-    serialized.entries = goal.entries.map((entry: { date: Date; [key: string]: unknown }) => ({
-      ...entry,
-      date: entry.date.toISOString(),
-    }));
+    const serialized: SerializedGoal = {
+      ...baseSerialized,
+      entries: goal.entries.map((entry) => ({
+        id: entry.id,
+        date: entry.date.toISOString(),
+        completed: entry.completed,
+        value: entry.value,
+        note: entry.note,
+        metadata: entry.metadata,
+      })) as SerializedHabitEntry[],
+    };
+    return serialized;
   }
 
-  return serialized;
+  return baseSerialized as SerializedGoal;
 };
 
 /**
  * Deserialize a goal from storage (convert ISO strings to dates)
  */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
 const deserializeGoal = (serialized: SerializedGoal): Goal => {
   const deserializeDate = (dateStr?: string): Date | undefined => {
     return dateStr ? new Date(dateStr) : undefined;
   };
 
+  /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
   const goal: Goal = {
     ...serialized,
     startDate: deserializeDate(serialized.startDate),
@@ -101,33 +137,54 @@ const deserializeGoal = (serialized: SerializedGoal): Goal => {
     completedDate: deserializeDate(serialized.completedDate),
     createdAt: new Date(serialized.createdAt),
     updatedAt: new Date(serialized.updatedAt),
-    progressHistory: serialized.progressHistory.map((entry: { date: string; [key: string]: unknown }) => ({
-      ...entry,
+    progressHistory: serialized.progressHistory.map((entry) => ({
+      id: entry.id,
       date: new Date(entry.date),
+      value: entry.value,
+      note: entry.note,
+      metadata: entry.metadata,
     })),
   } as Goal;
 
   // Deserialize milestones if present
-  if (serialized.milestones) {
-    (goal as any).milestones = serialized.milestones.map((milestone: { dueDate?: string; completedDate?: string; [key: string]: unknown }) => ({
-      ...milestone,
+  if (serialized.milestones && 'milestones' in goal) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    (goal as any).milestones = serialized.milestones.map((milestone) => ({
+      id: milestone.id,
+      title: milestone.title,
+      description: milestone.description,
+      status: milestone.status,
       dueDate: deserializeDate(milestone.dueDate),
       completedDate: deserializeDate(milestone.completedDate),
+      order: milestone.order,
+      dependencies: milestone.dependencies,
+      metadata: milestone.metadata,
     }));
   }
+  /* eslint-enable @typescript-eslint/no-unsafe-enum-comparison */
 
   // Deserialize occurrences/entries
-  if (serialized.occurrences) {
-    (goal as any).occurrences = serialized.occurrences.map((entry: { date: string; [key: string]: unknown }) => ({
-      ...entry,
+  if (serialized.occurrences && 'occurrences' in goal) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    (goal as any).occurrences = serialized.occurrences.map((entry) => ({
+      id: entry.id,
       date: new Date(entry.date),
+      completed: entry.completed,
+      value: entry.value,
+      note: entry.note,
+      metadata: entry.metadata,
     }));
   }
 
-  if (serialized.entries) {
-    (goal as any).entries = serialized.entries.map((entry: { date: string; [key: string]: unknown }) => ({
-      ...entry,
+  if (serialized.entries && 'entries' in goal) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+    (goal as any).entries = serialized.entries.map((entry) => ({
+      id: entry.id,
       date: new Date(entry.date),
+      completed: entry.completed,
+      value: entry.value,
+      note: entry.note,
+      metadata: entry.metadata,
     }));
   }
 
@@ -149,8 +206,9 @@ const addToIndexes = (
   if (!goalsByType[goal.type]) {
     goalsByType[goal.type] = [];
   }
-  if (!goalsByType[goal.type].includes(goalId)) {
-    goalsByType[goal.type].push(goalId);
+  const typeArray = goalsByType[goal.type];
+  if (typeArray && !typeArray.includes(goalId)) {
+    typeArray.push(goalId);
   }
 
   // Add to status index
@@ -160,6 +218,8 @@ const addToIndexes = (
   const statusArray = goalsByStatus[goal.status];
   if (statusArray && !statusArray.includes(goalId)) {
     statusArray.push(goalId);
+  } else if (!statusArray) {
+    goalsByStatus[goal.status] = [goalId];
   }
 
   // Add to category index
@@ -169,6 +229,8 @@ const addToIndexes = (
   const categoryArray = goalsByCategory[goal.category];
   if (categoryArray && !categoryArray.includes(goalId)) {
     categoryArray.push(goalId);
+  } else if (!categoryArray) {
+    goalsByCategory[goal.category] = [goalId];
   }
 
   // Add to tag indexes
@@ -179,6 +241,8 @@ const addToIndexes = (
     const tagArray = goalsByTag[tag];
     if (tagArray && !tagArray.includes(goalId)) {
       tagArray.push(goalId);
+    } else if (!tagArray) {
+      goalsByTag[tag] = [goalId];
     }
   });
 };
@@ -197,34 +261,38 @@ const removeFromIndexes = (
   if (!oldGoal) return;
 
   // Remove from type index
-  if (goalsByType[oldGoal.type]) {
-    goalsByType[oldGoal.type] = goalsByType[oldGoal.type]!.filter((id: string) => id !== goalId);
-    if (goalsByType[oldGoal.type]!.length === 0) {
+  const typeArray = goalsByType[oldGoal.type];
+  if (typeArray) {
+    goalsByType[oldGoal.type] = typeArray.filter((id: string) => id !== goalId);
+    if (goalsByType[oldGoal.type]?.length === 0) {
       delete goalsByType[oldGoal.type];
     }
   }
 
   // Remove from status index
-  if (goalsByStatus[oldGoal.status]) {
-    goalsByStatus[oldGoal.status] = goalsByStatus[oldGoal.status]!.filter((id: string) => id !== goalId);
-    if (goalsByStatus[oldGoal.status]!.length === 0) {
+  const statusArray = goalsByStatus[oldGoal.status];
+  if (statusArray) {
+    goalsByStatus[oldGoal.status] = statusArray.filter((id: string) => id !== goalId);
+    if (goalsByStatus[oldGoal.status]?.length === 0) {
       delete goalsByStatus[oldGoal.status];
     }
   }
 
   // Remove from category index
-  if (goalsByCategory[oldGoal.category]) {
-    goalsByCategory[oldGoal.category] = goalsByCategory[oldGoal.category]!.filter((id: string) => id !== goalId);
-    if (goalsByCategory[oldGoal.category]!.length === 0) {
+  const categoryArray = goalsByCategory[oldGoal.category];
+  if (categoryArray) {
+    goalsByCategory[oldGoal.category] = categoryArray.filter((id: string) => id !== goalId);
+    if (goalsByCategory[oldGoal.category]?.length === 0) {
       delete goalsByCategory[oldGoal.category];
     }
   }
 
   // Remove from tag indexes
   oldGoal.tags.forEach((tag: string) => {
-    if (goalsByTag[tag]) {
-      goalsByTag[tag] = goalsByTag[tag]!.filter((id: string) => id !== goalId);
-      if (goalsByTag[tag]!.length === 0) {
+    const tagArray = goalsByTag[tag];
+    if (tagArray) {
+      goalsByTag[tag] = tagArray.filter((id: string) => id !== goalId);
+      if (goalsByTag[tag]?.length === 0) {
         delete goalsByTag[tag];
       }
     }

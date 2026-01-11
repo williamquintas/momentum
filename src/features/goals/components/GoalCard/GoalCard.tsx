@@ -6,13 +6,15 @@
  */
 
 import React from 'react';
+
 import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
+
 import type { Goal } from '@/features/goals/types';
 import { GoalType } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
+import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
 import { formatDate, isOverdue, isDueSoon, getDeadlineStatusText } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
-import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
 import './GoalCard.css';
 
 const { Text, Title } = Typography;

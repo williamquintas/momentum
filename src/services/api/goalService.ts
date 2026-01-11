@@ -11,6 +11,13 @@
  * - All goal operations go through this service
  */
 
+import type {
+  Goal,
+  CreateGoalInput,
+  UpdateGoalInput,
+  GoalFilters,
+} from '@specs/types/goal.types';
+
 import {
   createGoal,
   getGoal,
@@ -19,12 +26,6 @@ import {
   deleteGoal,
   queryGoals,
 } from '../storage/goalStorageService';
-import type {
-  Goal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-} from '@specs/types/goal.types';
 
 /**
  * Goal Service API
@@ -39,11 +40,11 @@ export const goalService = {
    * @param filters - Optional filters to apply
    * @returns Promise resolving to array of goals
    */
-  getAll: async (filters?: GoalFilters): Promise<Goal[]> => {
+  getAll: (filters?: GoalFilters): Promise<Goal[]> => {
     if (filters) {
-      return queryGoals(filters);
+      return Promise.resolve(queryGoals(filters));
     }
-    return getAllGoals();
+    return Promise.resolve(getAllGoals());
   },
 
   /**
@@ -51,8 +52,8 @@ export const goalService = {
    * @param id - Goal ID
    * @returns Promise resolving to goal or null if not found
    */
-  getById: async (id: string): Promise<Goal | null> => {
-    return getGoal(id);
+  getById: (id: string): Promise<Goal | null> => {
+    return Promise.resolve(getGoal(id));
   },
 
   /**
@@ -60,8 +61,8 @@ export const goalService = {
    * @param input - Goal creation input
    * @returns Promise resolving to created goal
    */
-  create: async (input: CreateGoalInput): Promise<Goal> => {
-    return createGoal(input);
+  create: (input: CreateGoalInput): Promise<Goal> => {
+    return Promise.resolve(createGoal(input));
   },
 
   /**
@@ -70,8 +71,8 @@ export const goalService = {
    * @param updates - Partial goal updates
    * @returns Promise resolving to updated goal
    */
-  update: async (id: string, updates: UpdateGoalInput): Promise<Goal> => {
-    return updateGoal(id, updates);
+  update: (id: string, updates: UpdateGoalInput): Promise<Goal> => {
+    return Promise.resolve(updateGoal(id, updates));
   },
 
   /**
@@ -79,8 +80,9 @@ export const goalService = {
    * @param id - Goal ID
    * @returns Promise resolving when deletion is complete
    */
-  delete: async (id: string): Promise<void> => {
+  delete: (id: string): Promise<void> => {
     deleteGoal(id);
+    return Promise.resolve();
   },
 
   /**
@@ -88,8 +90,8 @@ export const goalService = {
    * @param filters - Filters to apply
    * @returns Promise resolving to filtered goals
    */
-  query: async (filters: GoalFilters): Promise<Goal[]> => {
-    return queryGoals(filters);
+  query: (filters: GoalFilters): Promise<Goal[]> => {
+    return Promise.resolve(queryGoals(filters));
   },
 };
 

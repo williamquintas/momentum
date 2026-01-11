@@ -15,8 +15,8 @@
  *   import { GoalSchema, CreateGoalInputSchema } from '@/features/goals/utils/validation';
  */
 
-import { z } from 'zod';
 import type { FormInstance } from 'antd';
+import { z } from 'zod';
 
 // Import schemas and types for use in this file
 import {
@@ -342,7 +342,7 @@ export function applyZodErrorsToForm(form: FormInstance, error: z.ZodError): voi
 export function zodValidator<T extends z.ZodTypeAny>(
   schema: T
 ): (_: unknown, value: unknown) => Promise<void> {
-  return async (_, value) => {
+  return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
       const firstError = result.error.errors[0];
@@ -351,6 +351,7 @@ export function zodValidator<T extends z.ZodTypeAny>(
       }
       throw new Error('Validation failed');
     }
+    return Promise.resolve();
   };
 }
 
@@ -364,7 +365,7 @@ export function zodFieldValidator<T extends z.ZodTypeAny>(
   schema: T,
   fieldName: string
 ): (_: unknown, value: unknown) => Promise<void> {
-  return async (_, value) => {
+  return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
       const fieldError = result.error.errors.find((e) => e.path.includes(fieldName));
@@ -378,6 +379,7 @@ export function zodFieldValidator<T extends z.ZodTypeAny>(
       }
       throw new Error('Validation failed');
     }
+    return Promise.resolve();
   };
 }
 

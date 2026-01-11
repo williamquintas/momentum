@@ -6,7 +6,9 @@
  */
 
 import React from 'react';
+
 import { Button, Space } from 'antd';
+
 import type { ViewMode } from '@/features/goals/hooks/useViewMode';
 
 export interface ViewModeToggleProps {

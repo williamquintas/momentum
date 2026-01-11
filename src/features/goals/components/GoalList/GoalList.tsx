@@ -6,14 +6,17 @@
  */
 
 import React from 'react';
+
 import { List, Empty, Spin, Table, Tag, Avatar, Progress, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+
 import type { Goal } from '@/features/goals/types';
 import { GoalStatus, Priority } from '@/features/goals/types';
-import { GoalCard } from '../GoalCard';
+import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
 import { formatDate, isOverdue, isDueSoon, getDeadlineStatusText } from '@/features/goals/utils/dateUtils';
 import { formatProgress, getProgressValue } from '@/features/goals/utils/progressUtils';
-import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
+
+import { GoalCard } from '../GoalCard';
 
 const { Text } = Typography;
 
@@ -84,6 +87,14 @@ export const GoalList: React.FC<GoalListProps> = ({
           <span
             style={{ cursor: onGoalClick ? 'pointer' : 'default' }}
             onClick={() => onGoalClick?.(goal)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onGoalClick?.(goal);
+              }
+            }}
+            role={onGoalClick ? 'button' : undefined}
+            tabIndex={onGoalClick ? 0 : undefined}
           >
             {text}
           </span>
@@ -171,8 +182,8 @@ export const GoalList: React.FC<GoalListProps> = ({
         dataIndex: 'assignee',
         key: 'assignee',
         filters: goals
-          .filter((g) => g.assignee)
-          .map((g) => g.assignee!)
+          .map((g) => g.assignee)
+          .filter((assignee): assignee is string => assignee !== undefined)
           .filter((value, index, self) => self.indexOf(value) === index)
           .map((assignee) => ({
             text: assignee,

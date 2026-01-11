@@ -12,9 +12,10 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import type { CreateGoalInput, Goal } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
-import type { CreateGoalInput, Goal } from '@/features/goals/types';
 
 /**
  * Hook to create a new goal
@@ -50,19 +51,21 @@ export const useCreateGoal = () => {
       // Note: The goal will have a temporary structure until the real one is returned
       queryClient.setQueryData<Goal[]>(queryKeys.goals.lists(), (old = []) => {
         // Create a temporary goal object for optimistic update
-        const optimisticGoal: Goal = {
+        // The service will create the proper goal structure, so we just add a placeholder
+        // The real goal will replace this when the mutation succeeds
+        const optimisticGoal = {
           ...newGoal,
           id: `temp-${Date.now()}`, // Temporary ID
           createdAt: new Date(),
           updatedAt: new Date(),
           progress: 0,
-          progressHistory: [],
+          progressHistory: newGoal.progressHistory || [],
           notes: [],
           attachments: [],
-          relatedGoals: [],
-          archived: false,
-          favorite: false,
-        } as Goal;
+          relatedGoals: newGoal.relatedGoals || [],
+          archived: newGoal.archived ?? false,
+          favorite: newGoal.favorite ?? false,
+        } as unknown as Goal; // Type assertion needed due to union type complexity
 
         return [...old, optimisticGoal];
       });
@@ -78,7 +81,7 @@ export const useCreateGoal = () => {
     },
     onSuccess: (data) => {
       // Invalidate and refetch goals list to get the real data
-      queryClient.invalidateQueries({ queryKey: queryKeys.goals.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.goals.lists() });
 
       // Set the individual goal in cache for detail view
       queryClient.setQueryData(queryKeys.goals.detail(data.id), data);
