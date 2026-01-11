@@ -97,3 +97,46 @@ export const getDeadlineStatusText = (deadline: Date | undefined | null): string
   return null;
 };
 
+/**
+ * Get detailed countdown text for deadline
+ * Shows hours/minutes for deadlines within 24 hours
+ * Shows days for deadlines further out
+ */
+export const getDeadlineCountdown = (deadline: Date | undefined | null): string | null => {
+  if (!deadline) {
+    return null;
+  }
+  const now = new Date();
+  const deadlineTime = deadline.getTime();
+  const nowTime = now.getTime();
+  const diffMs = deadlineTime - nowTime;
+
+  if (diffMs < 0) {
+    // Overdue
+    const daysOverdue = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
+    const hoursOverdue = Math.floor((Math.abs(diffMs) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    if (daysOverdue > 0) {
+      return `Overdue by ${daysOverdue} day${daysOverdue !== 1 ? 's' : ''}${hoursOverdue > 0 ? ` ${hoursOverdue}h` : ''}`;
+    }
+    return `Overdue by ${hoursOverdue}h`;
+  }
+
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  if (days > 7) {
+    return `${days} days remaining`;
+  }
+  if (days > 0) {
+    return `${days} day${days !== 1 ? 's' : ''}${hours > 0 ? ` ${hours}h` : ''} remaining`;
+  }
+  if (hours > 0) {
+    return `${hours}h ${minutes}m remaining`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m remaining`;
+  }
+  return 'Due now';
+};
+
