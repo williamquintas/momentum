@@ -8,10 +8,11 @@
 import React from 'react';
 import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
 import type { Goal } from '@/features/goals/types';
-import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
+import { GoalType } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
 import { formatDate, isOverdue, isDueSoon, getDeadlineStatusText } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
+import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
 import './GoalCard.css';
 
 const { Text, Title } = Typography;
@@ -32,40 +33,6 @@ export interface GoalCardProps {
    */
   className?: string;
 }
-
-/**
- * Get color for status tag
- */
-const getStatusColor = (status: GoalStatus): string => {
-  switch (status) {
-    case GoalStatus.ACTIVE:
-      return 'blue';
-    case GoalStatus.COMPLETED:
-      return 'green';
-    case GoalStatus.PAUSED:
-      return 'orange';
-    case GoalStatus.CANCELLED:
-      return 'red';
-    default:
-      return 'default';
-  }
-};
-
-/**
- * Get color for priority tag
- */
-const getPriorityColor = (priority: Priority): string => {
-  switch (priority) {
-    case Priority.HIGH:
-      return 'red';
-    case Priority.MEDIUM:
-      return 'orange';
-    case Priority.LOW:
-      return 'blue';
-    default:
-      return 'default';
-  }
-};
 
 /**
  * Format goal type for display

@@ -13,6 +13,7 @@ import { GoalStatus, Priority } from '@/features/goals/types';
 import { GoalCard } from '../GoalCard';
 import { formatDate, isOverdue, isDueSoon, getDeadlineStatusText } from '@/features/goals/utils/dateUtils';
 import { formatProgress, getProgressValue } from '@/features/goals/utils/progressUtils';
+import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
 
 const { Text } = Typography;
 
@@ -42,40 +43,6 @@ export interface GoalListProps {
    */
   viewMode?: 'list' | 'table';
 }
-
-/**
- * Get color for status tag
- */
-const getStatusColor = (status: GoalStatus): string => {
-  switch (status) {
-    case GoalStatus.ACTIVE:
-      return 'blue';
-    case GoalStatus.COMPLETED:
-      return 'green';
-    case GoalStatus.PAUSED:
-      return 'orange';
-    case GoalStatus.CANCELLED:
-      return 'red';
-    default:
-      return 'default';
-  }
-};
-
-/**
- * Get color for priority tag
- */
-const getPriorityColor = (priority: Priority): string => {
-  switch (priority) {
-    case Priority.HIGH:
-      return 'red';
-    case Priority.MEDIUM:
-      return 'orange';
-    case Priority.LOW:
-      return 'blue';
-    default:
-      return 'default';
-  }
-};
 
 /**
  * GoalList Component
