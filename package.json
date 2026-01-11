@@ -3,6 +3,32 @@
   "version": "0.1.0",
   "description": "A comprehensive goals tracking management system built with React, TypeScript, and Ant Design",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/goals-tracking.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/goals-tracking/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/goals-tracking#readme",
+  "keywords": [
+    "goals",
+    "tracking",
+    "productivity",
+    "react",
+    "typescript",
+    "ant-design",
+    "goal-management",
+    "progress-tracking",
+    "habits",
+    "milestones",
+    "quantitative-goals",
+    "qualitative-goals",
+    "recurring-goals",
+    "dashboard",
+    "task-management"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
