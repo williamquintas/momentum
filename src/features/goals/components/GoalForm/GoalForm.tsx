@@ -27,7 +27,7 @@ export interface GoalFormProps {
   /**
    * Callback when form is submitted
    */
-  onSubmit: (values: CreateGoalInput) => void;
+  onSubmit: (values: CreateGoalInput) => void | Promise<void>;
 
   /**
    * Callback when form is cancelled
@@ -80,85 +80,98 @@ export const GoalForm: React.FC<GoalFormProps> = ({
     }
   }, [form, initialValues]);
 
-  const handleSubmit = async () => {
+  // Transform form values to CreateGoalInput
+  // Note: Form values may include dayjs objects for dates
+  const transformFormValues = (values: Record<string, unknown>): CreateGoalInput => {
+    // Remove fields that shouldn't be in CreateGoalInput (progress, id, createdAt, updatedAt, etc.)
+    const {
+      progress: _progress,
+      id: _id,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      progressHistory: _progressHistory,
+      notes: _notes,
+      attachments: _attachments,
+      ...valuesWithoutExcluded
+    } = values;
+
+    // Helper to convert dayjs to Date
+    const toDate = (value: unknown): Date | undefined => {
+      if (!value) return undefined;
+      if (value instanceof Date) return value;
+      if (typeof value === 'object' && value !== null && 'toDate' in value) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        return (value as { toDate: () => Date }).toDate();
+      }
+      return undefined;
+    };
+
+    const formData: CreateGoalInput = {
+      ...valuesWithoutExcluded,
+      startDate: toDate(values.startDate),
+      deadline: toDate(values.deadline),
+      // Type-specific defaults
+      ...(values.type === GoalType.QUANTITATIVE && {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        currentValue:
+          (values.currentValue as number | undefined) ?? (values.startValue as number | undefined) ?? 0,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        allowDecimals: (values.allowDecimals as boolean | undefined) ?? false,
+      }),
+      ...(values.type === GoalType.BINARY && {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        currentCount: (values.currentCount as number | undefined) ?? 0,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        allowPartialCompletion: (values.allowPartialCompletion as boolean | undefined) ?? true,
+      }),
+      ...(values.type === GoalType.QUALITATIVE && {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        qualitativeStatus:
+          (values.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        selfAssessments: (values.selfAssessments as unknown[] | undefined) ?? [],
+      }),
+    } as CreateGoalInput;
+
+    return formData;
+  };
+
+  const handleSubmit = async (values: Record<string, unknown>) => {
     try {
-      const values = await form.validateFields();
-
       // Transform form values to CreateGoalInput
-      // Note: Form values may include dayjs objects for dates
-      // Remove fields that shouldn't be in CreateGoalInput (progress, id, createdAt, updatedAt, etc.)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const formValues = values as Record<string, unknown>;
-      const {
-        progress: _progress,
-        id: _id,
-        createdAt: _createdAt,
-        updatedAt: _updatedAt,
-        progressHistory: _progressHistory,
-        notes: _notes,
-        attachments: _attachments,
-        ...valuesWithoutExcluded
-      } = formValues;
-
-      // Helper to convert dayjs to Date
-      const toDate = (value: unknown): Date | undefined => {
-        if (!value) return undefined;
-        if (value instanceof Date) return value;
-        if (typeof value === 'object' && value !== null && 'toDate' in value) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-          return (value as { toDate: () => Date }).toDate();
-        }
-        return undefined;
-      };
-
-      const formData: CreateGoalInput = {
-        ...valuesWithoutExcluded,
-        startDate: toDate(formValues.startDate),
-        deadline: toDate(formValues.deadline),
-        // Type-specific defaults
-        ...(formValues.type === GoalType.QUANTITATIVE && {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          currentValue:
-            (formValues.currentValue as number | undefined) ?? (formValues.startValue as number | undefined) ?? 0,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          allowDecimals: (formValues.allowDecimals as boolean | undefined) ?? false,
-        }),
-        ...(formValues.type === GoalType.BINARY && {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          currentCount: (formValues.currentCount as number | undefined) ?? 0,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          allowPartialCompletion: (formValues.allowPartialCompletion as boolean | undefined) ?? true,
-        }),
-        ...(formValues.type === GoalType.QUALITATIVE && {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          qualitativeStatus:
-            (formValues.qualitativeStatus as QualitativeStatus | undefined) ?? QualitativeStatus.NOT_STARTED,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          selfAssessments: (formValues.selfAssessments as unknown[] | undefined) ?? [],
-        }),
-      } as CreateGoalInput;
+      const formData = transformFormValues(values as Record<string, unknown>);
 
       // Validate with Zod (this will ensure progress is not included)
       const validated = CreateGoalInputSchema.parse(formData);
+
       // Type assertion needed because Zod validation ensures correct type
-      onSubmit(validated as CreateGoalInput);
+      await onSubmit(validated as CreateGoalInput);
     } catch (error) {
       // Handle Zod validation errors
       if (error && typeof error === 'object' && 'errors' in error && 'issues' in error) {
         // Type guard for ZodError
         applyZodErrorsToForm(form, error as Parameters<typeof applyZodErrorsToForm>[1]);
+        return; // Don't re-throw validation errors
       }
-      // Ant Design form validation errors are already handled
+      // Re-throw other errors so they can be handled by parent components
+      throw error;
     }
+  };
+
+  const handleFinishFailed = (errorInfo: { errorFields: Array<{ name: (string | number)[]; errors: string[] }> }) => {
+    console.error('Form validation failed:', errorInfo);
+    // Ant Design will automatically display field-level errors
   };
 
   return (
     <Form
       form={form}
       layout="vertical"
-      onFinish={() => {
-        void handleSubmit();
+      onFinish={async (values) => {
+        await handleSubmit(values);
       }}
+      onFinishFailed={handleFinishFailed}
       initialValues={{
         status: GoalStatus.ACTIVE,
         priority: Priority.MEDIUM,

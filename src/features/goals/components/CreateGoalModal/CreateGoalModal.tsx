@@ -39,8 +39,14 @@ export interface CreateGoalModalProps {
  * CreateGoalModal Component
  */
 export const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ open, onCancel, onSubmit, loading = false }) => {
-  const handleSubmit = (values: CreateGoalInput) => {
-    void onSubmit(values);
+  const handleSubmit = async (values: CreateGoalInput) => {
+    try {
+      await onSubmit(values);
+    } catch (error) {
+      // Error is handled by the parent component (GoalsPage)
+      // We just need to ensure the promise is properly awaited
+      throw error; // Re-throw to let parent handle it
+    }
   };
 
   return (

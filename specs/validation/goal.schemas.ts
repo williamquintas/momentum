@@ -439,61 +439,73 @@ export const CreateGoalInputSchema = z.union([
     id: true,
     createdAt: true,
     updatedAt: true,
+    progress: true,
     progressHistory: true,
     notes: true,
     attachments: true,
   }).extend({
     progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
   }),
   QualitativeGoalSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
+    progress: true,
     progressHistory: true,
     notes: true,
     attachments: true,
   }).extend({
     progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
   }),
   BinaryGoalBaseSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
+    progress: true,
     progressHistory: true,
     notes: true,
     attachments: true,
   }).extend({
     progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
   }),
   MilestoneGoalBaseSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
+    progress: true,
     progressHistory: true,
     notes: true,
     attachments: true,
   }).extend({
     progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
   }),
   RecurringGoalSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
+    progress: true,
     progressHistory: true,
     notes: true,
     attachments: true,
   }).extend({
     progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
   }),
   HabitGoalBaseSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
+    progress: true,
     progressHistory: true,
     notes: true,
     attachments: true,
   }).extend({
     progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
   }),
 ]);
 
