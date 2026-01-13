@@ -24,7 +24,7 @@ Momentum is a comprehensive goals tracking management system built with React, T
 
 ### Key Capabilities
 
-- 📊 **[Coming soon] Dashboard Overview**: Immediate insight into overall goal performance
+- 📊 **Dashboard Overview**: Immediate insight into overall goal performance
 - 📋 **Goal List View**: Comprehensive list with filtering, sorting, and search
 - 📈 **Progress Tracking**: Visual progress indicators and completion metrics
 - 🏷️ **Categorization**: Organize goals by categories and tags
@@ -34,13 +34,12 @@ Momentum is a comprehensive goals tracking management system built with React, T
 
 ## 🛠️ Technology Stack
 
-- **Frontend Framework**: React 18.2.0 with TypeScript 5.3.3
-- **UI Library**: Ant Design 5.12.8
-- **State Management**: Zustand 4.4.7
-- **Data Fetching**: React Query (TanStack Query) 5.17.9
-- **Validation**: Zod 3.22.4
-- **Build Tool**: Vite 6.1.6
-- **Testing**: Vitest 4.1.2
+- **Frontend Framework**: React with TypeScript
+- **UI Library**: Ant Design (antd)
+- **State Management**: Redux Toolkit or Zustand
+- **Data Fetching**: React Query (TanStack Query)
+- **Styling**: Ant Design theme customization, CSS-in-JS if needed
+- **Build Tool**: Vite
 
 ## 🚀 Quick Start
 
@@ -169,6 +168,16 @@ This documentation is designed for any AI coding assistant real-world workflow (
 
 For a complete list of all development guidelines, see [AGENTS.md](./AGENTS.md).
 
+### System Planning
+
+For detailed system requirements and planning, see [GOALS_TRACKING_SYSTEM_PLAN.md](./GOALS_TRACKING_SYSTEM_PLAN.md).
+
+### UI Mockups
+
+UI mockups and design references are available in the [docs/mockups](./docs/mockups/) directory:
+
+- **[Dashboard Mockup](./docs/mockups/dashboard-mockup.md)** - Comprehensive dashboard interface mockup with four panel views
+
 ## 🧪 Development
 
 ### Key Principles
@@ -268,4 +277,4 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ---
 
-Built with ❤️ and ☕️ using React, TypeScript, and Ant Design
+Built with ❤️ using React, TypeScript, and Ant Design

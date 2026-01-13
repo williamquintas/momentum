@@ -16,7 +16,7 @@
  *   queryKeys.goals.detail(id) // ['goals', 'detail', id]
  */
 
-import type { GoalFilters } from '@/types/goal.types';
+import type { GoalFilters } from '@specs/types/goal.types';
 
 /**
  * Query key factory for goals

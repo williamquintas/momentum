@@ -1,7 +1,7 @@
 /**
- * Momentum - TypeScript Type Definitions
+ * Goal Tracking System - TypeScript Type Definitions
  *
- * This file contains all TypeScript type definitions for Momentum.
+ * This file contains all TypeScript type definitions for the Goals Tracking Management System.
  * All types are designed to be type-safe and support multiple goal types with comprehensive tracking.
  */
 

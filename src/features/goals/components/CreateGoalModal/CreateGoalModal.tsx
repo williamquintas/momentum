@@ -8,7 +8,6 @@
 import React from 'react';
 
 import { Modal } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import type { CreateGoalInput } from '@/features/goals/types';
 
@@ -40,13 +39,12 @@ export interface CreateGoalModalProps {
  * CreateGoalModal Component
  */
 export const CreateGoalModal: React.FC<CreateGoalModalProps> = ({ open, onCancel, onSubmit, loading = false }) => {
-  const { t } = useTranslation();
   const handleSubmit = async (values: CreateGoalInput) => {
     await onSubmit(values);
   };
 
   return (
-    <Modal title={t('createGoalModal.title')} open={open} onCancel={onCancel} footer={null} width={800} destroyOnClose>
+    <Modal title="Create New Goal" open={open} onCancel={onCancel} footer={null} width={800} destroyOnClose>
       <GoalForm onSubmit={handleSubmit} onCancel={onCancel} loading={loading} />
     </Modal>
   );

@@ -7,9 +7,7 @@
 
 import React from 'react';
 
-import { StarFilled, StarOutlined } from '@ant-design/icons';
 import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import type { Goal } from '@/features/goals/types';
 import { GoalType } from '@/features/goals/types';
@@ -31,11 +29,6 @@ export interface GoalCardProps {
    * Callback when card is clicked
    */
   onClick?: (goal: Goal) => void;
-
-  /**
-   * Callback when favorite is toggled
-   */
-  onToggleFavorite?: (goalId: string) => void;
 
   /**
    * Additional CSS class name
@@ -66,21 +59,13 @@ const getProgressStatus = (progress: number): 'success' | 'exception' | 'active'
 /**
  * GoalCard Component
  */
-export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavorite, className }) => {
-  const { t } = useTranslation();
+export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) => {
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
 
   const handleClick = () => {
     if (onClick) {
       onClick(goal);
-    }
-  };
-
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onToggleFavorite) {
-      onToggleFavorite(goal.id);
     }
   };
 
@@ -92,32 +77,14 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
       style={{ marginBottom: 16 }}
     >
       <Space direction="vertical" size="small" style={{ width: '100%' }}>
-        {/* Header: Title, Favorite, and Tags */}
+        {/* Header: Title and Tags */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Title level={5} style={{ margin: 0, flex: 1 }}>
             {goal.title}
           </Title>
-          <Space size="small" align="center">
-            <span
-              onClick={handleFavoriteClick}
-              style={{ cursor: onToggleFavorite ? 'pointer' : 'default', fontSize: '16px', lineHeight: 1 }}
-              role={onToggleFavorite ? 'button' : undefined}
-              tabIndex={onToggleFavorite ? 0 : undefined}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleFavoriteClick(e as unknown as React.MouseEvent);
-                }
-              }}
-            >
-              {goal.favorite ? (
-                <StarFilled style={{ color: '#faad14' }} />
-              ) : (
-                <StarOutlined style={{ color: '#d9d9d9' }} />
-              )}
-            </span>
-            {goal.archived && <Tag color="default">{t('goalList.archived')}</Tag>}
-            <Tag color={getStatusColor(goal.status)}>{t(`goals.status.${goal.status}`)}</Tag>
-            <Tag color={getPriorityColor(goal.priority)}>{t(`goals.priorities.${goal.priority}`)}</Tag>
+          <Space size="small">
+            <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
+            <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
           </Space>
         </div>
 
@@ -128,7 +95,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
 
         {/* Description (if available) */}
         {goal.description && (
-          <Text type="secondary" ellipsis={{ tooltip: goal.description }} style={{ display: 'block', width: '100%' }}>
+          <Text type="secondary" ellipsis style={{ display: 'block' }}>
             {goal.description}
           </Text>
         )}
@@ -144,7 +111,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
           {goal.deadline && (
             <Space size="small">
               <Text type="secondary" style={{ fontSize: '12px' }}>
-                {t('goals.dueDate')}: {formatDate(goal.deadline)}
+                Deadline: {formatDate(goal.deadline)}
               </Text>
               {isOverdue(goal.deadline) && <Tag color="red">{getDeadlineStatusText(goal.deadline)}</Tag>}
               {isDueSoon(goal.deadline) && !isOverdue(goal.deadline) && (
@@ -171,7 +138,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
           ))}
           {goal.tags.length > 3 && (
             <Text type="secondary" style={{ fontSize: '12px' }}>
-              {t('goalList.more', { count: goal.tags.length - 3 })}
+              +{goal.tags.length - 3} more
             </Text>
           )}
         </Space>

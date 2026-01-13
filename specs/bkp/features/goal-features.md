@@ -6,6 +6,8 @@ This document contains detailed feature specifications with acceptance criteria 
 
 **Note**: This system uses Local Storage for persistence instead of a backend API. All data operations (create, read, update, delete) are performed against browser Local Storage using a normalized structure with indexes for optimal query performance.
 
+**Note**: This system uses Local Storage for persistence instead of a backend API. All data operations (create, read, update, delete) are performed against browser Local Storage using a normalized structure with indexes for optimal query performance.
+
 ---
 
 ## Feature 1: Create Goal

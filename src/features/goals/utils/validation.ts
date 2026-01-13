@@ -2,8 +2,13 @@
  * Goals Feature - Validation Utilities
  *
  * This file provides validation utilities for goal-related data structures.
- * It re-exports Zod schemas from the validation directory and provides helper functions
+ * It re-exports Zod schemas from the specifications and provides helper functions
  * for validation, error handling, and Ant Design Form integration.
+ *
+ * Architecture Decision:
+ * - Validation schemas are defined in `@specs/validation/goal.schemas.ts` as the authoritative source
+ * - This file provides a convenience layer for validation operations
+ * - Supports both programmatic validation and Ant Design Form integration
  *
  * Usage:
  *   import { validateGoal, safeValidateGoal, zodToAntdErrors } from '@/features/goals/utils/validation';
@@ -13,37 +18,31 @@
 import type { FormInstance } from 'antd';
 import { z } from 'zod';
 
-import type {
-  GoalType,
-  GoalStatus,
-  Priority,
-  Recurrence,
-  Milestone,
-  ProgressEntry,
-  Note,
-  Attachment,
-  SelfAssessment,
-  HabitEntry,
-  Streak,
-  CompletionStats,
-  Goal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-  GoalSortOptions,
-  QuantitativeGoal,
-  QualitativeGoal,
-  BinaryGoal,
-  MilestoneGoal,
-  RecurringGoal,
-  HabitGoal,
-} from '@/types/goal.types';
+// Import schemas and types for use in this file
 import {
+  // Schemas
+  GoalSchema,
+  CreateGoalInputSchema,
+  UpdateGoalInputSchema,
+  GoalFiltersSchema,
+  UpdateProgressInputSchema,
+  // Types
+  type Goal,
+  type CreateGoalInput,
+  type UpdateGoalInput,
+  type GoalFilters,
+  type UpdateProgressInput,
+} from '@specs/validation/goal.schemas';
+
+// Re-export all schemas from specs
+export {
+  // Enums
   GoalTypeSchema,
   GoalStatusSchema,
   PrioritySchema,
   RecurrenceFrequencySchema,
   QualitativeStatusSchema,
+  // Nested Schemas
   RecurrenceSchema,
   MilestoneSchema,
   ProgressEntrySchema,
@@ -53,82 +52,43 @@ import {
   HabitEntrySchema,
   StreakSchema,
   CompletionStatsSchema,
+  // Goal Type Schemas
   QuantitativeGoalSchema,
   QualitativeGoalSchema,
   BinaryGoalSchema,
   MilestoneGoalSchema,
   RecurringGoalSchema,
   HabitGoalSchema,
+  // Main Schemas
   GoalSchema,
   CreateGoalInputSchema,
   UpdateGoalInputSchema,
   GoalFiltersSchema,
   GoalSortOptionsSchema,
+  // Progress Schemas
   UpdateProgressInputSchema,
   UpdateQuantitativeValueSchema,
+  // Types (inferred from schemas)
+  type GoalType,
+  type GoalStatus,
+  type Priority,
+  type Recurrence,
+  type Milestone,
+  type ProgressEntry,
+  type Note,
+  type Attachment,
+  type SelfAssessment,
+  type HabitEntry,
+  type Streak,
+  type CompletionStats,
+  type Goal,
+  type CreateGoalInput,
+  type UpdateGoalInput,
+  type GoalFilters,
+  type GoalSortOptions,
   type UpdateProgressInput,
   type UpdateQuantitativeValue,
-} from '@/validation/goal.schemas';
-
-// Re-export all schemas
-export {
-  GoalTypeSchema,
-  GoalStatusSchema,
-  PrioritySchema,
-  RecurrenceFrequencySchema,
-  QualitativeStatusSchema,
-  RecurrenceSchema,
-  MilestoneSchema,
-  ProgressEntrySchema,
-  NoteSchema,
-  AttachmentSchema,
-  SelfAssessmentSchema,
-  HabitEntrySchema,
-  StreakSchema,
-  CompletionStatsSchema,
-  QuantitativeGoalSchema,
-  QualitativeGoalSchema,
-  BinaryGoalSchema,
-  MilestoneGoalSchema,
-  RecurringGoalSchema,
-  HabitGoalSchema,
-  GoalSchema,
-  CreateGoalInputSchema,
-  UpdateGoalInputSchema,
-  GoalFiltersSchema,
-  GoalSortOptionsSchema,
-  UpdateProgressInputSchema,
-  UpdateQuantitativeValueSchema,
-};
-
-// Re-export types
-export type {
-  GoalType,
-  GoalStatus,
-  Priority,
-  Recurrence,
-  Milestone,
-  ProgressEntry,
-  Note,
-  Attachment,
-  SelfAssessment,
-  HabitEntry,
-  Streak,
-  CompletionStats,
-  Goal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-  GoalSortOptions,
-  UpdateProgressInput,
-  UpdateQuantitativeValue,
-  QuantitativeGoal,
-  QualitativeGoal,
-  BinaryGoal,
-  MilestoneGoal,
-  RecurringGoal,
-  HabitGoal,
-};
+} from '@specs/validation/goal.schemas';
 
 // ============================================================================
 // Validation Helper Functions
@@ -281,7 +241,7 @@ export function safeValidateUpdateProgressInput(data: unknown): {
 export function zodErrorToFieldErrors(error: z.ZodError): Record<string, string[]> {
   const fieldErrors: Record<string, string[]> = {};
 
-  error.issues.forEach((issue) => {
+  error.errors.forEach((issue) => {
     const path = issue.path.join('.');
     if (!fieldErrors[path]) {
       fieldErrors[path] = [];
@@ -324,65 +284,19 @@ export function getFieldErrors(error: z.ZodError, fieldPath: string): string[] {
  * @returns A formatted error message
  */
 export function formatZodError(error: z.ZodError): string {
-  if (error.issues.length === 0) {
+  if (error.errors.length === 0) {
     return 'Validation failed';
   }
 
-  if (error.issues.length === 1) {
-    const issue = error.issues[0];
+  if (error.errors.length === 1) {
+    const issue = error.errors[0];
     if (issue) {
       const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
       return `${path}${issue.message}`;
     }
   }
 
-  return `Validation failed with ${error.issues.length} errors`;
-}
-
-// ============================================================================
-// Type Guard Functions
-// ============================================================================
-
-/**
- * Type guard for QuantitativeGoal
- */
-export function isQuantitativeGoal(goal: Goal): goal is QuantitativeGoal {
-  return goal.type === 'quantitative';
-}
-
-/**
- * Type guard for QualitativeGoal
- */
-export function isQualitativeGoal(goal: Goal): goal is QualitativeGoal {
-  return goal.type === 'qualitative';
-}
-
-/**
- * Type guard for BinaryGoal
- */
-export function isBinaryGoal(goal: Goal): goal is BinaryGoal {
-  return goal.type === 'binary';
-}
-
-/**
- * Type guard for MilestoneGoal
- */
-export function isMilestoneGoal(goal: Goal): goal is MilestoneGoal {
-  return goal.type === 'milestone';
-}
-
-/**
- * Type guard for RecurringGoal
- */
-export function isRecurringGoal(goal: Goal): goal is RecurringGoal {
-  return goal.type === 'recurring';
-}
-
-/**
- * Type guard for HabitGoal
- */
-export function isHabitGoal(goal: Goal): goal is HabitGoal {
-  return goal.type === 'habit';
+  return `Validation failed with ${error.errors.length} errors`;
 }
 
 // ============================================================================
@@ -429,7 +343,7 @@ export function zodValidator<T extends z.ZodTypeAny>(schema: T): (_: unknown, va
   return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
-      const firstError = result.error.issues[0];
+      const firstError = result.error.errors[0];
       if (firstError) {
         throw new Error(firstError.message);
       }
@@ -452,12 +366,12 @@ export function zodFieldValidator<T extends z.ZodTypeAny>(
   return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
-      const fieldError = result.error.issues.find((e) => e.path.includes(fieldName));
+      const fieldError = result.error.errors.find((e) => e.path.includes(fieldName));
       if (fieldError) {
         throw new Error(fieldError.message);
       }
       // If no specific field error, use the first error
-      const firstError = result.error.issues[0];
+      const firstError = result.error.errors[0];
       if (firstError) {
         throw new Error(firstError.message);
       }

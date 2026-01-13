@@ -48,7 +48,6 @@
       "@specs/*": ["specs/*"]
     }
   },
-  "include": ["src", "specs", "src/main.tsx"],
-  "exclude": ["node_modules", "dist", "specs/bkp"],
+  "include": ["src", "specs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

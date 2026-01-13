@@ -1,12 +1,12 @@
 # Build Tools & Development Environment Setup
 
-This document describes the build tools and development environment configuration for Momentum.
+This document describes the build tools and development environment configuration for the Goals Tracking System.
 
 ## Overview
 
 The project uses modern build tools and development practices:
 
-- **Build Tool**: Vite 6.x
+- **Build Tool**: Vite 5.x
 - **TypeScript**: 5.3.3
 - **Testing**: Vitest with jsdom
 - **Linting**: ESLint with TypeScript support
@@ -70,7 +70,7 @@ The project uses modern build tools and development practices:
 
 ### Environment
 
-- **`.nvmrc`**: Node.js version (24.0.0)
+- **`.nvmrc`**: Node.js version (18.0.0)
 - **`.vscode/settings.json`**: VS Code workspace settings
 - **`.vscode/extensions.json`**: Recommended VS Code extensions
 
@@ -162,40 +162,11 @@ The project includes VS Code workspace settings that:
 
 ## Node Version
 
-The project requires Node.js >= 24.0.0. Use `.nvmrc` with nvm:
+The project requires Node.js >= 18.0.0. Use `.nvmrc` with nvm:
 
 ```bash
 nvm use
 ```
-
-## Environment Variables
-
-### Available Variables
-
-The application uses environment variables for configuration. Create a `.env.local` file in the project root:
-
-```bash
-cp .env.example .env.local
-```
-
-### Common Environment Variables
-
-| Variable            | Description                  | Default    |
-| ------------------- | ---------------------------- | ---------- |
-| `VITE_APP_TITLE`    | Application title            | `Momentum` |
-| `VITE_API_URL`      | API base URL (if applicable) | Local      |
-| `VITE_ENABLE_DEBUG` | Enable debug mode            | `false`    |
-
-### Development vs Production
-
-- **Development**: Uses Vite's dev server with hot module replacement
-- **Production**: Built assets are optimized and minified
-
-### Security Notes
-
-- Never commit `.env.local` or `.env` files to version control
-- The `.env.example` file should contain only safe, non-sensitive defaults
-- Use `.gitignore` to exclude sensitive environment files
 
 ## Troubleshooting
 
@@ -203,47 +174,18 @@ cp .env.example .env.local
 
 - Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
 - Clear Vite cache: `rm -rf node_modules/.vite`
-- Ensure Node.js version matches `.nvmrc` (run `nvm use`)
 
 ### Type Errors
 
 - Run `npm run type-check` to see all TypeScript errors
 - Ensure all dependencies are installed
-- Check `tsconfig.json` for correct path configurations
 
 ### Linting Issues
 
 - Run `npm run lint:fix` to auto-fix many issues
 - Check `.eslintrc.json` for rule configurations
-- Ensure TypeScript is properly configured
 
 ### Formatting Issues
 
 - Run `npm run format` to format all files
 - Check `.prettierrc` for formatting rules
-- Ensure Prettier plugin is installed
-
-### Port Already in Use
-
-- If port 5173 is in use, Vite will automatically try the next available port
-- To specify a different port: `npm run dev -- --port 3000`
-- Find and kill the process using the port: `lsof -i :5173`
-
-### Husky/Git Hooks Issues
-
-- If pre-commit hooks fail, check `npm run prepare` has run successfully
-- Reinstall Husky: `npx husky install`
-- Skip hooks temporarily: `git commit --no-verify` (not recommended)
-
-### Dependency Issues
-
-- Clear npm cache: `npm cache clean --force`
-- Delete `package-lock.json` and reinstall for a clean slate
-- Check for conflicting peer dependencies
-
-### Memory Issues
-
-- If encountering out-of-memory errors during build, increase Node memory:
-  ```bash
-  NODE_OPTIONS=--max_old_space_size=4096 npm run build
-  ```

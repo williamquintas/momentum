@@ -5,11 +5,10 @@
  * Supports loading states, empty states, click handlers, sorting, and filtering.
  */
 
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 
-import { List, Empty, Spin, Table, Tag, Progress, Typography } from 'antd';
+import { List, Empty, Spin, Table, Tag, Avatar, Progress, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useTranslation } from 'react-i18next';
 
 import type { Goal } from '@/features/goals/types';
 import { GoalStatus, Priority } from '@/features/goals/types';
@@ -38,11 +37,6 @@ export interface GoalListProps {
   onGoalClick?: (goal: Goal) => void;
 
   /**
-   * Callback when favorite is toggled
-   */
-  onToggleFavorite?: (goalId: string) => void;
-
-  /**
    * Additional CSS class name
    */
   className?: string;
@@ -60,23 +54,9 @@ export const GoalList: React.FC<GoalListProps> = ({
   goals,
   loading = false,
   onGoalClick,
-  onToggleFavorite,
   className,
   viewMode = 'table',
 }) => {
-  const { t } = useTranslation();
-  const [pageSize, setPageSize] = useState(10);
-
-  // Sort goals by favorite first (favorites appear at top by default)
-  const sortedGoals = useMemo(() => {
-    return [...goals].sort((a, b) => {
-      if (a.favorite !== b.favorite) {
-        return a.favorite ? -1 : 1;
-      }
-      return 0;
-    });
-  }, [goals]);
-
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -86,19 +66,14 @@ export const GoalList: React.FC<GoalListProps> = ({
   }
 
   if (goals.length === 0) {
-    return (
-      <Empty
-        description={t('goalList.noGoalsFound')}
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-        style={{ padding: '50px' }}
-      />
-    );
+    return <Empty description="No goals found" image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ padding: '50px' }} />;
   }
 
+  // Table view (default)
   if (viewMode === 'table') {
     const columns: ColumnsType<Goal> = [
       {
-        title: t('goalList.goal'),
+        title: 'Goal',
         dataIndex: 'title',
         key: 'title',
         sorter: (a, b) => a.title.localeCompare(b.title),
@@ -120,7 +95,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         ),
       },
       {
-        title: t('goalList.status'),
+        title: 'Status',
         dataIndex: 'status',
         key: 'status',
         sorter: (a, b) => a.status.localeCompare(b.status),
@@ -129,10 +104,10 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: status,
         })),
         onFilter: (value, record) => record.status === value,
-        render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{t(`goals.status.${status}`)}</Tag>,
+        render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{status}</Tag>,
       },
       {
-        title: t('goalList.priority'),
+        title: 'Priority',
         dataIndex: 'priority',
         key: 'priority',
         sorter: (a, b) => a.priority.localeCompare(b.priority),
@@ -141,12 +116,10 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: priority,
         })),
         onFilter: (value, record) => record.priority === value,
-        render: (priority: Priority) => (
-          <Tag color={getPriorityColor(priority)}>{t(`goals.priorities.${priority}`)}</Tag>
-        ),
+        render: (priority: Priority) => <Tag color={getPriorityColor(priority)}>{priority}</Tag>,
       },
       {
-        title: t('goalList.progress'),
+        title: 'Progress',
         key: 'progress',
         sorter: (a, b) => getProgressValue(a) - getProgressValue(b),
         render: (_: unknown, goal: Goal) => {
@@ -159,7 +132,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         },
       },
       {
-        title: t('goalList.deadline'),
+        title: 'Deadline',
         dataIndex: 'deadline',
         key: 'deadline',
         sorter: (a, b) => {
@@ -189,32 +162,49 @@ export const GoalList: React.FC<GoalListProps> = ({
           );
         },
       },
+      {
+        title: 'Assignee',
+        dataIndex: 'assignee',
+        key: 'assignee',
+        filters: goals
+          .map((g) => g.assignee)
+          .filter((assignee): assignee is string => assignee !== undefined)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .map((assignee) => ({
+            text: assignee,
+            value: assignee,
+          })),
+        onFilter: (value, record) => record.assignee === value,
+        render: (assignee: string | undefined) => {
+          if (!assignee) {
+            return <Text type="secondary">-</Text>;
+          }
+          return (
+            <Avatar size="small" style={{ backgroundColor: '#1890ff' }}>
+              {assignee.charAt(0).toUpperCase()}
+            </Avatar>
+          );
+        },
+      },
     ];
 
     return (
-      <div style={{ overflowX: 'auto', width: '100%' }} className="goals-table-wrapper">
-        <Table
-          className={className}
-          columns={columns}
-          dataSource={sortedGoals}
-          rowKey="id"
-          loading={loading}
-          onRow={(record) => ({
-            onClick: () => onGoalClick?.(record),
-            style: { cursor: onGoalClick ? 'pointer' : 'default' },
-          })}
-          pagination={{
-            pageSize,
-            showSizeChanger: true,
-            pageSizeOptions: ['10', '20', '50', '100'],
-            showTotal: (total) => t('goalList.totalGoals', { total }),
-            onShowSizeChange: (_, size) => {
-              setPageSize(size);
-            },
-          }}
-          scroll={{ x: 'max-content' }}
-        />
-      </div>
+      <Table
+        className={className}
+        columns={columns}
+        dataSource={goals}
+        rowKey="id"
+        loading={loading}
+        onRow={(record) => ({
+          onClick: () => onGoalClick?.(record),
+          style: { cursor: onGoalClick ? 'pointer' : 'default' },
+        })}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total) => `Total ${total} goals`,
+        }}
+      />
     );
   }
 
@@ -222,11 +212,10 @@ export const GoalList: React.FC<GoalListProps> = ({
   return (
     <List
       className={className}
-      dataSource={sortedGoals}
-      split={false}
+      dataSource={goals}
       renderItem={(goal) => (
         <List.Item key={goal.id} style={{ padding: 0 }}>
-          <GoalCard goal={goal} onClick={onGoalClick} onToggleFavorite={onToggleFavorite} />
+          <GoalCard goal={goal} onClick={onGoalClick} />
         </List.Item>
       )}
     />

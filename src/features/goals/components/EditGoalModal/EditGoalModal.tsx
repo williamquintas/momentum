@@ -8,7 +8,6 @@
 import React from 'react';
 
 import { Modal } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import type { Goal, CreateGoalInput } from '@/features/goals/types';
 
@@ -64,7 +63,6 @@ const goalToCreateInput = (goal: Goal): CreateGoalInput => {
  * EditGoalModal Component
  */
 export const EditGoalModal: React.FC<EditGoalModalProps> = ({ open, onCancel, onSubmit, goal, loading = false }) => {
-  const { t } = useTranslation();
   const handleSubmit = (values: CreateGoalInput) => {
     void onSubmit(values);
   };
@@ -72,7 +70,7 @@ export const EditGoalModal: React.FC<EditGoalModalProps> = ({ open, onCancel, on
   const initialValues = goal ? goalToCreateInput(goal) : undefined;
 
   return (
-    <Modal title={t('editGoalModal.title')} open={open} onCancel={onCancel} footer={null} width={800} destroyOnClose>
+    <Modal title="Edit Goal" open={open} onCancel={onCancel} footer={null} width={800} destroyOnClose>
       {goal && <GoalForm initialValues={initialValues} onSubmit={handleSubmit} onCancel={onCancel} loading={loading} />}
     </Modal>
   );

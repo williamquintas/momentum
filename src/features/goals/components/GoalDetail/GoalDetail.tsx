@@ -16,9 +16,6 @@ import {
   FileTextOutlined,
   PaperClipOutlined,
   RiseOutlined,
-  StarOutlined,
-  StarFilled,
-  InboxOutlined,
 } from '@ant-design/icons';
 import {
   Card,
@@ -38,7 +35,6 @@ import {
   Col,
   Statistic,
 } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 import type { Goal } from '@/features/goals/types';
@@ -61,7 +57,6 @@ import {
   getDaysUntilDeadline,
 } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
-import { isFeatureEnabled } from '@/utils/featureFlags';
 
 import { UpdateProgressModal } from '../UpdateProgressModal';
 
@@ -87,21 +82,6 @@ export interface GoalDetailProps {
    * Callback when progress is updated
    */
   onUpdateProgress?: (input: UpdateProgressInput) => void | Promise<void>;
-
-  /**
-   * Callback when favorite is toggled
-   */
-  onToggleFavorite?: (goalId: string) => void | Promise<void>;
-
-  /**
-   * Callback when archive is toggled
-   */
-  onToggleArchive?: (goalId: string) => void | Promise<void>;
-
-  /**
-   * Related goals to display
-   */
-  relatedGoals?: Goal[];
 
   /**
    * Loading state for delete operation
@@ -145,13 +125,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
   onEdit,
   onDelete,
   onUpdateProgress,
-  onToggleFavorite,
-  onToggleArchive,
-  relatedGoals,
   deleting = false,
   updatingProgress = false,
 }) => {
-  const { t } = useTranslation();
   const [progressModalOpen, setProgressModalOpen] = useState(false);
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
@@ -159,18 +135,6 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
   const handleDelete = () => {
     if (onDelete) {
       onDelete(goal.id);
-    }
-  };
-
-  const handleToggleFavorite = () => {
-    if (onToggleFavorite) {
-      void onToggleFavorite(goal.id);
-    }
-  };
-
-  const handleToggleArchive = () => {
-    if (onToggleArchive) {
-      void onToggleArchive(goal.id);
     }
   };
 
@@ -196,26 +160,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
           <Col xs={24} md={16}>
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div>
-                <Space align="start">
-                  <Title level={2} style={{ margin: 0 }}>
-                    {goal.title}
-                  </Title>
-                  {onToggleFavorite && (
-                    <span
-                      onClick={handleToggleFavorite}
-                      style={{ cursor: 'pointer', fontSize: '20px', marginTop: '8px' }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          handleToggleFavorite();
-                        }
-                      }}
-                    >
-                      {goal.favorite ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
-                    </span>
-                  )}
-                </Space>
+                <Title level={2} style={{ margin: 0 }}>
+                  {goal.title}
+                </Title>
                 {goal.description && (
                   <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>
                 )}
@@ -225,7 +172,7 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               <div>
                 <Space direction="vertical" size="small" style={{ width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Text strong>{t('goals.progress')}</Text>
+                    <Text strong>Progress</Text>
                     <Text strong>{progress}%</Text>
                   </div>
                   <Progress percent={progress} status={progressStatus} format={() => formatProgress(goal)} />
@@ -236,48 +183,41 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               {goal.deadline && (
                 <div>
                   <Space direction="vertical" size="small">
-                    <Text strong>
-                      {t('goals.dueDate')}: {formatDate(goal.deadline)}
-                    </Text>
+                    <Text strong>Due Date: {formatDate(goal.deadline)}</Text>
                     {isOverdue(goal.deadline) && <Tag color="red">{getDeadlineStatusText(goal.deadline)}</Tag>}
                     {isDueSoon(goal.deadline) && !isOverdue(goal.deadline) && (
                       <Tag color="orange">{getDeadlineStatusText(goal.deadline)}</Tag>
                     )}
                     {daysUntilDeadline !== null && daysUntilDeadline > 7 && (
-                      <Tag color="blue">{t('goals.daysRemaining', { count: daysUntilDeadline })}</Tag>
+                      <Tag color="blue">{daysUntilDeadline} days remaining</Tag>
                     )}
                   </Space>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <Space wrap style={{ width: '100%' }}>
+              <Space>
                 {onUpdateProgress && (
                   <Button type="primary" icon={<RiseOutlined />} onClick={handleUpdateProgress}>
-                    {t('goals.updateProgressBtn')}
+                    Update Progress
                   </Button>
                 )}
                 {onEdit && (
                   <Button icon={<EditOutlined />} onClick={() => onEdit(goal)}>
-                    {t('goals.editGoal')}
-                  </Button>
-                )}
-                {onToggleArchive && (
-                  <Button icon={<InboxOutlined />} onClick={handleToggleArchive}>
-                    {goal.archived ? t('goals.unarchive') : t('goals.archive')}
+                    Edit Goal
                   </Button>
                 )}
                 {onDelete && (
                   <Popconfirm
-                    title={t('goals.deleteGoal')}
-                    description={t('goals.deleteGoalConfirm')}
+                    title="Delete Goal"
+                    description="Are you sure you want to delete this goal? This action cannot be undone."
                     onConfirm={handleDelete}
-                    okText={t('goals.yesDelete')}
-                    cancelText={t('common.cancel')}
+                    okText="Yes, Delete"
+                    cancelText="Cancel"
                     okButtonProps={{ danger: true }}
                   >
                     <Button danger icon={<DeleteOutlined />} loading={deleting}>
-                      {t('goals.deleteGoal')}
+                      Delete Goal
                     </Button>
                   </Popconfirm>
                 )}
@@ -288,22 +228,14 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               {/* Quick Stats */}
               <Card size="small">
-                <Statistic
-                  title={t('goals.goalStatus')}
-                  value={t(`goals.status.${goal.status}`)}
-                  valueStyle={{ textTransform: 'capitalize' }}
-                />
+                <Statistic title="Status" value={goal.status} valueStyle={{ textTransform: 'capitalize' }} />
               </Card>
               <Card size="small">
-                <Statistic
-                  title={t('goals.priority')}
-                  value={t(`goals.priorities.${goal.priority}`)}
-                  valueStyle={{ textTransform: 'capitalize' }}
-                />
+                <Statistic title="Priority" value={goal.priority} valueStyle={{ textTransform: 'capitalize' }} />
               </Card>
               {goal.category && (
                 <Card size="small">
-                  <Statistic title={t('goals.categories')} value={goal.category} />
+                  <Statistic title="Category" value={goal.category} />
                 </Card>
               )}
             </Space>
@@ -312,20 +244,20 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       </Card>
 
       {/* Basic Information */}
-      <Card title={t('goals.detail.basicInfo')} style={{ marginBottom: 24 }}>
+      <Card title="Basic Information" style={{ marginBottom: 24 }}>
         <Descriptions column={{ xs: 1, sm: 2, md: 3 }} bordered>
-          <Descriptions.Item label={t('goals.goalType')}>
+          <Descriptions.Item label="Type">
             <Tag>{formatGoalType(goal.type)}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label={t('goals.goalStatus')}>
-            <Tag color={getStatusColor(goal.status)}>{t(`goals.status.${goal.status}`)}</Tag>
+          <Descriptions.Item label="Status">
+            <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label={t('goals.priority')}>
-            <Tag color={getPriorityColor(goal.priority)}>{t(`goals.priorities.${goal.priority}`)}</Tag>
+          <Descriptions.Item label="Priority">
+            <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
           </Descriptions.Item>
-          {goal.category && <Descriptions.Item label={t('goals.categories')}>{goal.category}</Descriptions.Item>}
+          {goal.category && <Descriptions.Item label="Category">{goal.category}</Descriptions.Item>}
           {goal.tags.length > 0 && (
-            <Descriptions.Item label={t('goals.tags')}>
+            <Descriptions.Item label="Tags">
               <Space size="small" wrap>
                 {goal.tags.map((tag) => (
                   <Tag key={tag}>{tag}</Tag>
@@ -333,73 +265,59 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               </Space>
             </Descriptions.Item>
           )}
-          {goal.startDate && (
-            <Descriptions.Item label={t('goalDetail.startDate')}>{formatDate(goal.startDate)}</Descriptions.Item>
-          )}
-          {goal.deadline && (
-            <Descriptions.Item label={t('goalDetail.deadline')}>{formatDate(goal.deadline)}</Descriptions.Item>
-          )}
+          {goal.startDate && <Descriptions.Item label="Start Date">{formatDate(goal.startDate)}</Descriptions.Item>}
+          {goal.deadline && <Descriptions.Item label="Deadline">{formatDate(goal.deadline)}</Descriptions.Item>}
           {goal.completedDate && (
-            <Descriptions.Item label={t('goalDetail.completedDate')}>
-              {formatDate(goal.completedDate)}
-            </Descriptions.Item>
+            <Descriptions.Item label="Completed Date">{formatDate(goal.completedDate)}</Descriptions.Item>
           )}
-          <Descriptions.Item label={t('goalDetail.created')}>{formatDate(goal.createdAt)}</Descriptions.Item>
-          <Descriptions.Item label={t('goalDetail.lastUpdated')}>{formatDate(goal.updatedAt)}</Descriptions.Item>
-          {goal.assignee && <Descriptions.Item label={t('goalDetail.assignee')}>{goal.assignee}</Descriptions.Item>}
-          {goal.createdBy && <Descriptions.Item label={t('goalDetail.createdBy')}>{goal.createdBy}</Descriptions.Item>}
+          <Descriptions.Item label="Created">{formatDate(goal.createdAt)}</Descriptions.Item>
+          <Descriptions.Item label="Last Updated">{formatDate(goal.updatedAt)}</Descriptions.Item>
+          {goal.assignee && <Descriptions.Item label="Assignee">{goal.assignee}</Descriptions.Item>}
+          {goal.createdBy && <Descriptions.Item label="Created By">{goal.createdBy}</Descriptions.Item>}
         </Descriptions>
       </Card>
 
       {/* Type-Specific Information */}
       {isQuantitativeGoal(goal) && (
-        <Card title={t('goalDetail.quantitativeDetails')} style={{ marginBottom: 24 }}>
+        <Card title="Quantitative Goal Details" style={{ marginBottom: 24 }}>
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={8}>
-              <Statistic title={t('goalDetail.startValue')} value={goal.startValue} suffix={goal.unit} />
+              <Statistic title="Start Value" value={goal.startValue} suffix={goal.unit} />
             </Col>
             <Col xs={24} sm={8}>
-              <Statistic title={t('goalDetail.currentValue')} value={goal.currentValue} suffix={goal.unit} />
+              <Statistic title="Current Value" value={goal.currentValue} suffix={goal.unit} />
             </Col>
             <Col xs={24} sm={8}>
-              <Statistic title={t('goalDetail.targetValue')} value={goal.targetValue} suffix={goal.unit} />
+              <Statistic title="Target Value" value={goal.targetValue} suffix={goal.unit} />
             </Col>
           </Row>
           <Divider />
           <Descriptions column={{ xs: 1, sm: 2 }} bordered>
-            <Descriptions.Item label={t('goalDetail.allowDecimals')}>
-              {goal.allowDecimals ? t('goalDetail.yes') : t('goalDetail.no')}
-            </Descriptions.Item>
-            {goal.minValue !== undefined && (
-              <Descriptions.Item label={t('goalDetail.minValue')}>{goal.minValue}</Descriptions.Item>
-            )}
-            {goal.maxValue !== undefined && (
-              <Descriptions.Item label={t('goalDetail.maxValue')}>{goal.maxValue}</Descriptions.Item>
-            )}
+            <Descriptions.Item label="Allow Decimals">{goal.allowDecimals ? 'Yes' : 'No'}</Descriptions.Item>
+            {goal.minValue !== undefined && <Descriptions.Item label="Min Value">{goal.minValue}</Descriptions.Item>}
+            {goal.maxValue !== undefined && <Descriptions.Item label="Max Value">{goal.maxValue}</Descriptions.Item>}
           </Descriptions>
         </Card>
       )}
 
       {isQualitativeGoal(goal) && (
-        <Card title={t('goalDetail.qualitativeDetails')} style={{ marginBottom: 24 }}>
+        <Card title="Qualitative Goal Details" style={{ marginBottom: 24 }}>
           <Descriptions column={{ xs: 1, sm: 2 }} bordered>
-            <Descriptions.Item label={t('goalDetail.status')}>
+            <Descriptions.Item label="Status">
               <Tag color={goal.qualitativeStatus === QualitativeStatus.COMPLETED ? 'green' : 'orange'}>
                 {goal.qualitativeStatus.replace('_', ' ').toUpperCase()}
               </Tag>
             </Descriptions.Item>
-            {goal.targetRating && (
-              <Descriptions.Item label={t('goalDetail.targetRating')}>{goal.targetRating}/10</Descriptions.Item>
-            )}
+            {goal.targetRating && <Descriptions.Item label="Target Rating">{goal.targetRating}/10</Descriptions.Item>}
             {goal.selfAssessments && goal.selfAssessments.length > 0 && (
-              <Descriptions.Item label={t('goalDetail.selfAssessments')} span={2}>
+              <Descriptions.Item label="Self Assessments" span={2}>
                 <List
                   size="small"
                   dataSource={goal.selfAssessments}
                   renderItem={(assessment) => (
                     <List.Item>
                       <Space>
-                        <Text strong>{t('goalDetail.rating', { rating: assessment.rating })}</Text>
+                        <Text strong>Rating: {assessment.rating}/10</Text>
                         <Text type="secondary">{formatDate(assessment.date)}</Text>
                         {assessment.comment && <Text>{assessment.comment}</Text>}
                       </Space>
@@ -409,7 +327,7 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               </Descriptions.Item>
             )}
             {goal.improvementCriteria && goal.improvementCriteria.length > 0 && (
-              <Descriptions.Item label={t('goalDetail.improvementCriteria')} span={2}>
+              <Descriptions.Item label="Improvement Criteria" span={2}>
                 <List
                   size="small"
                   dataSource={goal.improvementCriteria}
@@ -422,15 +340,15 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       )}
 
       {isBinaryGoal(goal) && (
-        <Card title={t('goalDetail.binaryDetails')} style={{ marginBottom: 24 }}>
+        <Card title="Binary Goal Details" style={{ marginBottom: 24 }}>
           <Row gutter={[16, 16]}>
             {goal.targetCount !== undefined && (
               <>
                 <Col xs={24} sm={12}>
-                  <Statistic title={t('goalDetail.currentCount')} value={goal.currentCount} />
+                  <Statistic title="Current Count" value={goal.currentCount} />
                 </Col>
                 <Col xs={24} sm={12}>
-                  <Statistic title={t('goalDetail.targetCount')} value={goal.targetCount} />
+                  <Statistic title="Target Count" value={goal.targetCount} />
                 </Col>
               </>
             )}
@@ -438,7 +356,7 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
           {goal.items && goal.items.length > 0 && (
             <>
               <Divider />
-              <Title level={5}>{t('goalDetail.items')}</Title>
+              <Title level={5}>Items</Title>
               <List
                 dataSource={goal.items}
                 renderItem={(item, index) => (
@@ -458,15 +376,15 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
           )}
           <Divider />
           <Descriptions column={{ xs: 1, sm: 2 }} bordered>
-            <Descriptions.Item label={t('goalDetail.allowPartialCompletion')}>
-              {goal.allowPartialCompletion ? t('goalDetail.yes') : t('goalDetail.no')}
+            <Descriptions.Item label="Allow Partial Completion">
+              {goal.allowPartialCompletion ? 'Yes' : 'No'}
             </Descriptions.Item>
           </Descriptions>
         </Card>
       )}
 
       {isMilestoneGoal(goal) && (
-        <Card title={t('goalDetail.milestones')} style={{ marginBottom: 24 }}>
+        <Card title="Milestones" style={{ marginBottom: 24 }}>
           {goal.milestones && goal.milestones.length > 0 ? (
             <Steps
               direction="vertical"
@@ -488,39 +406,31 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
                 }))}
             />
           ) : (
-            <Empty description={t('goalDetail.noMilestonesDefined')} />
+            <Empty description="No milestones defined" />
           )}
         </Card>
       )}
 
       {isRecurringGoal(goal) && (
-        <Card title={t('goalDetail.recurringDetails')} style={{ marginBottom: 24 }}>
+        <Card title="Recurring Goal Details" style={{ marginBottom: 24 }}>
           <Descriptions column={{ xs: 1, sm: 2 }} bordered>
-            <Descriptions.Item label={t('goalDetail.frequency')}>
-              {goal.recurrence.frequency} ({t('goalDetail.interval')} {goal.recurrence.interval})
+            <Descriptions.Item label="Frequency">
+              {goal.recurrence.frequency} (every {goal.recurrence.interval})
             </Descriptions.Item>
             {goal.recurrence.endDate && (
-              <Descriptions.Item label={t('goalDetail.endDate')}>
-                {formatDate(goal.recurrence.endDate)}
-              </Descriptions.Item>
+              <Descriptions.Item label="End Date">{formatDate(goal.recurrence.endDate)}</Descriptions.Item>
             )}
             {goal.completionStats && (
               <>
-                <Descriptions.Item label={t('goalDetail.totalOccurrences')}>
-                  {goal.completionStats.totalOccurrences}
-                </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.completedOccurrences')}>
+                <Descriptions.Item label="Total Occurrences">{goal.completionStats.totalOccurrences}</Descriptions.Item>
+                <Descriptions.Item label="Completed Occurrences">
                   {goal.completionStats.completedOccurrences}
                 </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.completionRate')}>
+                <Descriptions.Item label="Completion Rate">
                   {goal.completionStats.completionRate.toFixed(1)}%
                 </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.currentStreak')}>
-                  {goal.completionStats.streak.current}
-                </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.longestStreak')}>
-                  {goal.completionStats.streak.longest}
-                </Descriptions.Item>
+                <Descriptions.Item label="Current Streak">{goal.completionStats.streak.current}</Descriptions.Item>
+                <Descriptions.Item label="Longest Streak">{goal.completionStats.streak.longest}</Descriptions.Item>
               </>
             )}
           </Descriptions>
@@ -528,31 +438,23 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       )}
 
       {isHabitGoal(goal) && (
-        <Card title={t('goalDetail.habitDetails')} style={{ marginBottom: 24 }}>
+        <Card title="Habit Goal Details" style={{ marginBottom: 24 }}>
           <Descriptions column={{ xs: 1, sm: 2 }} bordered>
-            <Descriptions.Item label={t('goalDetail.targetFrequency')}>{goal.targetFrequency}</Descriptions.Item>
+            <Descriptions.Item label="Target Frequency">{goal.targetFrequency}</Descriptions.Item>
             {goal.habitStrength !== undefined && (
-              <Descriptions.Item label={t('goalDetail.habitStrength')}>
-                {goal.habitStrength.toFixed(1)}%
-              </Descriptions.Item>
+              <Descriptions.Item label="Habit Strength">{goal.habitStrength.toFixed(1)}%</Descriptions.Item>
             )}
             {goal.completionStats && (
               <>
-                <Descriptions.Item label={t('goalDetail.totalDays')}>
-                  {goal.completionStats.totalOccurrences}
-                </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.completedDays')}>
+                <Descriptions.Item label="Total Days">{goal.completionStats.totalOccurrences}</Descriptions.Item>
+                <Descriptions.Item label="Completed Days">
                   {goal.completionStats.completedOccurrences}
                 </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.completionRate')}>
+                <Descriptions.Item label="Completion Rate">
                   {goal.completionStats.completionRate.toFixed(1)}%
                 </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.currentStreak')}>
-                  {goal.completionStats.streak.current}
-                </Descriptions.Item>
-                <Descriptions.Item label={t('goalDetail.longestStreak')}>
-                  {goal.completionStats.streak.longest}
-                </Descriptions.Item>
+                <Descriptions.Item label="Current Streak">{goal.completionStats.streak.current}</Descriptions.Item>
+                <Descriptions.Item label="Longest Streak">{goal.completionStats.streak.longest}</Descriptions.Item>
               </>
             )}
           </Descriptions>
@@ -560,76 +462,72 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       )}
 
       {/* Notes Section */}
-      {isFeatureEnabled('notes') && (
-        <Card
-          title={
-            <Space>
-              <FileTextOutlined />
-              <span>{t('goalDetail.notes')}</span>
-              {goal.notes.length > 0 && <Tag>{goal.notes.length}</Tag>}
-            </Space>
-          }
-          style={{ marginBottom: 24 }}
-        >
-          {goal.notes && goal.notes.length > 0 ? (
-            <Timeline
-              items={goal.notes.map((note) => ({
-                children: (
-                  <div>
-                    <Paragraph>{note.content}</Paragraph>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      {formatDate(note.createdAt)}
-                      {note.createdBy && ` by ${note.createdBy}`}
-                    </Text>
-                  </div>
-                ),
-              }))}
-            />
-          ) : (
-            <Empty description={t('goalDetail.noNotesYet')} />
-          )}
-        </Card>
-      )}
+      <Card
+        title={
+          <Space>
+            <FileTextOutlined />
+            <span>Notes</span>
+            {goal.notes.length > 0 && <Tag>{goal.notes.length}</Tag>}
+          </Space>
+        }
+        style={{ marginBottom: 24 }}
+      >
+        {goal.notes && goal.notes.length > 0 ? (
+          <Timeline
+            items={goal.notes.map((note) => ({
+              children: (
+                <div>
+                  <Paragraph>{note.content}</Paragraph>
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    {formatDate(note.createdAt)}
+                    {note.createdBy && ` by ${note.createdBy}`}
+                  </Text>
+                </div>
+              ),
+            }))}
+          />
+        ) : (
+          <Empty description="No notes yet" />
+        )}
+      </Card>
 
       {/* Attachments Section */}
-      {isFeatureEnabled('attachments') && (
-        <Card
-          title={
-            <Space>
-              <PaperClipOutlined />
-              <span>{t('goalDetail.attachments')}</span>
-              {goal.attachments.length > 0 && <Tag>{goal.attachments.length}</Tag>}
-            </Space>
-          }
-          style={{ marginBottom: 24 }}
-        >
-          {goal.attachments && goal.attachments.length > 0 ? (
-            <List
-              dataSource={goal.attachments}
-              renderItem={(attachment) => (
-                <List.Item>
-                  <Space>
-                    <PaperClipOutlined />
-                    <Text>{attachment.filename}</Text>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      {formatDate(attachment.uploadedAt)}
-                    </Text>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      ({(attachment.size / 1024).toFixed(2)} KB)
-                    </Text>
-                  </Space>
-                </List.Item>
-              )}
-            />
-          ) : (
-            <Empty description={t('goalDetail.noAttachmentsYet')} />
-          )}
-        </Card>
-      )}
+      <Card
+        title={
+          <Space>
+            <PaperClipOutlined />
+            <span>Attachments</span>
+            {goal.attachments.length > 0 && <Tag>{goal.attachments.length}</Tag>}
+          </Space>
+        }
+        style={{ marginBottom: 24 }}
+      >
+        {goal.attachments && goal.attachments.length > 0 ? (
+          <List
+            dataSource={goal.attachments}
+            renderItem={(attachment) => (
+              <List.Item>
+                <Space>
+                  <PaperClipOutlined />
+                  <Text>{attachment.filename}</Text>
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    {formatDate(attachment.uploadedAt)}
+                  </Text>
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    ({(attachment.size / 1024).toFixed(2)} KB)
+                  </Text>
+                </Space>
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Empty description="No attachments yet" />
+        )}
+      </Card>
 
       {/* Progress History */}
       {goal.progressHistory && goal.progressHistory.length > 0 && (
-        <Card title={t('goalDetail.progressHistory')} style={{ marginBottom: 24 }}>
+        <Card title="Progress History" style={{ marginBottom: 24 }}>
           <Timeline
             items={goal.progressHistory
               .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -650,19 +548,14 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       )}
 
       {/* Related Goals */}
-      {goal.relatedGoals && goal.relatedGoals.length > 0 && relatedGoals && relatedGoals.length > 0 && (
-        <Card title={t('goalDetail.relatedGoals')} style={{ marginBottom: 24 }}>
+      {goal.relatedGoals && goal.relatedGoals.length > 0 && (
+        <Card title="Related Goals" style={{ marginBottom: 24 }}>
           <List
-            dataSource={relatedGoals}
-            renderItem={(relatedGoal) => (
+            dataSource={goal.relatedGoals}
+            renderItem={(relatedGoalId) => (
               <List.Item>
-                <Space>
-                  <Text strong>{relatedGoal.title}</Text>
-                  <Tag color={getStatusColor(relatedGoal.status)}>{relatedGoal.status}</Tag>
-                  <Text type="secondary">
-                    {t('goalDetail.progress')}: {calculateProgress(relatedGoal)}%
-                  </Text>
-                </Space>
+                <Text type="secondary">Goal ID: {relatedGoalId}</Text>
+                {/* TODO: Fetch and display related goal details */}
               </List.Item>
             )}
           />

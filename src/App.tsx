@@ -1,9 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
 
-import { CookieConsent } from '@/components/common/CookieConsent';
-import { InstallPrompt } from '@/components/common/InstallPrompt';
-import { UpdateToast } from '@/components/common/UpdateToast';
-import { PwaInstallProvider } from '@/contexts/PwaInstallContext';
 import { AppRoutes } from '@/routes';
 
 /**
@@ -15,12 +11,7 @@ import { AppRoutes } from '@/routes';
 function App() {
   return (
     <BrowserRouter>
-      <PwaInstallProvider>
-        <UpdateToast />
-        <AppRoutes />
-        <InstallPrompt />
-        <CookieConsent />
-      </PwaInstallProvider>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

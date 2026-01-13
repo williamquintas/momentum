@@ -63,7 +63,7 @@ export const clampProgress = (progress: number, allowOverAchievement = false): n
  * @returns Progress percentage (0-100, or >100 if over-achievement)
  */
 export const calculateQuantitativeProgress = (goal: QuantitativeGoal): number => {
-  const { startValue, targetValue, currentValue, allowOverAchievement } = goal;
+  const { startValue, targetValue, currentValue } = goal;
 
   // Edge case: startValue === targetValue
   if (startValue === targetValue) {
@@ -73,8 +73,8 @@ export const calculateQuantitativeProgress = (goal: QuantitativeGoal): number =>
   // Calculate progress
   const progress = ((currentValue - startValue) / (targetValue - startValue)) * 100;
 
-  // Clamp to 0-100, or allow over-achievement if configured
-  return clampProgress(progress, allowOverAchievement ?? false);
+  // Clamp to 0-100 (or allow over-achievement)
+  return clampProgress(progress, false); // Over-achievement not typically allowed for quantitative goals
 };
 
 /**

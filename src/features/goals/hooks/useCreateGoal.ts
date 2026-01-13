@@ -15,15 +15,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { CreateGoalInput, Goal } from '@/features/goals/types';
 import { goalService } from '@/services/api/goalService';
-import { isGoalTypeEnabled } from '@/utils/featureFlags';
 import { queryKeys } from '@/utils/queryKeys';
-
-export class GoalTypeDisabledError extends Error {
-  constructor(type: string) {
-    super(`Goal type "${type}" is currently disabled`);
-    this.name = 'GoalTypeDisabledError';
-  }
-}
 
 /**
  * Hook to create a new goal
@@ -47,12 +39,7 @@ export const useCreateGoal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateGoalInput) => {
-      if (!isGoalTypeEnabled(input.type)) {
-        throw new GoalTypeDisabledError(input.type);
-      }
-      return goalService.create(input);
-    },
+    mutationFn: (input: CreateGoalInput) => goalService.create(input),
     onMutate: async (newGoal) => {
       // Cancel any outgoing refetches to avoid overwriting optimistic update
       await queryClient.cancelQueries({ queryKey: queryKeys.goals.lists() });

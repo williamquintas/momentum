@@ -10,7 +10,4 @@ out
 .vscode
 .idea
 *.d.ts
-scripts
-specs/bkp
-dev-dist
 
