@@ -1,0 +1,220 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+        default: patch
+      prerelease_type:
+        description: 'Prerelease identifier - Release candidate'
+        required: false
+        type: choice
+        options:
+          - rc
+        default: rc
+      skip_changelog:
+        description: 'Skip changelog generation'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure Git
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get current version
+        id: current_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+
+      - name: Determine version bump type
+        id: version_bump
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+
+      - name: Bump version and generate changelog
+        id: version
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          SKIP_CHANGELOG=${{ github.event.inputs.skip_changelog }}
+          VERSION_TYPE=${{ github.event.inputs.version_type }}
+          PRERELEASE_TYPE=${{ github.event.inputs.prerelease_type }}
+
+          if [ "$VERSION_TYPE" = "prerelease" ]; then
+            if [ "$SKIP_CHANGELOG" = "true" ]; then
+              npm version prerelease --preid=$PRERELEASE_TYPE --no-git-tag-version
+            else
+              npx standard-version --prerelease $PRERELEASE_TYPE
+            fi
+          else
+            if [ "$SKIP_CHANGELOG" = "true" ]; then
+              npm version $VERSION_TYPE --no-git-tag-version
+            else
+              npx standard-version --release-as $VERSION_TYPE
+            fi
+          fi
+
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+          # Check if this is a prerelease version
+          if echo "$NEW_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-'; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get version from tag
+        id: version_from_tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          echo "new_version=$TAG" >> $GITHUB_OUTPUT
+          echo "Version from tag: $TAG"
+
+          # Check if this is a prerelease version
+          if echo "$TAG" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-'; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create version file
+        run: |
+          VERSION=${{ steps.version.new_version || steps.version_from_tag.new_version }}
+          echo "VITE_APP_VERSION=$VERSION" >> .env.production
+          echo "VITE_APP_BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> .env.production
+          echo "VITE_APP_GIT_SHA=${{ github.sha }}" >> .env.production
+          echo "Created version file with version: $VERSION"
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_APP_VERSION: ${{ steps.version.new_version || steps.version_from_tag.new_version }}
+          VITE_APP_BUILD_DATE: ${{ github.event.head_commit.timestamp || github.run_started_at }}
+          VITE_APP_GIT_SHA: ${{ github.sha }}
+
+      - name: Extract changelog
+        id: changelog
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.skip_changelog == 'false'
+        run: |
+          VERSION=${{ steps.version.new_version }}
+          # Extract changelog for this version
+          CHANGELOG=$(awk "/^## \\[$VERSION\\]/,/^## /{if (!/^## \\[$VERSION\\]/ && !/^## /) print}" CHANGELOG.md | sed '$d')
+          # Escape for GitHub Actions
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Get changelog from file
+        id: changelog_from_file
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          # Extract changelog for this version
+          CHANGELOG=$(awk "/^## \\[$TAG\\]/,/^## /{if (!/^## \\[$TAG\\]/ && !/^## /) print}" CHANGELOG.md | sed '$d')
+          # Escape for GitHub Actions
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=${{ steps.version.new_version }}
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+
+      - name: Push version changes
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git add package.json package-lock.json CHANGELOG.md
+          git commit -m "chore: bump version to ${{ steps.version.new_version }}"
+          git push origin main
+
+      - name: Determine if prerelease
+        id: is_prerelease
+        run: |
+          VERSION=${{ steps.version.new_version || steps.version_from_tag.new_version }}
+          IS_PRERELEASE=${{ steps.version.is_prerelease || steps.version_from_tag.is_prerelease }}
+
+          if [ "$IS_PRERELEASE" = "true" ] || echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-'; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.new_version || steps.version_from_tag.new_version }}
+          name: Release v${{ steps.version.new_version || steps.version_from_tag.new_version }}
+          body: |
+            ## Release v${{ steps.version.new_version || steps.version_from_tag.new_version }}
+
+            ${{ steps.changelog.changelog || steps.changelog_from_file.changelog || 'See CHANGELOG.md for details.' }}
+
+            ### Build Information
+            - **Commit**: ${{ github.sha }}
+            - **Build Date**: ${{ github.event.head_commit.timestamp || github.run_started_at }}
+            - **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          draft: false
+          prerelease: ${{ steps.is_prerelease.prerelease }}
+          files: dist/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build-v${{ steps.version.new_version || steps.version_from_tag.new_version }}
+          path: dist/
+          retention-days: 90

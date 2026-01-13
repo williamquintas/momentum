@@ -228,6 +228,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 - [System Planning Document](./GOALS_TRACKING_SYSTEM_PLAN.md)
 - [Development Guidelines Index](./AGENTS.md)
+- [Version Management Guide](./docs/VERSION_MANAGEMENT.md)
 - [Contributing Guide](./CONTRIBUTING.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
 - [Changelog](./CHANGELOG.md)

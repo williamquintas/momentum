@@ -45,7 +45,13 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch",
-    "prepare": "husky install || true"
+    "prepare": "husky install || true",
+    "version:patch": "standard-version --release-as patch",
+    "version:minor": "standard-version --release-as minor",
+    "version:major": "standard-version --release-as major",
+    "version:prerelease": "standard-version -s --prerelease rc",
+    "version:dry-run": "standard-version --dry-run",
+    "release": "npm run version:patch && git push --follow-tags origin main"
   },
   "dependencies": {
     "react": "18.2.0",
@@ -83,7 +89,8 @@
     "@vitest/ui": "^1.1.1",
     "jsdom": "^23.0.1",
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.0"
+    "lint-staged": "^15.2.0",
+    "standard-version": "^9.5.0"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
