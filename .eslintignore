@@ -1,0 +1,13 @@
+node_modules
+dist
+build
+coverage
+*.min.js
+*.config.js
+public
+.next
+out
+.vscode
+.idea
+*.d.ts
+

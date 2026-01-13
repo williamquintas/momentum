@@ -1,6 +1,7 @@
 # Common Patterns
 
 ## Creation Flow
+
 1. Show form with validation
 2. Handle submission with loading state
 3. Optimistically update UI
@@ -13,6 +14,7 @@
 10. Support keyboard shortcuts (Cmd/Ctrl+Enter to submit)
 
 ## Progress Update Flow
+
 1. Allow manual or automatic updates
 2. Validate new progress value (range, type-specific rules)
 3. Update with optimistic UI
@@ -26,6 +28,7 @@
 11. Show progress change indicators (↑/↓ arrows, color coding)
 
 ## Filtering & Search
+
 - Debounce search input (300ms recommended)
 - Combine multiple filters
 - Persist filter state in URL params
@@ -39,6 +42,7 @@
 - Support advanced search syntax
 
 ## List Display
+
 - Show key information at a glance
 - Include quick actions
 - Support bulk operations
@@ -53,6 +57,7 @@
 - Group by categories when applicable
 
 ## Detail View
+
 - Show comprehensive information
 - Display progress history
 - Show related goals (parent/child, similar goals)
@@ -67,6 +72,7 @@
 - Display upcoming milestones/deadlines
 
 ## Deletion & Archival Flow
+
 1. Show confirmation dialog with goal details
 2. Explain consequences (what data will be lost)
 3. Handle soft delete (archive) vs hard delete
@@ -79,6 +85,7 @@
 10. Provide undo option (within 5-10 seconds)
 
 ## Bulk Operations
+
 - Show selection checkbox/select all
 - Display count of selected items
 - Provide bulk action toolbar
@@ -91,6 +98,7 @@
 - Provide undo for bulk operations
 
 ## Form Validation Patterns
+
 - Validate on blur for better UX
 - Show field-level errors inline
 - Validate on submit (comprehensive check)
@@ -103,6 +111,7 @@
 - Validate dependent fields (e.g., end date after start date)
 
 ## Navigation Patterns
+
 - Use Ant Design Breadcrumb for deep navigation
 - Support browser back/forward buttons
 - Persist scroll position when navigating back
@@ -113,6 +122,7 @@
 - Use Ant Design Menu for main navigation
 
 ## Confirmation Dialogs
+
 - Use Ant Design Modal.confirm for destructive actions
 - Show clear action description
 - Explain consequences
@@ -123,6 +133,7 @@
 - Handle cancellation gracefully
 
 ## Optimistic Updates
+
 - Update UI immediately for better perceived performance
 - Show loading indicator on the specific item
 - Revert on error with clear message
@@ -132,6 +143,7 @@
 - Sync with server response when available
 
 ## Data Synchronization
+
 - Use React Query for automatic refetching
 - Implement stale-while-revalidate pattern
 - Show sync status indicator
@@ -142,6 +154,7 @@
 - Show last sync timestamp
 
 ## Offline Support
+
 - Queue actions when offline
 - Show offline indicator
 - Sync when connection restored
@@ -151,6 +164,7 @@
 - Support offline viewing of cached data
 
 ## Error Handling Patterns
+
 - Show user-friendly error messages
 - Provide retry options
 - Log errors for debugging
@@ -164,6 +178,7 @@
 - Show error details in development mode
 
 ## Loading States
+
 - Use Skeleton components for content
 - Show Spinner for actions
 - Use optimistic updates
@@ -175,6 +190,7 @@
 - Prevent multiple simultaneous submissions
 
 ## Success Feedback
+
 - Show success messages
 - Use notifications for important actions
 - Celebrate goal completions
@@ -188,6 +204,7 @@
 ## Goal-Specific Patterns
 
 ### Goal Type Switching
+
 - Show confirmation when changing goal type
 - Explain data loss implications
 - Migrate compatible data when possible
@@ -195,6 +212,7 @@
 - Show preview of changes
 
 ### Recurrence Handling
+
 - Show recurrence pattern clearly
 - Handle timezone considerations
 - Show next occurrence date
@@ -202,6 +220,7 @@
 - Handle missed occurrences
 
 ### Milestone Progression
+
 - Show milestone progress visually
 - Highlight current milestone
 - Show upcoming milestones
@@ -209,9 +228,9 @@
 - Support milestone editing
 
 ### Habit Tracking
+
 - Show streak information
 - Display habit calendar/heatmap
 - Support quick log entry
 - Show habit frequency patterns
 - Handle missed days gracefully
-

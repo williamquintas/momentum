@@ -1,6 +1,7 @@
 # Dependencies
 
 ## Package Management
+
 - Use npm consistently (or pnpm/yarn if team standardizes on it)
 - Lock dependency versions (package-lock.json, yarn.lock, or pnpm-lock.yaml)
 - Commit lock files to repository
@@ -11,6 +12,7 @@
 - Configure registry settings if using private packages
 
 ## Dependency Categories
+
 - **Dependencies**: Required for production
 - **DevDependencies**: Required for development only
 - **PeerDependencies**: Required by consuming packages
@@ -18,6 +20,7 @@
 - **BundledDependencies**: Packages bundled with the package
 
 ### Categorization Guidelines
+
 - Place build tools, test frameworks, and linters in devDependencies
 - Only include runtime-required packages in dependencies
 - Use peerDependencies for libraries that should be provided by the consumer
@@ -26,6 +29,7 @@
 ## Adding Dependencies
 
 ### Pre-Addition Checklist
+
 - Evaluate need before adding
 - Check bundle size impact
 - Review package maintenance (last update, issue resolution, community activity)
@@ -38,6 +42,7 @@
 - Test thoroughly in development environment
 
 ### Evaluation Criteria
+
 - **Maintenance**: Active development, regular updates, responsive maintainers
 - **Popularity**: GitHub stars, npm downloads, community size
 - **Bundle Size**: Use bundlephobia.com or similar tools
@@ -49,6 +54,7 @@
 ## Updating Dependencies
 
 ### Update Strategy
+
 - Update regularly for security patches
 - Test after updates (unit tests, integration tests, manual testing)
 - Update one at a time when possible (easier to isolate issues)
@@ -59,6 +65,7 @@
 - Test in feature branch before merging
 
 ### Update Workflow
+
 1. Check current version: `npm list <package>`
 2. Check latest version: `npm view <package> version`
 3. Read changelog/release notes
@@ -70,6 +77,7 @@
 9. Commit with descriptive message
 
 ### Breaking Change Detection
+
 - Review changelog for "BREAKING" or "Breaking Changes" sections
 - Check migration guides for major version bumps
 - Use TypeScript compiler to catch type-related breaking changes
@@ -79,6 +87,7 @@
 ## Security Audits
 
 ### Audit Process
+
 - Run `npm audit` or `yarn audit` regularly (weekly or before releases)
 - Fix high and critical vulnerabilities immediately
 - Review moderate vulnerabilities within 1 week
@@ -88,6 +97,7 @@
 - Use `npm audit fix --force` with caution (may introduce breaking changes)
 
 ### Vulnerability Response
+
 1. **Critical/High**: Fix within 24 hours
 2. **Moderate**: Fix within 1 week
 3. **Low**: Fix in next dependency update cycle
@@ -95,6 +105,7 @@
 5. Test thoroughly after security patches
 
 ### Automated Security
+
 - Enable Dependabot in GitHub (or similar)
 - Configure security update frequency
 - Set up automated PR creation for security patches
@@ -104,6 +115,7 @@
 ## Dependency Review
 
 ### Periodic Review (Quarterly)
+
 - Review all dependencies for usage
 - Remove unused dependencies
 - Consolidate similar packages (avoid duplicates)
@@ -114,12 +126,14 @@
 - Verify all dependencies are still maintained
 
 ### Unused Dependency Detection
+
 - Use `depcheck` or `npm-check` to find unused dependencies
 - Review imports across codebase
 - Check for dynamic imports that might use dependencies
 - Remove unused dependencies to reduce bundle size and security surface
 
 ### Consolidation Opportunities
+
 - Multiple date libraries → Use one (e.g., date-fns or dayjs)
 - Multiple HTTP clients → Standardize on one
 - Multiple state management → Choose one approach
@@ -128,6 +142,7 @@
 ## Critical Dependencies
 
 ### Production Dependencies
+
 - **React**: Core framework (pin to stable LTS version)
 - **TypeScript**: Type safety (keep within React compatibility range)
 - **Ant Design (antd)**: UI components (primary UI library)
@@ -137,12 +152,14 @@
 - **date-fns or dayjs**: Date manipulation (choose one)
 
 ### Version Compatibility Matrix
+
 - React 18.x → TypeScript 4.9+
 - React 18.x → React Router 6.x
 - Ant Design 5.x → React 18.x compatible
 - React Query v5 → React 18.x required
 
 ### Dependency Decision Log
+
 - Document major dependency choices and rationale
 - Record version upgrade decisions
 - Note alternatives considered and why they were rejected
@@ -150,6 +167,7 @@
 ## Development Dependencies
 
 ### Core Development Tools
+
 - **ESLint**: Linting (with React, TypeScript plugins)
 - **Prettier**: Code formatting
 - **TypeScript**: Type checking and compilation
@@ -160,6 +178,7 @@
 - **Vite or Webpack**: Build tool (Vite preferred for faster dev)
 
 ### Additional Development Tools
+
 - **@types/node**: Node.js type definitions
 - **@types/react**: React type definitions
 - **vitest or jest**: Test runner
@@ -169,6 +188,7 @@
 ## Version Pinning Strategy
 
 ### Pinning Rules
+
 - **Pin exact versions** for critical deps (React, TypeScript, Ant Design)
 - **Use caret (^)** for minor/patch updates (e.g., `^5.0.0` allows 5.x.x)
 - **Use tilde (~)** for patch-only updates (e.g., `~5.0.0` allows 5.0.x)
@@ -178,6 +198,7 @@
 - Document version requirements in README or docs
 
 ### Critical Dependencies (Exact Versions)
+
 ```json
 {
   "react": "18.2.0",
@@ -187,6 +208,7 @@
 ```
 
 ### Non-Critical Dependencies (Ranges)
+
 ```json
 {
   "lodash": "^4.17.21",
@@ -195,11 +217,13 @@
 ```
 
 ### Version Update Policy
+
 - **Major versions**: Manual review, read migration guide, test extensively
 - **Minor versions**: Review changelog, run tests, update if stable
 - **Patch versions**: Auto-update via Dependabot, verify tests pass
 
 ## License Compliance
+
 - Review all dependency licenses
 - Ensure license compatibility
 - Document license requirements
@@ -209,6 +233,7 @@
 ## Bundle Size Management
 
 ### Monitoring
+
 - Monitor bundle size with each build
 - Use bundle analyzer (webpack-bundle-analyzer, rollup-plugin-visualizer)
 - Set bundle size budgets in build configuration
@@ -216,6 +241,7 @@
 - Alert on significant size increases
 
 ### Optimization Strategies
+
 - **Code splitting**: Split large dependencies into separate chunks
 - **Tree shaking**: Ensure build tool supports tree shaking
 - **Lazy loading**: Use React.lazy() for route-based code splitting
@@ -226,12 +252,14 @@
   - Use `antd` components individually, not full library import
 
 ### Bundle Analysis Tools
+
 - `webpack-bundle-analyzer` for Webpack projects
 - `rollup-plugin-visualizer` for Rollup/Vite projects
 - `source-map-explorer` for detailed analysis
 - Chrome DevTools Coverage tab for runtime analysis
 
 ### Size Budgets
+
 - Set maximum bundle size limits
 - Fail builds if budget exceeded
 - Monitor individual chunk sizes
@@ -240,6 +268,7 @@
 ## Best Practices
 
 ### General Practices
+
 - Keep dependencies up to date (security patches immediately, others regularly)
 - Remove unused dependencies (use depcheck)
 - Monitor security vulnerabilities (automated + manual)
@@ -250,6 +279,7 @@
 - Review dependency tree regularly (quarterly audit)
 
 ### CI/CD Integration
+
 - Run `npm ci` in CI (clean install from lock file)
 - Run security audits in CI pipeline
 - Fail builds on critical vulnerabilities
@@ -257,6 +287,7 @@
 - Generate dependency reports in CI
 
 ### Conflict Resolution
+
 - Resolve peer dependency warnings
 - Use `overrides` or `resolutions` for transitive dependency conflicts
 - Document why overrides are necessary
@@ -264,6 +295,7 @@
 - Prefer updating conflicting packages over overrides when possible
 
 ### Documentation Requirements
+
 - Document major dependency choices in ADRs (Architecture Decision Records)
 - Maintain CHANGELOG for dependency updates
 - Document known issues or workarounds
@@ -271,6 +303,7 @@
 - Document migration steps for major updates
 
 ### Workspace/Monorepo Considerations
+
 - Use workspace features for shared dependencies
 - Hoist common dependencies to root
 - Avoid duplicate dependencies across packages
@@ -278,9 +311,9 @@
 - Configure shared .npmrc for workspace
 
 ### Performance Considerations
+
 - Measure impact of new dependencies on build time
 - Monitor install time (especially in CI)
 - Use dependency caching in CI/CD
 - Consider impact on cold start times
 - Profile bundle size impact before adding large dependencies
-

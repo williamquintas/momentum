@@ -1,6 +1,7 @@
 # Error Handling
 
 ## Error Types
+
 - **Network Errors**: API failures, timeouts, connection issues
 - **Validation Errors**: Form validation, input validation
 - **Business Logic Errors**: Invalid operations, business rule violations
@@ -8,6 +9,7 @@
 - **User Errors**: Invalid user actions
 
 ## Error Handling Strategy
+
 - Handle errors at appropriate levels
 - Provide user-friendly error messages
 - Log errors with context
@@ -17,10 +19,12 @@
 ## Custom Error Classes
 
 ### Base Error Class
+
 - Create a base `AppError` class that all custom errors extend
 - Include error codes for categorization
 - Support context/metadata for debugging
 - Example:
+
   ```typescript
   // utils/errors/AppError.ts
   export class AppError extends Error {
@@ -42,25 +46,22 @@
       this.statusCode = statusCode;
       this.context = context;
       this.isOperational = isOperational;
-      
+
       Error.captureStackTrace(this, this.constructor);
     }
   }
   ```
 
 ### Specific Error Classes
+
 - Create specific error classes for different error types
 - Example:
+
   ```typescript
   // utils/errors/NotFoundError.ts
   export class NotFoundError extends AppError {
     constructor(resource: string, id?: string) {
-      super(
-        `${resource}${id ? ` with id ${id}` : ''} was not found`,
-        'NOT_FOUND',
-        404,
-        { resource, id }
-      );
+      super(`${resource}${id ? ` with id ${id}` : ''} was not found`, 'NOT_FOUND', 404, { resource, id });
     }
   }
 
@@ -68,10 +69,7 @@
   export class ValidationError extends AppError {
     public readonly fieldErrors: Record<string, string[]>;
 
-    constructor(
-      message: string,
-      fieldErrors: Record<string, string[]> = {}
-    ) {
+    constructor(message: string, fieldErrors: Record<string, string[]> = {}) {
       super(message, 'VALIDATION_ERROR', 400, { fieldErrors });
       this.fieldErrors = fieldErrors;
     }
@@ -114,9 +112,11 @@
   ```
 
 ### Error Code System
+
 - Use consistent error codes for categorization
 - Map error codes to user-friendly messages
 - Example:
+
   ```typescript
   // utils/errors/errorCodes.ts
   export const ERROR_CODES = {
@@ -124,40 +124,42 @@
     NETWORK_ERROR: 'NETWORK_ERROR',
     TIMEOUT: 'TIMEOUT',
     CONNECTION_LOST: 'CONNECTION_LOST',
-    
+
     // API errors
     NOT_FOUND: 'NOT_FOUND',
     UNAUTHORIZED: 'UNAUTHORIZED',
     FORBIDDEN: 'FORBIDDEN',
     SERVER_ERROR: 'SERVER_ERROR',
     BAD_REQUEST: 'BAD_REQUEST',
-    
+
     // Validation errors
     VALIDATION_ERROR: 'VALIDATION_ERROR',
     INVALID_INPUT: 'INVALID_INPUT',
-    
+
     // Business logic errors
     BUSINESS_RULE_VIOLATION: 'BUSINESS_RULE_VIOLATION',
     INVALID_STATE: 'INVALID_STATE',
     INVALID_OPERATION: 'INVALID_OPERATION',
-    
+
     // System errors
     UNKNOWN_ERROR: 'UNKNOWN_ERROR',
     INTERNAL_ERROR: 'INTERNAL_ERROR',
   } as const;
 
-  export type ErrorCode = typeof ERROR_CODES[keyof typeof ERROR_CODES];
+  export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
   ```
 
 ## Error Classification & Severity
 
 ### Error Severity Levels
+
 - **Critical**: System failures, data loss risks
 - **High**: Business logic violations, authentication failures
 - **Medium**: Validation errors, user input issues
 - **Low**: Warnings, non-blocking issues
 
 ### Error Categorization Matrix
+
 - Classify errors by type and severity
 - Determine appropriate handling strategy based on category
 - Example:
@@ -180,9 +182,11 @@
 ## React Error Boundaries
 
 ### Modern Error Boundary (Hooks-based)
+
 - Use `react-error-boundary` library for better error boundary support
 - Implement error boundaries at appropriate component tree levels
 - Example:
+
   ```typescript
   // components/ErrorBoundary.tsx
   import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
@@ -218,10 +222,10 @@
     onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
   }
 
-  export function ErrorBoundary({ 
-    children, 
+  export function ErrorBoundary({
+    children,
     fallback = ErrorFallback,
-    onError 
+    onError
   }: ErrorBoundaryProps) {
     const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
       // Log error
@@ -257,6 +261,7 @@
   ```
 
 ### Error Boundary Placement Strategy
+
 - **App-level**: Wrap entire app to catch critical errors
 - **Route-level**: Wrap route components to handle route-specific errors
 - **Feature-level**: Wrap feature components to isolate errors
@@ -278,9 +283,11 @@
   ```
 
 ### Route-Level Error Handling
+
 - Create route-specific error boundaries
 - Handle 404 errors with dedicated components
 - Example:
+
   ```typescript
   // components/RouteErrorBoundary.tsx
   import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
@@ -326,10 +333,12 @@
 ## API Error Handling
 
 ### Error Transformation
+
 - Transform API errors to custom error classes
 - Extract field-specific validation errors
 - Handle different HTTP status codes consistently
 - Example:
+
   ```typescript
   // utils/errorHandler.ts
   import axios from 'axios';
@@ -353,16 +362,9 @@
         switch (status) {
           case 400:
             if (data.errors) {
-              return new ValidationError(
-                data.message || 'Validation failed',
-                data.errors
-              );
+              return new ValidationError(data.message || 'Validation failed', data.errors);
             }
-            return new AppError(
-              data.message || 'Bad request',
-              'BAD_REQUEST',
-              400
-            );
+            return new AppError(data.message || 'Bad request', 'BAD_REQUEST', 400);
           case 401:
             return new UnauthorizedError(data.message);
           case 403:
@@ -374,11 +376,7 @@
           case 503:
             return new ServerError(data.message);
           default:
-            return new AppError(
-              data.message || 'An error occurred',
-              'API_ERROR',
-              status
-            );
+            return new AppError(data.message || 'An error occurred', 'API_ERROR', status);
         }
       } else if (error.request) {
         // Request made but no response
@@ -394,10 +392,7 @@
       return error;
     }
 
-    return new AppError(
-      error instanceof Error ? error.message : 'An unexpected error occurred',
-      'UNKNOWN_ERROR'
-    );
+    return new AppError(error instanceof Error ? error.message : 'An unexpected error occurred', 'UNKNOWN_ERROR');
   };
 
   export const extractFieldErrors = (error: unknown): Record<string, string[]> => {
@@ -412,9 +407,11 @@
   ```
 
 ### API Service Error Handling
+
 - Handle errors in API service methods
 - Transform errors before throwing
 - Example:
+
   ```typescript
   // services/goalService.ts
   import { apiClient } from './apiClient';
@@ -436,10 +433,12 @@
 ## React Query Error Handling
 
 ### Query Error Handling
+
 - Handle errors in `useQuery` hooks
 - Transform errors to user-friendly messages
 - Provide error recovery options
 - Example:
+
   ```typescript
   // hooks/useGoals.ts
   import { useQuery } from '@tanstack/react-query';
@@ -475,18 +474,18 @@
     return {
       ...query,
       error: query.error ? transformApiError(query.error) : null,
-      errorMessage: query.error instanceof AppError 
-        ? query.error.message 
-        : 'Failed to load goals',
+      errorMessage: query.error instanceof AppError ? query.error.message : 'Failed to load goals',
     };
   };
   ```
 
 ### Mutation Error Handling
+
 - Handle errors in `useMutation` hooks
 - Rollback optimistic updates on error
 - Show appropriate error messages
 - Example:
+
   ```typescript
   // hooks/useCreateGoal.ts
   import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -508,10 +507,7 @@
         const previousGoals = queryClient.getQueryData<Goal[]>(['goals']);
 
         // Optimistically update
-        queryClient.setQueryData<Goal[]>(['goals'], (old = []) => [
-          ...old,
-          { ...newGoal, id: 'temp-id' } as Goal,
-        ]);
+        queryClient.setQueryData<Goal[]>(['goals'], (old = []) => [...old, { ...newGoal, id: 'temp-id' } as Goal]);
 
         return { previousGoals };
       },
@@ -523,7 +519,7 @@
 
         // Transform and display error
         const appError = transformApiError(error);
-        
+
         if (appError instanceof ValidationError) {
           // Show field-specific errors
           Object.entries(appError.fieldErrors).forEach(([field, errors]) => {
@@ -543,9 +539,11 @@
   ```
 
 ### Global Query Error Handling
+
 - Configure global error handling in QueryClient
 - Handle errors consistently across all queries
 - Example:
+
   ```typescript
   // lib/queryClient.ts
   import { QueryClient } from '@tanstack/react-query';
@@ -558,12 +556,12 @@
       queries: {
         retry: (failureCount, error) => {
           const appError = transformApiError(error);
-          
+
           // Don't retry on 4xx errors
           if (appError.statusCode && appError.statusCode < 500) {
             return false;
           }
-          
+
           // Retry up to 3 times for server errors
           return failureCount < 3;
         },
@@ -573,7 +571,7 @@
         },
         onError: (error) => {
           const appError = transformApiError(error);
-          
+
           // Handle authentication errors globally
           if (appError instanceof UnauthorizedError) {
             // Redirect to login
@@ -589,7 +587,7 @@
         retry: 1,
         onError: (error) => {
           const appError = transformApiError(error);
-          
+
           // Don't show error message here - let individual mutations handle it
           // This is just for logging
           console.error('Mutation error:', appError);
@@ -602,10 +600,12 @@
 ## Error Notification Systems
 
 ### Ant Design Message (Inline Errors)
+
 - Use `message` for non-blocking, transient errors
 - Show inline feedback for form submissions
 - Auto-dismiss after 3-5 seconds
 - Example:
+
   ```typescript
   import { message } from 'antd';
 
@@ -623,10 +623,12 @@
   ```
 
 ### Ant Design Notification (Persistent Errors)
+
 - Use `notification` for important, persistent errors
 - Show detailed error information
 - Require user action to dismiss
 - Example:
+
   ```typescript
   import { notification } from 'antd';
 
@@ -644,21 +646,24 @@
   ```
 
 ### Error Notification Utility
+
 - Create centralized error notification utility
 - Standardize error message display
 - Example:
+
   ```typescript
   // utils/errorNotifications.ts
   import { message, notification } from 'antd';
   import { AppError, ValidationError, NetworkError } from './errors';
 
-  export const showError = (error: unknown, options?: {
-    useNotification?: boolean;
-    duration?: number;
-  }) => {
-    const appError = error instanceof AppError 
-      ? error 
-      : new AppError('An unexpected error occurred', 'UNKNOWN_ERROR');
+  export const showError = (
+    error: unknown,
+    options?: {
+      useNotification?: boolean;
+      duration?: number;
+    }
+  ) => {
+    const appError = error instanceof AppError ? error : new AppError('An unexpected error occurred', 'UNKNOWN_ERROR');
 
     const errorMessage = appError.message;
 
@@ -685,9 +690,11 @@
 ## Form Error Handling (Ant Design Specific)
 
 ### Field-Level Validation Errors
+
 - Show validation errors inline using `Form.Item`
 - Use `validateStatus` and `help` props
 - Example:
+
   ```typescript
   // components/GoalForm.tsx
   import { Form, Input } from 'antd';
@@ -703,7 +710,7 @@
       } catch (error) {
         if (error instanceof ValidationError) {
           setFieldErrors(error.fieldErrors);
-          
+
           // Set field errors in form
           Object.entries(error.fieldErrors).forEach(([field, errors]) => {
             form.setFields([
@@ -733,18 +740,17 @@
   ```
 
 ### Server-Side Validation Error Mapping
+
 - Map server validation errors to form fields
 - Handle nested field errors
 - Example:
+
   ```typescript
   // utils/formErrorMapper.ts
   import { FormInstance } from 'antd';
   import { ValidationError } from './errors';
 
-  export const mapValidationErrorsToForm = (
-    form: FormInstance,
-    error: ValidationError
-  ) => {
+  export const mapValidationErrorsToForm = (form: FormInstance, error: ValidationError) => {
     Object.entries(error.fieldErrors).forEach(([fieldPath, errors]) => {
       const fieldName = fieldPath.split('.');
       form.setFields([
@@ -758,9 +764,11 @@
   ```
 
 ### Form Error Summary
+
 - Show summary of all form errors
 - Display at top of form
 - Example:
+
   ```typescript
   // components/FormErrorSummary.tsx
   import { Alert } from 'antd';
@@ -792,9 +800,11 @@
 ## Error State Management
 
 ### Zustand Error State
+
 - Store error state in Zustand stores when needed
 - Clear errors on actions
 - Example:
+
   ```typescript
   // stores/goalStore.ts
   import { create } from 'zustand';
@@ -814,12 +824,14 @@
   ```
 
 ### React Query Error State
+
 - Use React Query's built-in error state
 - Access errors via query/mutation hooks
 - Example:
+
   ```typescript
   const { data, error, isError } = useGoals();
-  
+
   if (isError) {
     // Handle error
     showError(error);
@@ -829,15 +841,18 @@
 ## Retry Strategies
 
 ### Automatic Retry Configuration
+
 - Configure retries at QueryClient level
 - Use exponential backoff
 - Don't retry on 4xx errors
 - Example (see Global Query Error Handling section above)
 
 ### Manual Retry Pattern
+
 - Provide retry buttons in error UI
 - Allow users to manually retry failed operations
 - Example:
+
   ```typescript
   // components/ErrorRetry.tsx
   import { Button, Space } from 'antd';
@@ -865,31 +880,29 @@
   ```
 
 ### Retry with Exponential Backoff
+
 - Implement exponential backoff for retries
 - Limit maximum retry attempts
 - Example:
+
   ```typescript
   // utils/retry.ts
-  export const retryWithBackoff = async <T>(
-    fn: () => Promise<T>,
-    maxRetries = 3,
-    baseDelay = 1000
-  ): Promise<T> => {
+  export const retryWithBackoff = async <T>(fn: () => Promise<T>, maxRetries = 3, baseDelay = 1000): Promise<T> => {
     let lastError: Error;
-    
+
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         return await fn();
       } catch (error) {
         lastError = error as Error;
-        
+
         if (attempt < maxRetries) {
           const delay = baseDelay * Math.pow(2, attempt);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
-    
+
     throw lastError!;
   };
   ```
@@ -897,10 +910,12 @@
 ## Error Propagation Strategy
 
 ### When to Catch vs Propagate
+
 - **Catch**: When you can handle the error meaningfully
 - **Propagate**: When error should be handled at a higher level
 - Transform errors at service layer, handle at UI layer
 - Example:
+
   ```typescript
   // Service layer - transform and propagate
   export const goalService = {
@@ -928,6 +943,7 @@
   ```
 
 ### Error Handling Hierarchy
+
 1. **Service Layer**: Transform API errors to AppError
 2. **Hook Layer**: Handle React Query errors, provide recovery
 3. **Component Layer**: Display errors, provide user actions
@@ -936,15 +952,18 @@
 ## Error Recovery
 
 ### Retry Failed Operations
+
 - Provide retry buttons for failed operations
 - Implement automatic retry for transient failures
 - Show retry status to users
 - Example (see Manual Retry Pattern section above)
 
 ### Save User Input Before Errors
+
 - Persist form state to localStorage
 - Restore form state after errors
 - Example:
+
   ```typescript
   // utils/formPersistence.ts
   const FORM_STORAGE_KEY = 'goal-form-draft';
@@ -964,10 +983,12 @@
   ```
 
 ### Offline Error Handling
+
 - Queue operations when offline
 - Show offline indicator
 - Sync when connection restored
 - Example:
+
   ```typescript
   // utils/offlineQueue.ts
   interface QueuedOperation {
@@ -1014,10 +1035,12 @@
 ## Error States in UI
 
 ### Error Display Components
+
 - Use Ant Design `Result` for error states
 - Show appropriate error messages
 - Provide recovery actions
 - Example:
+
   ```typescript
   // components/ErrorState.tsx
   import { Result, Button } from 'antd';
@@ -1047,10 +1070,12 @@
   ```
 
 ### Inline Error Display
+
 - Show errors inline without breaking UI
 - Use Ant Design `Alert` for inline errors
 - Maintain navigation and functionality
 - Example:
+
   ```typescript
   import { Alert } from 'antd';
 
@@ -1070,12 +1095,14 @@
 ## Error Logging
 
 ### Structured Error Logging
+
 - Log all errors with context
 - Include stack traces
 - Add user context
 - Include request/response data (sanitized)
 - Send to error tracking service
 - Example:
+
   ```typescript
   // utils/logger.ts
   import { AppError } from './errors';
@@ -1105,6 +1132,7 @@
   ```
 
 ### Error Context Collection
+
 - Collect relevant context for errors
 - Include user information, route, component stack
 - Sanitize sensitive data
@@ -1129,10 +1157,12 @@
 ## Error Testing
 
 ### Testing Error Boundaries
+
 - Test error boundary fallback rendering
 - Test error logging
 - Test error recovery
 - Example:
+
   ```typescript
   // __tests__/ErrorBoundary.test.tsx
   import { render, screen } from '@testing-library/react';
@@ -1149,16 +1179,18 @@
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
-    
+
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
   });
   ```
 
 ### Testing Error States
+
 - Test error display in components
 - Test error recovery flows
 - Test error message display
 - Example:
+
   ```typescript
   // __tests__/GoalForm.test.tsx
   import { render, screen, waitFor } from '@testing-library/react';
@@ -1173,10 +1205,10 @@
     );
 
     render(<GoalForm onSubmit={mockCreate} />);
-    
+
     // Submit form
     // ...
-    
+
     await waitFor(() => {
       expect(screen.getByText('Title is required')).toBeInTheDocument();
     });
@@ -1184,9 +1216,11 @@
   ```
 
 ### Mocking Errors in Tests
+
 - Mock API errors in tests
 - Test error handling paths
 - Example:
+
   ```typescript
   // __tests__/useGoals.test.ts
   import { renderHook, waitFor } from '@testing-library/react';
@@ -1194,9 +1228,7 @@
   import { NotFoundError } from '@/utils/errors';
 
   test('handles not found error', async () => {
-    jest.spyOn(goalService, 'getAll').mockRejectedValue(
-      new NotFoundError('Goal', '123')
-    );
+    jest.spyOn(goalService, 'getAll').mockRejectedValue(new NotFoundError('Goal', '123'));
 
     const { result } = renderHook(() => useGoals());
 
@@ -1210,6 +1242,7 @@
 ## Error Analytics & Monitoring
 
 ### Error Metrics to Track
+
 - Error frequency by type
 - Error rate by feature
 - Failed API calls
@@ -1218,11 +1251,13 @@
 - See [Observability & Logging](./observability-logging.md) for details
 
 ### Error Grouping
+
 - Group similar errors together
 - Identify error patterns
 - Prioritize fixes based on impact
 
 ### Error Alerting
+
 - Set up alerts for critical errors
 - Monitor error rates
 - Alert on error spikes
@@ -1231,10 +1266,12 @@
 ## Error Message Localization
 
 ### i18n Error Messages
+
 - Use i18n keys for error messages
 - Support multiple languages
 - Provide context-aware messages
 - Example:
+
   ```typescript
   // utils/errorMessages.ts
   import { useTranslation } from 'react-i18next';
@@ -1243,7 +1280,7 @@
   export const getLocalizedErrorMessage = (error: AppError, t: (key: string) => string): string => {
     const key = `errors.${error.code}`;
     const defaultMessage = error.message;
-    
+
     return t(key, { defaultMessage, ...error.context });
   };
   ```
@@ -1251,6 +1288,7 @@
 ## Error Types & Messages
 
 ### Standard Error Messages
+
 - **404 Not Found**: "The requested resource was not found"
 - **403 Forbidden**: "You don't have permission to access this"
 - **500 Server Error**: "Something went wrong. Please try again"
@@ -1263,10 +1301,12 @@
 ## Async Error Handling
 
 ### Promise Error Handling
+
 - Use try-catch for async/await
 - Handle promise rejections
 - Use error callbacks
 - Example:
+
   ```typescript
   // Async/await
   try {
@@ -1277,19 +1317,21 @@
 
   // Promise chains
   asyncOperation()
-    .then(result => handleSuccess(result))
-    .catch(error => handleError(error));
+    .then((result) => handleSuccess(result))
+    .catch((error) => handleError(error));
 
   // Promise.all error handling
   Promise.all([promise1, promise2])
-    .then(results => handleSuccess(results))
-    .catch(error => handleError(error));
+    .then((results) => handleSuccess(results))
+    .catch((error) => handleError(error));
   ```
 
 ### Unhandled Promise Rejections
+
 - Catch unhandled promise rejections globally
 - Log and report unhandled errors
 - Example:
+
   ```typescript
   // App.tsx
   window.addEventListener('unhandledrejection', (event) => {
@@ -1297,7 +1339,7 @@
       reason: event.reason,
       promise: event.promise,
     });
-    
+
     // Prevent default browser error handling
     event.preventDefault();
   });
@@ -1306,22 +1348,26 @@
 ## Error Prevention
 
 ### Input Validation
+
 - Validate inputs before submission
 - Use Zod schemas for validation
 - Show validation errors early
 - See [Validation Schemas](../specs/validation/goal.schemas.ts)
 
 ### Type Safety
+
 - Use TypeScript for type safety
 - Catch type errors at compile time
 - Use strict TypeScript settings
 
 ### Edge Case Handling
+
 - Handle edge cases explicitly
 - Test edge case scenarios
 - Provide fallbacks for edge cases
 
 ### User Guidance
+
 - Provide clear user guidance
 - Show helpful error messages
 - Guide users to resolution
@@ -1329,6 +1375,7 @@
 ## Best Practices
 
 ### Error Handling Principles
+
 - Handle errors at the right level
 - Don't swallow errors silently
 - Provide actionable error messages
@@ -1341,6 +1388,7 @@
 - Provide error recovery options
 
 ### Error Message Guidelines
+
 - Avoid technical jargon
 - Explain what went wrong
 - Suggest how to fix the issue
@@ -1350,6 +1398,7 @@
 - Include relevant context
 
 ### Error Logging Guidelines
+
 - Log all errors with context
 - Include stack traces
 - Add user context (when available)
@@ -1359,6 +1408,7 @@
 - Use structured logging
 
 ### Error Recovery Guidelines
+
 - Retry failed operations when appropriate
 - Provide retry buttons
 - Save user input before errors

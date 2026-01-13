@@ -13,6 +13,7 @@ This directory contains machine-readable diagrams for the Goals Tracking Managem
 ## Viewing Diagrams
 
 These Mermaid diagrams can be viewed in:
+
 - GitHub (renders automatically in markdown files)
 - VS Code (with Mermaid extension)
 - Mermaid Live Editor: https://mermaid.live/
@@ -30,6 +31,7 @@ These Mermaid diagrams can be viewed in:
 ## Usage
 
 These diagrams should be:
+
 1. Referenced during development
 2. Used in code reviews
 3. Updated when specifications change
@@ -38,24 +40,29 @@ These diagrams should be:
 ## Files
 
 ### Data Flow Diagrams
+
 - `data-flow/create-goal-flow.mmd` - Complete flow for creating a goal
 - `data-flow/update-progress-flow.mmd` - Flow for updating goal progress
 - `data-flow/filter-search-flow.mmd` - Flow for filtering and searching goals
 
 ### Decision Trees
+
 - `decision-trees/goal-creation-decision-tree.mmd` - Decision tree for goal creation
 - `decision-trees/progress-update-decision-tree.mmd` - Decision tree for progress updates
 - `decision-trees/status-transition-decision-tree.mmd` - Decision tree for status changes
 
 ### Workflows
+
 - `workflows/create-quantitative-goal-workflow.mmd` - Sequence diagram for creating quantitative goals
 - `workflows/update-progress-workflow.mmd` - Sequence diagram for updating progress
 - `workflows/milestone-completion-workflow.mmd` - Sequence diagram for completing milestones
 
 ### Architecture
+
 - `architecture/goal-type-relationships.mmd` - ER diagram showing goal type relationships
 - `architecture/status-transition-state-diagram.mmd` - State diagram for status transitions
 
 ### Business Rules
+
 - `business-rules/milestone-dependency-validation.mmd` - Flowchart for dependency validation
 - `business-rules/progress-calculation-rules.mmd` - Flowchart for progress calculation logic

@@ -1,9 +1,9 @@
 /**
  * Goal Tracking System - Validation Schemas
- * 
+ *
  * This file contains Zod validation schemas for all goal-related data structures.
  * These schemas ensure data integrity and type safety at runtime.
- * 
+ *
  * @requires zod
  */
 
@@ -13,14 +13,7 @@ import { z } from 'zod';
 // Base Enums and Primitives
 // ============================================================================
 
-export const GoalTypeSchema = z.enum([
-  'quantitative',
-  'qualitative',
-  'binary',
-  'milestone',
-  'recurring',
-  'habit',
-]);
+export const GoalTypeSchema = z.enum(['quantitative', 'qualitative', 'binary', 'milestone', 'recurring', 'habit']);
 
 export const GoalStatusSchema = z.enum(['active', 'completed', 'paused', 'cancelled']);
 
@@ -240,9 +233,7 @@ export const QuantitativeGoalSchema = BaseGoalSchema.extend({
     (data) => {
       if (!data.allowDecimals) {
         return (
-          Number.isInteger(data.startValue) &&
-          Number.isInteger(data.targetValue) &&
-          Number.isInteger(data.currentValue)
+          Number.isInteger(data.startValue) && Number.isInteger(data.targetValue) && Number.isInteger(data.currentValue)
         );
       }
       return true;
@@ -288,14 +279,15 @@ export const MilestoneGoalSchema = BaseGoalSchema.extend({
   milestones: z.array(MilestoneSchema).min(1),
   allowMilestoneReordering: z.boolean().default(false),
   requireSequentialCompletion: z.boolean().default(false),
-}).refine(
-  (data) => {
-    // Ensure milestone IDs are unique
-    const ids = data.milestones.map((m) => m.id);
-    return new Set(ids).size === ids.length;
-  },
-  { message: 'Milestone IDs must be unique' }
-)
+})
+  .refine(
+    (data) => {
+      // Ensure milestone IDs are unique
+      const ids = data.milestones.map((m) => m.id);
+      return new Set(ids).size === ids.length;
+    },
+    { message: 'Milestone IDs must be unique' }
+  )
   .refine(
     (data) => {
       // Validate dependencies reference existing milestones
@@ -386,9 +378,11 @@ export const HabitGoalSchema = BaseGoalSchema.extend({
 // ============================================================================
 
 /**
- * Main Goal schema - discriminated union of all goal types
+ * Main Goal schema - union of all goal types
+ * Note: Using z.union instead of z.discriminatedUnion because some schemas
+ * have refinements that wrap them in ZodEffects
  */
-export const GoalSchema: z.ZodType<any> = z.discriminatedUnion('type', [
+export const GoalSchema = z.union([
   QuantitativeGoalSchema,
   QualitativeGoalSchema,
   BinaryGoalSchema,
@@ -401,27 +395,149 @@ export const GoalSchema: z.ZodType<any> = z.discriminatedUnion('type', [
 // Input/Output Schemas
 // ============================================================================
 
+// Base schemas without refinements for input schemas
+const QuantitativeGoalBaseSchema = BaseGoalSchema.extend({
+  type: z.literal('quantitative'),
+  startValue: z.number(),
+  targetValue: z.number(),
+  currentValue: z.number(),
+  unit: z.string().min(1).max(20),
+  allowDecimals: z.boolean().default(false),
+  minValue: z.number().optional(),
+  maxValue: z.number().optional(),
+});
+
+const BinaryGoalBaseSchema = BaseGoalSchema.extend({
+  type: z.literal('binary'),
+  targetCount: z.number().int().positive().optional(),
+  currentCount: z.number().int().nonnegative().default(0),
+  items: z.array(z.string().min(1).max(200)).optional(),
+  allowPartialCompletion: z.boolean().default(true),
+});
+
+const MilestoneGoalBaseSchema = BaseGoalSchema.extend({
+  type: z.literal('milestone'),
+  milestones: z.array(MilestoneSchema).min(1),
+  allowMilestoneReordering: z.boolean().default(false),
+  requireSequentialCompletion: z.boolean().default(false),
+});
+
+const HabitGoalBaseSchema = BaseGoalSchema.extend({
+  type: z.literal('habit'),
+  targetFrequency: z.enum(['daily', 'every_other_day', 'weekly', 'custom']),
+  customFrequency: z.number().int().positive().optional(),
+  completionStats: CompletionStatsSchema,
+  entries: z.array(HabitEntrySchema).default([]),
+  habitStrength: z.number().min(0).max(100).optional(),
+});
+
 /**
  * Create Goal Input Schema
  */
-export const CreateGoalInputSchema = GoalSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-  progressHistory: true,
-  notes: true,
-  attachments: true,
-}).extend({
-  progressHistory: z.array(ProgressEntrySchema).optional(),
-});
+export const CreateGoalInputSchema = z.union([
+  QuantitativeGoalBaseSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    progress: true,
+    progressHistory: true,
+    notes: true,
+    attachments: true,
+  }).extend({
+    progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
+  }),
+  QualitativeGoalSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    progress: true,
+    progressHistory: true,
+    notes: true,
+    attachments: true,
+  }).extend({
+    progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
+  }),
+  BinaryGoalBaseSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    progress: true,
+    progressHistory: true,
+    notes: true,
+    attachments: true,
+  }).extend({
+    progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
+  }),
+  MilestoneGoalBaseSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    progress: true,
+    progressHistory: true,
+    notes: true,
+    attachments: true,
+  }).extend({
+    progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
+  }),
+  RecurringGoalSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    progress: true,
+    progressHistory: true,
+    notes: true,
+    attachments: true,
+  }).extend({
+    progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
+  }),
+  HabitGoalBaseSchema.omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+    progress: true,
+    progressHistory: true,
+    notes: true,
+    attachments: true,
+  }).extend({
+    progressHistory: z.array(ProgressEntrySchema).optional(),
+    createdBy: z.string().min(1).optional(),
+  }),
+]);
 
 /**
  * Update Goal Input Schema (partial)
  */
-export const UpdateGoalInputSchema = GoalSchema.partial().extend({
-  id: z.string().uuid(),
-  updatedAt: dateSchema,
-});
+export const UpdateGoalInputSchema = z.union([
+  QuantitativeGoalBaseSchema.partial().extend({
+    id: z.string().uuid(),
+    updatedAt: dateSchema,
+  }),
+  QualitativeGoalSchema.partial().extend({
+    id: z.string().uuid(),
+    updatedAt: dateSchema,
+  }),
+  BinaryGoalBaseSchema.partial().extend({
+    id: z.string().uuid(),
+    updatedAt: dateSchema,
+  }),
+  MilestoneGoalBaseSchema.partial().extend({
+    id: z.string().uuid(),
+    updatedAt: dateSchema,
+  }),
+  RecurringGoalSchema.partial().extend({
+    id: z.string().uuid(),
+    updatedAt: dateSchema,
+  }),
+  HabitGoalBaseSchema.partial().extend({
+    id: z.string().uuid(),
+    updatedAt: dateSchema,
+  }),
+]);
 
 /**
  * Goal Filters Schema
@@ -497,4 +613,3 @@ export type GoalFilters = z.infer<typeof GoalFiltersSchema>;
 export type GoalSortOptions = z.infer<typeof GoalSortOptionsSchema>;
 export type UpdateProgressInput = z.infer<typeof UpdateProgressInputSchema>;
 export type UpdateQuantitativeValue = z.infer<typeof UpdateQuantitativeValueSchema>;
-

@@ -528,6 +528,7 @@ END: Return filtered, searched, sorted, paginated goals
 ## Usage Notes
 
 These decision trees and flow charts should be:
+
 1. **Referenced during development** to ensure correct logic implementation
 2. **Used in code reviews** to verify implementation matches specification
 3. **Converted to visual diagrams** using tools like Mermaid, Draw.io, or Lucidchart
@@ -552,4 +553,3 @@ flowchart TD
     I -->|No| J[Show Error]
     I -->|Yes| K[Show Success]
 ```
-

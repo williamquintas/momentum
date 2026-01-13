@@ -1,18 +1,20 @@
 # Goal Tracking System - Data Flow Specifications
 
-This document describes how data flows through the system for key operations, including API calls, state management, database operations, and UI updates.
+This document describes how data flows through the system for key operations, including Local Storage operations, state management, and UI updates.
+
+**Note**: This system uses Local Storage for persistence instead of a backend API. The data flow patterns remain the same, but storage operations use browser Local Storage with a normalized structure for optimal performance.
 
 ---
 
 ## 1. Create Goal Data Flow
 
 ### Components Involved
+
 - **UI Component**: CreateGoalForm
 - **State Management**: Goal Store (Redux/Zustand)
-- **API Service**: Goal API Client
-- **Backend API**: POST /api/goals
-- **Database**: Goals Collection/Table
-- **Validation**: Zod Schema Validation
+- **Storage Service**: Goal Storage Service (Local Storage)
+- **Local Storage**: Browser Local Storage (normalized structure)
+- **Validation**: Zod Schema Validation (client-side only)
 
 ### Data Flow Diagram
 
@@ -33,39 +35,12 @@ This document describes how data flows through the system for key operations, in
     │   └─> Store: Add temporary goal with loading state
     │
     ▼
-[API Service: createGoal()]
+[Storage Service: createGoal()]
     │
-    ├─> Transform data to API format
-    │   ├─ Convert dates to ISO strings
+    ├─> Transform data for storage
+    │   ├─ Convert dates to ISO strings (for Local Storage)
     │   ├─ Set defaults (progress: 0, timestamps)
-    │   └─ Remove client-only fields
-    │
-    ▼
-[HTTP Request: POST /api/goals]
-    │
-    ├─> Headers: Authorization, Content-Type
-    │
-    ├─> Body: {
-    │     title: string,
-    │     type: GoalType,
-    │     status: 'active',
-    │     priority: Priority,
-    │     category: string,
-    │     ...type-specific fields
-    │   }
-    │
-    ▼
-[Backend API Handler]
-    │
-    ├─> Validate with Zod Schema (server-side)
-    │   ├─ Invalid → Return 400 with errors
-    │   └─ Valid → Continue
-    │
-    ├─> Authorize: Check user permissions
-    │   ├─ Unauthorized → Return 403
-    │   └─ Authorized → Continue
-    │
-    ├─> Generate: id (UUID), createdAt, updatedAt
+    │   └─ Generate: id (UUID), createdAt, updatedAt
     │
     ├─> Set defaults:
     │   ├─ progress: 0
@@ -75,26 +50,28 @@ This document describes how data flows through the system for key operations, in
     │   └─ relatedGoals: []
     │
     ▼
-[Database: INSERT Goal]
+[Local Storage: Save Goal]
     │
-    ├─> Transaction: Insert goal record
-    │   ├─ Insert main goal fields
-    │   ├─ Insert milestones (if milestone goal)
-    │   └─ Insert initial progress entry
+    ├─> Load current storage structure
+    │
+    ├─> Add goal to goals index: goals[goalId] = goal
+    │
+    ├─> Update indexes:
+    │   ├─ Add to goals_index array
+    │   ├─ Add to goals_by_type[type] array
+    │   ├─ Add to goals_by_status[status] array
+    │   ├─ Add to goals_by_category[category] array
+    │   ├─ Add to goals_by_tag[tag] arrays (for each tag)
+    │   └─ Add to date range indexes if applicable
+    │
+    ├─> Serialize data (dates to ISO strings)
+    │
+    ├─> Save to Local Storage atomically
     │
     ├─> Return: Created goal with all fields
     │
     ▼
-[API Response: 201 Created]
-    │
-    ├─> Body: {
-    │     id: string,
-    │     title: string,
-    │     ...all goal fields
-    │   }
-    │
-    ▼
-[API Service: Transform Response]
+[Storage Service: Transform Response]
     │
     ├─> Convert dates from ISO strings to Date objects
     │
@@ -122,16 +99,16 @@ This document describes how data flows through the system for key operations, in
 ### Error Flow
 
 ```
-[API Error]
+[Storage Error]
     │
     ▼
-[API Service: Handle Error]
+[Storage Service: Handle Error]
     │
-    ├─> Parse error response
-    │   ├─ 400: Validation errors → Extract field errors
-    │   ├─ 403: Permission denied → Show permission error
-    │   ├─ 500: Server error → Show generic error
-    │   └─ Network: Timeout/offline → Show network error
+    ├─> Parse error
+    │   ├─ Validation errors → Extract field errors
+    │   ├─ Quota exceeded → Show storage limit error
+    │   ├─ Corrupted data → Show data error, attempt recovery
+    │   └─ Storage unavailable → Show storage error
     │
     ▼
 [State Management: Error Handling]
@@ -152,12 +129,14 @@ This document describes how data flows through the system for key operations, in
 
 ### Data Transformations
 
-**Client → API:**
-- Dates: `Date` → ISO string
-- Enums: TypeScript enum → string
-- Optional fields: `undefined` → omitted
+**Client → Storage:**
 
-**API → Client:**
+- Dates: `Date` → ISO string (Local Storage stores strings)
+- Enums: TypeScript enum → string
+- Optional fields: `undefined` → omitted or null
+
+**Storage → Client:**
+
 - Dates: ISO string → `Date`
 - Enums: string → TypeScript enum
 - Defaults: Applied if missing
@@ -167,11 +146,11 @@ This document describes how data flows through the system for key operations, in
 ## 2. Update Progress Data Flow
 
 ### Components Involved
+
 - **UI Component**: ProgressUpdateForm / GoalDetail
 - **State Management**: Goal Store
-- **API Service**: Goal API Client
-- **Backend API**: PATCH /api/goals/:id/progress
-- **Database**: Goals Collection, ProgressHistory Collection
+- **Storage Service**: Goal Storage Service
+- **Local Storage**: Browser Local Storage
 - **Calculation Service**: Progress Calculator
 
 ### Data Flow Diagram
@@ -206,7 +185,7 @@ This document describes how data flows through the system for key operations, in
     ├─> Calculate new progress based on type:
     │   │
     │   ├─ Quantitative:
-    │   │   progress = ((currentValue - startValue) / 
+    │   │   progress = ((currentValue - startValue) /
     │   │              (targetValue - startValue)) * 100
     │   │
     │   ├─ Milestone:
@@ -229,9 +208,9 @@ This document describes how data flows through the system for key operations, in
     └─> Return: { progress, isComplete, message }
     │
     ▼
-[API Service: updateProgress()]
+[Storage Service: updateProgress()]
     │
-    ├─> Prepare request:
+    ├─> Prepare update:
     │   ├─ goalId: string
     │   ├─ progress: number
     │   ├─ progressEntry: {
@@ -242,33 +221,17 @@ This document describes how data flows through the system for key operations, in
     │   └─ type-specific updates (e.g., currentValue)
     │
     ▼
-[HTTP Request: PATCH /api/goals/:id/progress]
+[Local Storage: Load and Update Goal]
     │
-    ├─> Body: {
-    │     progress: number,
-    │     currentValue?: number,  // for quantitative
-    │     currentCount?: number,  // for binary
-    │     milestoneId?: string,   // for milestone
-    │     entryDate?: Date,       // for recurring/habit
-    │     progressEntry: {
-    │       date: Date,
-    │       value: number,
-    │       note?: string
-    │     }
-    │   }
-    │
-    ▼
-[Backend API Handler]
-    │
-    ├─> Load goal from database
+    ├─> Load goal from Local Storage
+    │   └─> goals[goalId]
     │
     ├─> Validate update:
-    │   ├─ Check user permissions
     │   ├─ Validate progress value (0-100)
     │   ├─ Validate type-specific fields
     │   └─ Check dependencies (for milestones)
     │
-    ├─> Recalculate progress (server-side validation)
+    ├─> Recalculate progress (client-side validation)
     │
     ├─> Create progress history entry
     │
@@ -282,21 +245,11 @@ This document describes how data flows through the system for key operations, in
     │   ├─ If progress = 100%: Suggest completion
     │   └─ If type-specific completion met: Suggest completion
     │
-    ▼
-[Database: UPDATE Goal + INSERT ProgressEntry]
+    ├─> Update indexes if needed (status change, etc.)
     │
-    ├─> Transaction:
-    │   ├─ UPDATE goals SET progress=?, currentValue=?, updatedAt=?
-    │   └─ INSERT INTO progress_history (goalId, date, value, note)
+    ├─> Serialize and save to Local Storage
     │
     ├─> Return: Updated goal
-    │
-    ▼
-[API Response: 200 OK]
-    │
-    ├─> Body: {
-    │     ...updated goal with new progress
-    │   }
     │
     ▼
 [State Management: Update Store]
@@ -337,27 +290,19 @@ This document describes how data flows through the system for key operations, in
     ├─> Optimistic updates to store
     │
     ▼
-[API: Batch Request]
+[Storage Service: Batch Update]
     │
-    ├─> POST /api/goals/:id/progress/batch
-    │   Body: {
-    │     updates: [
-    │       { date, value, note },
-    │       { date, value, note },
-    │       ...
-    │     ]
-    │   }
-    │
-    ▼
-[Backend: Process Batch]
+    ├─> Load goal from Local Storage
     │
     ├─> Validate all updates
     │
     ├─> Calculate progress for each date
     │
-    ├─> Insert all progress entries
+    ├─> Append all progress entries to progressHistory
     │
     ├─> Recalculate overall progress
+    │
+    ├─> Save updated goal to Local Storage
     │
     └─> Return updated goal
 ```
@@ -367,11 +312,11 @@ This document describes how data flows through the system for key operations, in
 ## 3. Filter and Search Data Flow
 
 ### Components Involved
+
 - **UI Component**: GoalList, FilterPanel, SearchBar
 - **State Management**: Goal Store, Filter State
-- **API Service**: Goal API Client
-- **Backend API**: GET /api/goals (with query params)
-- **Database**: Goals Collection (with indexes)
+- **Storage Service**: Goal Storage Service
+- **Local Storage**: Browser Local Storage (with normalized indexes)
 - **Cache**: React Query Cache
 
 ### Data Flow Diagram
@@ -420,60 +365,35 @@ This document describes how data flows through the system for key operations, in
     │   └─ Not found or Stale → Fetch from API
     │
     ▼
-[API Service: fetchGoals(filters, search, sort)]
+[Storage Service: fetchGoals(filters, search, sort)]
     │
-    ├─> Build query string:
-    │   ?type=quantitative,binary
-    │   &status=active
-    │   &priority=high,medium
-    │   &category=Health
-    │   &tags=fitness
-    │   &startDateFrom=2024-01-01
-    │   &deadlineTo=2024-12-31
-    │   &search=weight%20loss
-    │   &sort=deadline
-    │   &order=asc
-    │   &page=1
-    │   &limit=20
+    ├─> Load all goals from Local Storage
+    │   └─> goals index
     │
-    ▼
-[HTTP Request: GET /api/goals]
+    ├─> Apply filters using indexes:
+    │   ├─ Use goals_by_type[type] for type filter
+    │   ├─ Use goals_by_status[status] for status filter
+    │   ├─ Use goals_by_category[category] for category filter
+    │   ├─ Use goals_by_tag[tag] for tag filter
+    │   └─ Use date range indexes for date filters
     │
-    ├─> Headers: Authorization
+    ├─> Intersect filtered arrays to get matching goal IDs
     │
-    ├─> Query Parameters: (as above)
+    ├─> Load goal objects for matching IDs
     │
-    ▼
-[Backend API Handler]
+    ├─> Apply text search (in-memory):
+    │   ├─ Filter by title/description containing search term
+    │   └─ Case-insensitive matching
     │
-    ├─> Parse query parameters
+    ├─> Apply sorting (in-memory):
+    │   ├─ Sort by specified field (deadline, createdAt, etc.)
+    │   └─ Apply order (asc/desc)
     │
-    ├─> Build database query:
-    │   ├─ WHERE clauses from filters
-    │   ├─ Full-text search on title/description
-    │   ├─ ORDER BY from sort options
-    │   └─ LIMIT/OFFSET from pagination
+    ├─> Apply pagination:
+    │   ├─ Slice array: limit and offset
+    │   └─ Calculate hasMore
     │
-    ├─> Use indexes:
-    │   ├─ Index on: type, status, priority
-    │   ├─ Index on: category, tags
-    │   ├─ Index on: deadline, createdAt
-    │   └─ Full-text index on: title, description
-    │
-    ▼
-[Database: Execute Query]
-    │
-    ├─> SELECT goals WHERE ...
-    │   AND (title LIKE '%weight loss%' OR description LIKE '%weight loss%')
-    │   ORDER BY deadline ASC
-    │   LIMIT 20 OFFSET 0
-    │
-    ├─> Return: Goals array + total count
-    │
-    ▼
-[API Response: 200 OK]
-    │
-    ├─> Body: {
+    ├─> Return: {
     │     goals: Goal[],
     │     total: number,
     │     page: number,
@@ -482,9 +402,9 @@ This document describes how data flows through the system for key operations, in
     │   }
     │
     ▼
-[API Service: Transform Response]
+[Storage Service: Transform Response]
     │
-    ├─> Convert dates
+    ├─> Convert dates from ISO strings to Date objects
     │
     ├─> Add computed fields
     │
@@ -521,7 +441,7 @@ This document describes how data flows through the system for key operations, in
 [User: Update Goal]
     │
     ▼
-[Goal Updated in Database]
+[Goal Updated in Local Storage]
     │
     ▼
 [React Query: Invalidate Cache]
@@ -533,7 +453,7 @@ This document describes how data flows through the system for key operations, in
     ▼
 [Next Filter/Search Request]
     │
-    └─> Cache miss → Fetch fresh data from API
+    └─> Cache miss → Fetch fresh data from Local Storage
 ```
 
 ---
@@ -541,11 +461,11 @@ This document describes how data flows through the system for key operations, in
 ## 4. Milestone Completion Data Flow
 
 ### Components Involved
+
 - **UI Component**: MilestoneSteps, GoalDetail
 - **State Management**: Goal Store
-- **API Service**: Goal API Client
-- **Backend API**: PATCH /api/goals/:id/milestones/:milestoneId
-- **Database**: Goals Collection, Milestones nested/related table
+- **Storage Service**: Goal Storage Service
+- **Local Storage**: Browser Local Storage
 - **Validation Service**: Dependency Validator
 
 ### Data Flow Diagram
@@ -576,39 +496,23 @@ This document describes how data flows through the system for key operations, in
     │   └─> Recalculate progress optimistically
     │
     ▼
-[API Service: completeMilestone()]
+[Storage Service: completeMilestone()]
     │
-    ├─> Prepare request:
-    │   ├─ goalId: string
-    │   ├─ milestoneId: string
-    │   └─ status: 'completed'
-    │
-    ▼
-[HTTP Request: PATCH /api/goals/:id/milestones/:milestoneId]
-    │
-    ├─> Body: {
-    │     status: 'completed',
-    │     completedDate: Date
-    │   }
-    │
-    ▼
-[Backend API Handler]
-    │
-    ├─> Load goal from database
+    ├─> Load goal from Local Storage
     │
     ├─> Find milestone by ID
     │
-    ├─> Validate dependencies (server-side):
+    ├─> Validate dependencies (client-side):
     │   ├─ Get all milestone dependencies
     │   ├─ Check each dependency status = 'completed'
-    │   ├─ If any not completed → Return 400 error
+    │   ├─ If any not completed → Return error
     │   └─ All completed → Continue
     │
     ├─> Validate sequential completion:
     │   ├─ If requireSequentialCompletion = true
     │   ├─ Find previous milestone (order - 1)
     │   ├─ Check previous milestone status = 'completed'
-    │   ├─ If not completed → Return 400 error
+    │   ├─ If not completed → Return error
     │   └─ Completed → Continue
     │
     ├─> Update milestone:
@@ -628,21 +532,9 @@ This document describes how data flows through the system for key operations, in
     │   ├─ updatedAt: now
     │   └─ milestones: updated array
     │
-    ▼
-[Database: UPDATE Goal]
-    │
-    ├─> Transaction:
-    │   ├─ UPDATE goals SET progress=?, updatedAt=?, milestones=?
-    │   └─ (or UPDATE milestones table if separate)
+    ├─> Save updated goal to Local Storage
     │
     ├─> Return: Updated goal
-    │
-    ▼
-[API Response: 200 OK]
-    │
-    ├─> Body: {
-    │     ...updated goal with milestone completed
-    │   }
     │
     ▼
 [State Management: Update Store]
@@ -691,11 +583,11 @@ This document describes how data flows through the system for key operations, in
 ## 5. Recurring Goal Occurrence Completion Data Flow
 
 ### Components Involved
+
 - **UI Component**: RecurringGoalDetail, CalendarHeatmap
 - **State Management**: Goal Store
-- **API Service**: Goal API Client
-- **Backend API**: POST /api/goals/:id/occurrences
-- **Database**: Goals Collection, HabitEntries/Occurrences Collection
+- **Storage Service**: Goal Storage Service
+- **Local Storage**: Browser Local Storage
 - **Calculation Service**: Streak Calculator, Completion Stats Calculator
 
 ### Data Flow Diagram
@@ -722,31 +614,9 @@ This document describes how data flows through the system for key operations, in
     │   └─> Update calendar heatmap
     │
     ▼
-[API Service: markOccurrenceComplete()]
+[Storage Service: markOccurrenceComplete()]
     │
-    ├─> Prepare request:
-    │   ├─ goalId: string
-    │   ├─ entry: {
-    │   │     date: Date,
-    │   │     completed: true,
-    │   │     value?: number,
-    │   │     note?: string
-    │   │   }
-    │
-    ▼
-[HTTP Request: POST /api/goals/:id/occurrences]
-    │
-    ├─> Body: {
-    │     date: "2024-01-15T00:00:00Z",
-    │     completed: true,
-    │     value: 10,
-    │     note: "Morning meditation"
-    │   }
-    │
-    ▼
-[Backend API Handler]
-    │
-    ├─> Load goal from database
+    ├─> Load goal from Local Storage
     │
     ├─> Validate: Goal type is recurring
     │
@@ -786,21 +656,9 @@ This document describes how data flows through the system for key operations, in
     │   ├─ progress: (completedOccurrences / totalOccurrences) * 100
     │   └─ updatedAt: now
     │
-    ▼
-[Database: UPDATE Goal + INSERT/UPDATE Entry]
-    │
-    ├─> Transaction:
-    │   ├─ INSERT/UPDATE habit_entries
-    │   └─ UPDATE goals SET completionStats=?, progress=?, updatedAt=?
+    ├─> Save updated goal to Local Storage
     │
     ├─> Return: Updated goal
-    │
-    ▼
-[API Response: 200 OK]
-    │
-    ├─> Body: {
-    │     ...updated goal with new occurrence and stats
-    │   }
     │
     ▼
 [State Management: Update Store]
@@ -868,11 +726,11 @@ This document describes how data flows through the system for key operations, in
 ## 6. Data Synchronization Flow
 
 ### Components Involved
+
 - **State Management**: Goal Store, React Query
-- **API Service**: Goal API Client
-- **Backend API**: Various endpoints
-- **WebSocket/SSE**: Real-time updates (optional)
-- **Cache**: React Query Cache, Local Storage
+- **Storage Service**: Goal Storage Service
+- **Local Storage**: Browser Local Storage
+- **Cache**: React Query Cache
 
 ### Data Flow Diagram
 
@@ -884,12 +742,12 @@ This document describes how data flows through the system for key operations, in
     │
     ├─> Check React Query cache
     │   ├─ Cache exists & fresh → Use cached data
-    │   └─ Cache stale/missing → Fetch from API
+    │   └─ Cache stale/missing → Fetch from Local Storage
     │
-    ├─> Fetch goals from API
-    │   └─> GET /api/goals?limit=50
+    ├─> Load goals from Local Storage
+    │   └─> Load all goals from goals index
     │
-    ├─> Populate store with fetched data
+    ├─> Populate store with loaded data
     │
     └─> Display goals in UI
     │
@@ -897,26 +755,14 @@ This document describes how data flows through the system for key operations, in
     │
     ├─> Create/Update/Delete operations
     │   ├─> Optimistic update to store
-    │   ├─> API call
+    │   ├─> Save to Local Storage
     │   ├─> On success: Confirm update
     │   └─> On error: Rollback + show error
     │
     ├─> Filter/Search operations
     │   ├─> Check cache first
     │   ├─> Cache hit → Use cached data
-    │   └─> Cache miss → Fetch from API
-    │
-[Background Sync]
-    │
-    ├─> React Query: Auto-refetch on:
-    │   ├─ Window focus
-    │   ├─ Network reconnect
-    │   └─ Stale time expiration (5 minutes)
-    │
-    ├─> WebSocket/SSE (optional):
-    │   ├─ Listen for goal updates from other users
-    │   ├─ Receive real-time notifications
-    │   └─ Update store automatically
+    │   └─> Cache miss → Query Local Storage
     │
 [Cache Invalidation]
     │
@@ -930,13 +776,18 @@ This document describes how data flows through the system for key operations, in
     │
 [Error Recovery]
     │
-    ├─> Network error:
-    │   ├─ Show offline indicator
-    │   ├─ Queue operations for retry
-    │   └─ Retry on reconnect
+    ├─> Storage quota exceeded:
+    │   ├─ Show storage limit error
+    │   ├─ Suggest exporting/archiving old goals
+    │   └─ Allow user to clear space
     │
-    ├─> API error:
-    │   ├─ Show error message
+    ├─> Corrupted data:
+    │   ├─ Show data error
+    │   ├─ Attempt data recovery
+    │   └─ Allow user to reset if needed
+    │
+    ├─> Storage unavailable:
+    │   ├─ Show storage error
     │   ├─ Rollback optimistic updates
     │   └─ Allow user to retry
 ```
@@ -946,11 +797,11 @@ This document describes how data flows through the system for key operations, in
 ## 7. Data Validation Flow
 
 ### Components Involved
+
 - **UI Component**: Form components
-- **Validation**: Zod schemas (client + server)
-- **API Service**: Request validation
-- **Backend API**: Server-side validation
-- **Database**: Constraints
+- **Validation**: Zod schemas (client-side only)
+- **Storage Service**: Data validation before storage
+- **Local Storage**: Data integrity checks
 
 ### Data Flow Diagram
 
@@ -967,18 +818,18 @@ This document describes how data flows through the system for key operations, in
     │   └─ Error → Show field errors → User fixes
     │
     ▼
-[API Request]
+[Storage Service: Prepare Data]
     │
-    ├─> Transform data to API format
+    ├─> Transform data for storage
     │
     ▼
-[Server-Side Validation: Zod Schema]
+[Client-Side Validation: Zod Schema (Re-validation)]
     │
-    ├─> Parse request body with Zod schema
+    ├─> Parse data with Zod schema
     │
     ├─> Validation result:
     │   ├─ Success → Continue to business logic
-    │   └─ Error → Return 400 with error details
+    │   └─ Error → Return validation error
     │
     ▼
 [Business Logic Validation]
@@ -987,24 +838,24 @@ This document describes how data flows through the system for key operations, in
     │   ├─ Dependencies met (for milestones)
     │   ├─ Progress calculations correct
     │   ├─ Status transitions valid
-    │   └─ Permissions checked
+    │   └─ Data integrity checks
     │
     ├─> Validation result:
-    │   ├─ Success → Continue to database
-    │   └─ Error → Return 400/403 with error message
+    │   ├─ Success → Continue to storage
+    │   └─ Error → Return validation error
     │
     ▼
-[Database Constraints]
+[Storage Integrity Checks]
     │
-    ├─> Database-level validation:
-    │   ├─ Foreign key constraints
-    │   ├─ Unique constraints
-    │   ├─ Check constraints
-    │   └─ Not null constraints
+    ├─> Storage-level validation:
+    │   ├─ Check for duplicate IDs
+    │   ├─ Validate data structure
+    │   ├─ Check storage quota
+    │   └─ Validate indexes consistency
     │
     ├─> Validation result:
     │   ├─ Success → Data saved
-    │   └─ Error → Return 500 with error details
+    │   └─ Error → Return storage error
     │
     ▼
 [Response]
@@ -1019,10 +870,11 @@ This document describes how data flows through the system for key operations, in
 ## 8. Data Export Flow
 
 ### Components Involved
+
 - **UI Component**: ExportButton, ExportDialog
-- **API Service**: Export API Client
-- **Backend API**: GET /api/goals/export
-- **File Service**: File generation (CSV, JSON, PDF)
+- **Storage Service**: Goal Storage Service
+- **Export Service**: File generation (CSV, JSON, PDF)
+- **Local Storage**: Source data for export
 
 ### Data Flow Diagram
 
@@ -1044,46 +896,27 @@ This document describes how data flows through the system for key operations, in
     ├─> User confirms export
     │
     ▼
-[API Service: exportGoals()]
+[Export Service: exportGoals()]
     │
-    ├─> Prepare request:
-    │   ├─ format: 'csv' | 'json' | 'pdf'
-    │   ├─ filters: (optional) Current filter state
-    │   └─ dateRange: (optional) { from, to }
+    ├─> Load goals from Local Storage
     │
-    ▼
-[HTTP Request: GET /api/goals/export]
+    ├─> Apply filters (if provided):
+    │   ├─ Filter by type, status, priority, etc.
+    │   └─ Filter by date range
     │
-    ├─> Query params:
-    │   ?format=csv
-    │   &type=quantitative,binary
-    │   &status=active,completed
-    │   &from=2024-01-01
-    │   &to=2024-12-31
-    │
-    ▼
-[Backend API Handler]
-    │
-    ├─> Load goals matching filters
-    │
-    ├─> Generate export file:
+    ├─> Generate export file (client-side):
     │   ├─ CSV: Convert goals to CSV format
     │   ├─ JSON: Serialize goals to JSON
-    │   └─ PDF: Generate PDF report with charts
-    │
-    ├─> Set response headers:
-    │   ├─ Content-Type: text/csv, application/json, application/pdf
-    │   └─ Content-Disposition: attachment; filename="goals-export.csv"
-    │
-    ▼
-[API Response: 200 OK]
-    │
-    ├─> Body: File content (binary or text)
+    │   └─ PDF: Generate PDF report with charts (using client library)
     │
     ▼
 [Browser: Download File]
     │
-    ├─> Browser triggers download
+    ├─> Create Blob from file content
+    │
+    ├─> Create download link
+    │
+    ├─> Trigger download
     │
     ├─> File saved to user's downloads folder
     │
@@ -1096,34 +929,35 @@ This document describes how data flows through the system for key operations, in
 
 ### Key Patterns
 
-1. **Optimistic Updates**: Update UI immediately, confirm with API response
-2. **Cache-First**: Check cache before API calls for performance
-3. **Validation Layers**: Client-side → Server-side → Database constraints
+1. **Optimistic Updates**: Update UI immediately, confirm with storage operation
+2. **Cache-First**: Check React Query cache before Local Storage reads for performance
+3. **Validation Layers**: Client-side validation → Business logic validation → Storage integrity checks
 4. **Error Handling**: Rollback optimistic updates, show clear errors
-5. **Real-time Sync**: Background refetching, optional WebSocket updates
+5. **Normalized Storage**: Use indexes for fast filtering and querying
 6. **Batch Operations**: Group multiple updates for efficiency
 
 ### Performance Considerations
 
-- **Caching**: React Query cache reduces API calls
-- **Pagination**: Limit data transfer for large lists
-- **Indexing**: Database indexes speed up filtered queries
-- **Debouncing**: Search input debounced to reduce API calls
+- **Caching**: React Query cache reduces Local Storage reads
+- **Normalized Indexes**: Pre-built indexes (by type, status, category, tags) for O(1) filtering
+- **In-Memory Operations**: Filtering, searching, and sorting done in-memory after index lookup
+- **Debouncing**: Search input debounced to reduce storage queries
 - **Lazy Loading**: Load goal details on demand
+- **Storage Optimization**: Batch writes, serialize efficiently, minimize storage operations
 
-### Security Considerations
+### Storage Considerations
 
-- **Authentication**: All API calls require auth token
-- **Authorization**: Server validates user permissions
-- **Input Validation**: Both client and server validate inputs
-- **SQL Injection**: Parameterized queries prevent injection
-- **XSS Prevention**: Sanitize user inputs before display
+- **Storage Limits**: Local Storage has ~5-10MB limit (sufficient for thousands of goals)
+- **Data Integrity**: Validate data on read/write, maintain index consistency
+- **Schema Versioning**: Support data migration for schema changes
+- **Error Recovery**: Handle corrupted data gracefully, provide recovery mechanisms
+- **XSS Prevention**: Sanitize user inputs before display and storage
 
 ---
 
 These data flow specifications should be:
+
 1. **Referenced during development** to ensure correct data handling
 2. **Used in code reviews** to verify implementation matches specification
 3. **Updated** when data structures or APIs change
 4. **Tested** to ensure data flows correctly end-to-end
-
