@@ -193,6 +193,7 @@ export const GoalList: React.FC<GoalListProps> = ({
     <List
       className={className}
       dataSource={goals}
+      split={false}
       renderItem={(goal) => (
         <List.Item key={goal.id} style={{ padding: 0 }}>
           <GoalCard goal={goal} onClick={onGoalClick} />
