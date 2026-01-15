@@ -27,6 +27,7 @@ import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useViewMode } from '@/features/goals/hooks/useViewMode';
 import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
+import { usePageTitle } from '@/hooks/usePageTitle';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -37,6 +38,9 @@ const { Option } = Select;
 export const GoalsPage: React.FC = () => {
   const navigate = useNavigate();
   const { viewMode, setViewMode } = useViewMode();
+
+  // Set page title
+  usePageTitle('Goals');
 
   // Filter state
   const [statusFilter, setStatusFilter] = useState<GoalStatus[] | undefined>(undefined);
