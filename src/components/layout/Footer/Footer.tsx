@@ -1,5 +1,5 @@
 import { GithubOutlined, FileTextOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { Layout, Row, Col, Typography, Space } from 'antd';
+import { Layout, Row, Col, Typography, Space, theme } from 'antd';
 
 import {
   APP_NAME,
@@ -30,14 +30,15 @@ const { Text, Link } = Typography;
  * - Responsive layout
  */
 export const Footer = () => {
+  const { token } = theme.useToken();
   const currentYear = new Date().getFullYear();
   const displayYear = currentYear > COPYRIGHT_YEAR ? `${COPYRIGHT_YEAR}-${currentYear}` : COPYRIGHT_YEAR.toString();
 
   return (
     <AntFooter
       style={{
-        background: '#fafafa',
-        borderTop: '1px solid #f0f0f0',
+        background: token.colorBgContainer,
+        borderTop: `1px solid ${token.colorBorder}`,
         padding: '24px 50px',
       }}
     >

@@ -1,7 +1,8 @@
 import { HomeOutlined, AimOutlined } from '@ant-design/icons';
-import { Layout, Menu, Space, Typography } from 'antd';
+import { Layout, Menu, Space, Typography, theme } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { APP_NAME } from '@/utils/constants';
 
 const { Header: AntHeader } = Layout;
@@ -19,6 +20,7 @@ const { Text } = Typography;
  * - Responsive design
  */
 export const Header = () => {
+  const { token } = theme.useToken();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -62,8 +64,8 @@ export const Header = () => {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 24px',
-        background: '#fff',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        background: token.colorBgContainer,
+        borderBottom: `1px solid ${token.colorBorder}`,
       }}
     >
       <Space
@@ -94,18 +96,21 @@ export const Header = () => {
         </Text>
       </Space>
 
-      <Menu
-        mode="horizontal"
-        selectedKeys={[getActiveKey()]}
-        items={menuItems}
-        onClick={handleMenuClick}
-        style={{
-          flex: 1,
-          justifyContent: 'flex-end',
-          borderBottom: 'none',
-          minWidth: 0,
-        }}
-      />
+      <Space>
+        <Menu
+          mode="horizontal"
+          selectedKeys={[getActiveKey()]}
+          items={menuItems}
+          onClick={handleMenuClick}
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            borderBottom: 'none',
+            minWidth: 0,
+          }}
+        />
+        <ThemeToggle />
+      </Space>
     </AntHeader>
   );
 };
