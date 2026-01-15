@@ -5,7 +5,7 @@
  * Supports loading states, empty states, click handlers, sorting, and filtering.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { List, Empty, Spin, Table, Tag, Progress, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -57,6 +57,8 @@ export const GoalList: React.FC<GoalListProps> = ({
   className,
   viewMode = 'table',
 }) => {
+  const [pageSize, setPageSize] = useState(10);
+
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -177,10 +179,13 @@ export const GoalList: React.FC<GoalListProps> = ({
             style: { cursor: onGoalClick ? 'pointer' : 'default' },
           })}
           pagination={{
-            pageSize: 10,
+            pageSize,
             showSizeChanger: true,
             pageSizeOptions: ['10', '20', '50', '100'],
             showTotal: (total) => `Total ${total} goals`,
+            onShowSizeChange: (_, size) => {
+              setPageSize(size);
+            },
           }}
           scroll={{ x: 'max-content' }}
         />
