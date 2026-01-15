@@ -1,6 +1,7 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 
@@ -14,6 +15,7 @@ const { Content } = Layout;
  *
  * Features:
  * - Header with logo and navigation
+ * - Breadcrumb navigation for context
  * - Content area with padding
  * - Footer with links and copyright
  * - Responsive design
@@ -23,6 +25,7 @@ export const MainLayout = () => {
     <Layout style={{ minHeight: '100vh' }}>
       <Header />
       <Content style={{ padding: '24px' }}>
+        <Breadcrumbs />
         <Outlet />
       </Content>
       <Footer />
