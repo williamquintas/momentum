@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { List, Empty, Spin, Table, Tag, Avatar, Progress, Typography } from 'antd';
+import { List, Empty, Spin, Table, Tag, Progress, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 import type { Goal } from '@/features/goals/types';
@@ -162,49 +162,28 @@ export const GoalList: React.FC<GoalListProps> = ({
           );
         },
       },
-      {
-        title: 'Assignee',
-        dataIndex: 'assignee',
-        key: 'assignee',
-        filters: goals
-          .map((g) => g.assignee)
-          .filter((assignee): assignee is string => assignee !== undefined)
-          .filter((value, index, self) => self.indexOf(value) === index)
-          .map((assignee) => ({
-            text: assignee,
-            value: assignee,
-          })),
-        onFilter: (value, record) => record.assignee === value,
-        render: (assignee: string | undefined) => {
-          if (!assignee) {
-            return <Text type="secondary">-</Text>;
-          }
-          return (
-            <Avatar size="small" style={{ backgroundColor: '#1890ff' }}>
-              {assignee.charAt(0).toUpperCase()}
-            </Avatar>
-          );
-        },
-      },
     ];
 
     return (
-      <Table
-        className={className}
-        columns={columns}
-        dataSource={goals}
-        rowKey="id"
-        loading={loading}
-        onRow={(record) => ({
-          onClick: () => onGoalClick?.(record),
-          style: { cursor: onGoalClick ? 'pointer' : 'default' },
-        })}
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showTotal: (total) => `Total ${total} goals`,
-        }}
-      />
+      <div style={{ overflowX: 'auto', width: '100%' }} className="goals-table-wrapper">
+        <Table
+          className={className}
+          columns={columns}
+          dataSource={goals}
+          rowKey="id"
+          loading={loading}
+          onRow={(record) => ({
+            onClick: () => onGoalClick?.(record),
+            style: { cursor: onGoalClick ? 'pointer' : 'default' },
+          })}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Total ${total} goals`,
+          }}
+          scroll={{ x: 'max-content' }}
+        />
+      </div>
     );
   }
 

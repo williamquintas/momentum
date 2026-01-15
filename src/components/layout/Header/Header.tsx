@@ -91,7 +91,7 @@ export const Header = () => {
             marginRight: '12px',
           }}
         />
-        <Text strong style={{ fontSize: '18px', userSelect: 'none' }}>
+        <Text strong className="header-title" style={{ fontSize: '18px', userSelect: 'none' }}>
           {APP_NAME}
         </Text>
       </Space>

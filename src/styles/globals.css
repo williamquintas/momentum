@@ -65,3 +65,42 @@ h6.ant-typography {
   min-height: 100vh;
 }
 
+/* Responsive header title - hide on mobile */
+@media (max-width: 425px) {
+  .header-title {
+    display: none !important;
+  }
+}
+
+/* Filters collapse - show expanded by default on larger screens, collapsed on mobile */
+@media (min-width: 426px) {
+  .filters-collapse .ant-collapse-item {
+    border: none;
+  }
+  .filters-collapse .ant-collapse-content {
+    display: block !important;
+  }
+  .filters-collapse .ant-collapse-content-box {
+    padding: 0 !important;
+  }
+  .filters-collapse .ant-collapse-header {
+    display: none !important;
+  }
+}
+
+/* Table horizontal scroll on mobile */
+.goals-table-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 425px) {
+  .goals-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .goals-table-wrapper .ant-table {
+    min-width: 600px;
+  }
+}
+

@@ -15,8 +15,8 @@
 
 import React, { useState, useMemo } from 'react';
 
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Card, Space, Input, Select, Button, Row, Col, Typography, message } from 'antd';
+import { PlusOutlined, SearchOutlined, FilterOutlined } from '@ant-design/icons';
+import { Card, Space, Input, Select, Button, Row, Col, Typography, message, Collapse } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 import { CreateGoalModal } from '@/features/goals/components/CreateGoalModal';
@@ -147,87 +147,105 @@ export const GoalsPage: React.FC = () => {
 
       <Card>
         <Space direction="vertical" style={{ width: '100%' }} size="middle">
-          {/* Filters Row */}
-          <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Input
-                placeholder="Search goals..."
-                prefix={<SearchOutlined />}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                allowClear
-              />
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Select
-                placeholder="Filter by Status"
-                style={{ width: '100%' }}
-                mode="multiple"
-                allowClear
-                value={statusFilter}
-                onChange={setStatusFilter}
-              >
-                <Option value={GoalStatus.ACTIVE}>Active</Option>
-                <Option value={GoalStatus.COMPLETED}>Completed</Option>
-                <Option value={GoalStatus.PAUSED}>Paused</Option>
-                <Option value={GoalStatus.CANCELLED}>Cancelled</Option>
-              </Select>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Select
-                placeholder="Filter by Type"
-                style={{ width: '100%' }}
-                mode="multiple"
-                allowClear
-                value={typeFilter}
-                onChange={setTypeFilter}
-              >
-                <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
-                <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
-                <Option value={GoalType.BINARY}>Binary</Option>
-                <Option value={GoalType.MILESTONE}>Milestone</Option>
-                <Option value={GoalType.RECURRING}>Recurring</Option>
-                <Option value={GoalType.HABIT}>Habit</Option>
-              </Select>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Select
-                placeholder="Filter by Priority"
-                style={{ width: '100%' }}
-                mode="multiple"
-                allowClear
-                value={priorityFilter}
-                onChange={setPriorityFilter}
-              >
-                <Option value={Priority.HIGH}>High</Option>
-                <Option value={Priority.MEDIUM}>Medium</Option>
-                <Option value={Priority.LOW}>Low</Option>
-              </Select>
-            </Col>
-            {availableCategories.length > 0 && (
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Select
-                  placeholder="Filter by Category"
-                  style={{ width: '100%' }}
-                  mode="multiple"
-                  allowClear
-                  value={categoryFilter}
-                  onChange={setCategoryFilter}
-                >
-                  {availableCategories.map((category) => (
-                    <Option key={category} value={category}>
-                      {category}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-            )}
-            {hasActiveFilters && (
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Button onClick={handleClearFilters}>Clear Filters</Button>
-              </Col>
-            )}
-          </Row>
+          {/* Filters - Collapsible on mobile */}
+          <Collapse
+            ghost
+            items={[
+              {
+                key: 'filters',
+                label: (
+                  <Space>
+                    <FilterOutlined />
+                    <span>Filters</span>
+                    {hasActiveFilters && <span style={{ color: '#1890ff' }}>(Active)</span>}
+                  </Space>
+                ),
+                children: (
+                  <Row gutter={[16, 16]}>
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Input
+                        placeholder="Search goals..."
+                        prefix={<SearchOutlined />}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        allowClear
+                      />
+                    </Col>
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Select
+                        placeholder="Filter by Status"
+                        style={{ width: '100%' }}
+                        mode="multiple"
+                        allowClear
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                      >
+                        <Option value={GoalStatus.ACTIVE}>Active</Option>
+                        <Option value={GoalStatus.COMPLETED}>Completed</Option>
+                        <Option value={GoalStatus.PAUSED}>Paused</Option>
+                        <Option value={GoalStatus.CANCELLED}>Cancelled</Option>
+                      </Select>
+                    </Col>
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Select
+                        placeholder="Filter by Type"
+                        style={{ width: '100%' }}
+                        mode="multiple"
+                        allowClear
+                        value={typeFilter}
+                        onChange={setTypeFilter}
+                      >
+                        <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
+                        <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
+                        <Option value={GoalType.BINARY}>Binary</Option>
+                        <Option value={GoalType.MILESTONE}>Milestone</Option>
+                        <Option value={GoalType.RECURRING}>Recurring</Option>
+                        <Option value={GoalType.HABIT}>Habit</Option>
+                      </Select>
+                    </Col>
+                    <Col xs={24} sm={12} md={8} lg={6}>
+                      <Select
+                        placeholder="Filter by Priority"
+                        style={{ width: '100%' }}
+                        mode="multiple"
+                        allowClear
+                        value={priorityFilter}
+                        onChange={setPriorityFilter}
+                      >
+                        <Option value={Priority.HIGH}>High</Option>
+                        <Option value={Priority.MEDIUM}>Medium</Option>
+                        <Option value={Priority.LOW}>Low</Option>
+                      </Select>
+                    </Col>
+                    {availableCategories.length > 0 && (
+                      <Col xs={24} sm={12} md={8} lg={6}>
+                        <Select
+                          placeholder="Filter by Category"
+                          style={{ width: '100%' }}
+                          mode="multiple"
+                          allowClear
+                          value={categoryFilter}
+                          onChange={setCategoryFilter}
+                        >
+                          {availableCategories.map((category) => (
+                            <Option key={category} value={category}>
+                              {category}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Col>
+                    )}
+                    {hasActiveFilters && (
+                      <Col xs={24} sm={12} md={8} lg={6}>
+                        <Button onClick={handleClearFilters}>Clear Filters</Button>
+                      </Col>
+                    )}
+                  </Row>
+                ),
+              },
+            ]}
+            className="filters-collapse"
+          />
 
           {/* Goals List */}
           <GoalList goals={goals} loading={isLoading} onGoalClick={handleGoalClick} viewMode={viewMode} />
