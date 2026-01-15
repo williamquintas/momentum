@@ -4,9 +4,17 @@
 
 .goal-card {
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
 }
 
 .goal-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.goal-card .ant-typography {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
