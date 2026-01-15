@@ -28,6 +28,7 @@ import { useViewMode } from '@/features/goals/hooks/useViewMode';
 import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -41,6 +42,9 @@ export const GoalsPage: React.FC = () => {
 
   // Set page title
   usePageTitle('Goals');
+
+  // Get available goal types based on feature flags
+  const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
 
   // Filter state
   const [statusFilter, setStatusFilter] = useState<GoalStatus[] | undefined>(undefined);
@@ -150,6 +154,7 @@ export const GoalsPage: React.FC = () => {
           {/* Filters - Collapsible on mobile */}
           <Collapse
             ghost
+            defaultActiveKey={['filters']}
             items={[
               {
                 key: 'filters',
@@ -195,12 +200,24 @@ export const GoalsPage: React.FC = () => {
                         value={typeFilter}
                         onChange={setTypeFilter}
                       >
-                        <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
-                        <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
-                        <Option value={GoalType.BINARY}>Binary</Option>
-                        <Option value={GoalType.MILESTONE}>Milestone</Option>
-                        <Option value={GoalType.RECURRING}>Recurring</Option>
-                        <Option value={GoalType.HABIT}>Habit</Option>
+                        {availableGoalTypes.includes(GoalType.QUANTITATIVE) && (
+                          <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
+                        )}
+                        {availableGoalTypes.includes(GoalType.QUALITATIVE) && (
+                          <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
+                        )}
+                        {availableGoalTypes.includes(GoalType.BINARY) && (
+                          <Option value={GoalType.BINARY}>Binary</Option>
+                        )}
+                        {availableGoalTypes.includes(GoalType.MILESTONE) && (
+                          <Option value={GoalType.MILESTONE}>Milestone</Option>
+                        )}
+                        {availableGoalTypes.includes(GoalType.RECURRING) && (
+                          <Option value={GoalType.RECURRING}>Recurring</Option>
+                        )}
+                        {availableGoalTypes.includes(GoalType.HABIT) && (
+                          <Option value={GoalType.HABIT}>Habit</Option>
+                        )}
                       </Select>
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>
