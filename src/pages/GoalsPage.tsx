@@ -132,14 +132,14 @@ export const GoalsPage: React.FC = () => {
     <div>
       {/* Page Header */}
       <div style={{ marginBottom: 24 }}>
-        <Row justify="space-between" align="middle">
-          <Col>
+        <Row justify="space-between" align="middle" gutter={[0, { xs: 16, sm: 0 }]}>
+          <Col xs={24} sm={12}>
             <Title level={2} style={{ margin: 0 }}>
               Goals List
             </Title>
           </Col>
-          <Col>
-            <Space>
+          <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Space className="goals-page-actions">
               <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
                 Create Goal

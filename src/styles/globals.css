@@ -102,5 +102,11 @@ h6.ant-typography {
   .goals-table-wrapper .ant-table {
     min-width: 600px;
   }
+
+  .goals-page-actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
 }
 
