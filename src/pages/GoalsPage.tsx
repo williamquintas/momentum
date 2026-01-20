@@ -215,9 +215,7 @@ export const GoalsPage: React.FC = () => {
                         {availableGoalTypes.includes(GoalType.RECURRING) && (
                           <Option value={GoalType.RECURRING}>Recurring</Option>
                         )}
-                        {availableGoalTypes.includes(GoalType.HABIT) && (
-                          <Option value={GoalType.HABIT}>Habit</Option>
-                        )}
+                        {availableGoalTypes.includes(GoalType.HABIT) && <Option value={GoalType.HABIT}>Habit</Option>}
                       </Select>
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>

@@ -18,4 +18,3 @@ export const GITHUB_DISCUSSIONS_URL = 'https://github.com/williamquintas/goals-t
 
 export const LICENSE_TYPE = 'MIT License';
 export const LICENSE_URL = 'https://opensource.org/licenses/MIT';
-

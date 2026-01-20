@@ -210,18 +210,10 @@ export const GoalForm: React.FC<GoalFormProps> = ({
               {availableGoalTypes.includes(GoalType.QUALITATIVE) && (
                 <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
               )}
-              {availableGoalTypes.includes(GoalType.BINARY) && (
-                <Option value={GoalType.BINARY}>Binary</Option>
-              )}
-              {availableGoalTypes.includes(GoalType.MILESTONE) && (
-                <Option value={GoalType.MILESTONE}>Milestone</Option>
-              )}
-              {availableGoalTypes.includes(GoalType.RECURRING) && (
-                <Option value={GoalType.RECURRING}>Recurring</Option>
-              )}
-              {availableGoalTypes.includes(GoalType.HABIT) && (
-                <Option value={GoalType.HABIT}>Habit</Option>
-              )}
+              {availableGoalTypes.includes(GoalType.BINARY) && <Option value={GoalType.BINARY}>Binary</Option>}
+              {availableGoalTypes.includes(GoalType.MILESTONE) && <Option value={GoalType.MILESTONE}>Milestone</Option>}
+              {availableGoalTypes.includes(GoalType.RECURRING) && <Option value={GoalType.RECURRING}>Recurring</Option>}
+              {availableGoalTypes.includes(GoalType.HABIT) && <Option value={GoalType.HABIT}>Habit</Option>}
             </Select>
           </Form.Item>
         </Col>

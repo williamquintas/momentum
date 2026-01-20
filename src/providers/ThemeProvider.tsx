@@ -1,5 +1,6 @@
-import { ConfigProvider } from 'antd';
 import type { ReactNode } from 'react';
+
+import { ConfigProvider } from 'antd';
 
 import { ThemeContextProvider, useThemeContext } from '@/contexts/ThemeContext';
 import { darkTheme, lightTheme } from '@/theme';
@@ -27,4 +28,3 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     </ThemeContextProvider>
   );
 };
-

@@ -37,7 +37,7 @@ export interface FeatureFlags {
  * @returns Boolean value of the feature flag
  */
 function getFeatureFlag(key: string, defaultValue = false): boolean {
-  const value = import.meta.env[key];
+  const value = import.meta.env[key] as string | undefined | boolean;
   if (value === undefined || value === null) {
     return defaultValue;
   }
@@ -68,8 +68,7 @@ export function getAvailableGoalTypes<T extends string>(allTypes: readonly T[]):
   if (featureFlags.enableQuantitativeOnly) {
     // Only return quantitative type if the flag is enabled
     // GoalType.QUANTITATIVE = 'quantitative'
-    return allTypes.filter((type) => type === 'quantitative') as T[];
+    return allTypes.filter((type) => type === 'quantitative');
   }
   return [...allTypes];
 }
-

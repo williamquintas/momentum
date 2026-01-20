@@ -40,4 +40,3 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className }) => {
     </Tooltip>
   );
 };
-

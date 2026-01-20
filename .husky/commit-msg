@@ -1,0 +1,89 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Conventional Commit Message Validator
+# Validates commit messages follow the format: <type>(<scope>): <subject>
+# Based on git workflow rules in .cursor/rules/git-workflow.md
+
+commit_msg_file="$1"
+commit_msg=$(cat "$commit_msg_file")
+
+# Extract the first line (subject)
+subject_line=$(echo "$commit_msg" | head -n1)
+
+# Allowed commit types
+allowed_types="feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert"
+
+# Colors for output
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+# Check if subject line is empty
+if [ -z "$subject_line" ]; then
+  echo "${RED}❌ Error: Commit message is empty${NC}"
+  exit 1
+fi
+
+# Check for merge commits, revert commits, and other special cases
+if echo "$subject_line" | grep -qE "^Merge |^Revert |^fixup!|^squash!"; then
+  echo "${GREEN}✓ Special commit format detected, skipping validation${NC}"
+  exit 0
+fi
+
+# Validate conventional commit format
+# Pattern: <type>(<scope>): <subject> or <type>: <subject> or <type>(<scope>)!: <subject>
+if ! echo "$subject_line" | grep -qE "^($allowed_types)(\([^)]+\))?(!)?: .+"; then
+  echo "${RED}❌ Error: Commit message does not follow conventional commit format${NC}"
+  echo ""
+  echo "${YELLOW}Expected format: <type>(<scope>): <subject>${NC}"
+  echo ""
+  echo "${YELLOW}Allowed types:${NC} feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+  echo ""
+  echo "${YELLOW}Examples:${NC}"
+  echo "  feat(goals): add quantitative goal progress tracking"
+  echo "  fix(ui): handle timeout errors gracefully"
+  echo "  docs(readme): update installation instructions"
+  echo "  style: apply prettier formatting"
+  echo "  feat(api)!: change authentication method (breaking change)"
+  echo ""
+  echo "${YELLOW}Your message:${NC} $subject_line"
+  exit 1
+fi
+
+# Extract type and subject for further validation
+type=$(echo "$subject_line" | sed -E "s/^($allowed_types)(\([^)]+\))?(!)?: .+/\1/")
+subject=$(echo "$subject_line" | sed -E "s/^($allowed_types)(\([^)]+\))?(!)?: (.+)/\4/")
+
+# Check subject length (recommended 50-72 characters, warn if > 72)
+subject_length=${#subject}
+if [ "$subject_length" -gt 72 ]; then
+  echo "${YELLOW}⚠ Warning: Subject line is longer than 72 characters (${subject_length} chars)${NC}"
+  echo "${YELLOW}  Consider keeping it under 72 characters for better readability${NC}"
+  echo ""
+fi
+
+# Check if subject starts with lowercase (recommended but not required)
+if echo "$subject" | grep -qE "^[A-Z]"; then
+  echo "${YELLOW}⚠ Note: Subject should start with lowercase (unless it's a proper noun)${NC}"
+  echo ""
+fi
+
+# Check if subject ends with period (should not)
+if echo "$subject" | grep -qE "\.$"; then
+  echo "${YELLOW}⚠ Note: Subject should not end with a period${NC}"
+  echo ""
+fi
+
+# Validate type is in allowed list
+if ! echo "$type" | grep -qE "^($allowed_types)$"; then
+  echo "${RED}❌ Error: Invalid commit type '${type}'${NC}"
+  echo "${YELLOW}Allowed types:${NC} $allowed_types"
+  exit 1
+fi
+
+# Success
+echo "${GREEN}✓ Commit message follows conventional commit format${NC}"
+exit 0
+

@@ -31,4 +31,3 @@ export const usePageTitle = (title?: string, suffix?: string): void => {
     document.title = pageTitle;
   }, [title, suffix]);
 };
-
