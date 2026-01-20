@@ -4,9 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
-[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/williamquintas/momentum)
-[![Test Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen.svg)](#)
-[![Vitest](https://img.shields.io/badge/Vitest-4.1-blue.svg)](https://vitest.dev/)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
 
 Momentum is a comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
 
@@ -91,7 +89,7 @@ npm run preview
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/williamquintas/momentum.git
+git clone <repository-url>
 cd momentum
 ```
 
@@ -247,19 +245,29 @@ Need help? Here are some ways to get support:
 - ✨ **Feature Requests**: Suggest features using the [feature request template](https://github.com/williamquintas/momentum/issues/new?template=feature_request.md)
 - 📖 **Support Guide**: See [.github/SUPPORT.md](.github/SUPPORT.md) for more information
 
+- How to set up your development environment
+- Code style and standards
+- How to submit pull requests
+- Testing requirements
+- Commit message conventions
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
 ## 📦 Demo
 
-Demo [here](https://momentum.quintas.app/)
+<!-- Add live demo link when available -->
+
+🚀 **Live Demo**: Coming soon!
+
+<!-- Add screenshots/GIFs when available -->
 
 ### Screenshots
 
 <!-- Add screenshots here -->
 
+- Dashboard view
 - Goal list view
-  ![Goal list view](./public/screenshots/goals-list.jpeg 'Goal list view')
-
 - Goal detail view
-  ![Goal form view](./public/screenshots/goals-form.jpeg 'Goal form view')
 
 ## 🔗 Links
 
@@ -277,4 +285,4 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ---
 
-Built with ❤️ using React, TypeScript, and Ant Design
+Built with ❤️ and ☕️ using React, TypeScript, and Ant Design

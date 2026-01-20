@@ -1,6 +1,6 @@
 # Build Tools & Development Environment Setup
 
-This document describes the build tools and development environment configuration for the Goals Tracking System.
+This document describes the build tools and development environment configuration for Momentum.
 
 ## Overview
 

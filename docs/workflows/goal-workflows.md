@@ -4,10 +4,6 @@ This document contains detailed workflow charts for key user journeys and system
 
 **Note**: This system uses Local Storage for persistence instead of a backend API. All "save to database" references in workflows refer to saving to browser Local Storage with a normalized structure for optimal performance.
 
-**Note**: This system uses Local Storage for persistence instead of a backend API. All "save to database" references in workflows refer to saving to browser Local Storage with a normalized structure for optimal performance.
-
-**Note**: This system uses Local Storage for persistence instead of a backend API. All "save to database" references in workflows refer to saving to browser Local Storage with a normalized structure for optimal performance.
-
 ---
 
 ## Workflow 1: Create and Track Quantitative Goal

@@ -67,3 +67,4 @@ Paste console errors here
 - [ ] 🟠 High (major impact on user experience)
 - [ ] 🟡 Medium (moderate impact)
 - [ ] 🟢 Low (minor issue)
+

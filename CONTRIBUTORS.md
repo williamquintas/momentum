@@ -6,7 +6,7 @@ Thank you to all the wonderful people who have contributed to the Goals Tracking
 
 <!-- Add maintainers here -->
 
-- [William Quintas de Melo](https://github.com/williamquintas) - Project Maintainer
+- [Your Name](https://github.com/williamquintas) - Project Maintainer
 
 ## Contributors
 

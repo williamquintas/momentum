@@ -356,7 +356,7 @@ If version information isn't available in the build:
 
 ## Related Documentation
 
-- [Git Workflow](./.ai-assistant/rules/git-workflow.md) - Branching strategy and commit conventions
-- [Deployment](./.ai-assistant/rules/deployment.md) - Deployment process and version management
+- [Git Workflow](./.cursor/rules/git-workflow.md) - Branching strategy and commit conventions
+- [Deployment](./.cursor/rules/deployment.md) - Deployment process and version management
 - [Semantic Versioning](https://semver.org/) - Official SemVer specification
 - [Conventional Commits](https://www.conventionalcommits.org/) - Commit message conventions

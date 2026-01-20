@@ -1,6 +1,6 @@
-# Momentum - Agent Guidelines
+# Momentum - Cursor Rules Index
 
-This file provides essential guidelines for AI coding assistants working in this repository.
+This directory contains comprehensive guidelines for developing Momentum. Each file covers a specific aspect of development.
 
 ## Project Tech Stack
 
@@ -94,7 +94,7 @@ npm run test:watch   # Watch mode for development
 npm run test:ui      # Vitest UI browser
 npm run test:coverage # With coverage report
 
-This is a comprehensive goals tracking management system built with:
+Momentum is a comprehensive goals tracking management system built with:
 
 - React + TypeScript
 - Ant Design (antd)

@@ -1,11 +1,23 @@
+import { readFileSync } from 'fs';
 import path from 'path';
 
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+// Read version from package.json
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
+const appVersion = packageJson.version || '0.0.0';
+const buildDate = new Date().toISOString();
+const gitSha = process.env.GITHUB_SHA || 'dev';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: {
+    __APP_VERSION__: JSON.stringify(appVersion),
+    __BUILD_DATE__: JSON.stringify(buildDate),
+    __GIT_SHA__: JSON.stringify(gitSha),
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

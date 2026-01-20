@@ -23,12 +23,12 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/williamquintas/momentum.git
-   cd momentum
+   git clone https://github.com/williamquintas/goals-tracking.git
+   cd goals-tracking
    ```
 3. **Add the upstream remote**:
    ```bash
-   git remote add upstream https://github.com/NEW_OWNER/momentum.git
+   git remote add upstream https://github.com/ORIGINAL_OWNER/goals-tracking.git
    ```
 4. **Create a branch** for your contribution:
    ```bash
@@ -108,7 +108,7 @@ type Goal = {
 ### React
 
 - **Functional Components**: Use functional components with hooks
-- **Component Structure**: Follow the structure in [Code Standards](./.ai-assistant/rules/code-standards.md)
+- **Component Structure**: Follow the structure in [Code Standards](./.cursor/rules/code-standards.md)
 - **Props**: Define props interfaces above the component
 - **Hooks**: Custom hooks should start with `use`
 
@@ -154,8 +154,8 @@ src/
 ### Ant Design
 
 - **Component Usage**: Use Ant Design components consistently
-- **Theming**: Follow theme customization guidelines in [UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md)
-- **Accessibility**: Ensure all components are accessible (see [Accessibility](./.ai-assistant/rules/accessibility.md))
+- **Theming**: Follow theme customization guidelines in [UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md)
+- **Accessibility**: Ensure all components are accessible (see [Accessibility](./.cursor/rules/accessibility.md))
 
 ## How to Submit PRs
 
@@ -306,7 +306,7 @@ BREAKING CHANGE: Authentication now requires JWT tokens
 
 ## Project Structure
 
-See [File Organization](./.ai-assistant/rules/file-organization.md) for detailed structure guidelines.
+See [File Organization](./.cursor/rules/file-organization.md) for detailed structure guidelines.
 
 Key directories:
 
@@ -329,7 +329,7 @@ Key directories:
 
 - `README.md`: Project overview and quick start
 - `CHANGELOG.md`: Version history
-- `./.ai-assistant/rules/`: Development guidelines
+- `.cursor/rules/`: Development guidelines
 - `specs/`: Feature specifications
 
 ## Getting Help
@@ -341,59 +341,10 @@ Key directories:
 
 ## Additional Resources
 
-- [Code Standards](./.ai-assistant/rules/code-standards.md)
-- [Architecture](./.ai-assistant/rules/architecture.md)
-- [Git Workflow](./.ai-assistant/rules/git-workflow.md)
-- [Testing Guidelines](./.ai-assistant/rules/testing.md)
-
-## AI Assistant Usage
-
-This project embraces AI-assisted development. When using AI assistants (GitHub Copilot, Claude Code, Cursor, etc.), please follow these guidelines:
-
-### Getting Started with AI Assistance
-
-1. **Read the Context**: Before making changes, AI assistants should read `AGENTS.md` and relevant rule files
-2. **Understand the Stack**: Review `package.json` for current dependencies and versions
-3. **Follow Conventions**: Use existing code patterns in the codebase
-
-### Working with AI Assistants
-
-- **Provide Context**: Share relevant files and explain the goal
-- **Review Carefully**: AI-generated code should be reviewed for correctness
-- **Test Thoroughly**: Run tests to verify AI-generated changes work correctly
-- **Ask Questions**: Use comments or documentation to clarify intent
-
-### Best Practices
-
-- Use "AI assistant" terminology in prompts rather than specific brand names
-- Reference this project's conventions: TypeScript strict mode, React hooks, Ant Design
-- Check `specs/` directory for feature specifications before implementing
-- Run `npm run validate` before submitting AI-assisted changes
-
-### Example Prompt Template
-
-```
-I need to implement [feature] in the Momentum goals tracking app.
-
-Context:
-- Tech stack: React 18.2.0, TypeScript 5.3.3, Ant Design 5.12.8, Zustand
-- File structure: feature-based in src/features/
-- Follow conventions in .ai-assistant/rules/
-
-Please:
-1. Read relevant specs in specs/ if available
-2. Implement the feature following project standards
-3. Add tests following testing guidelines
-4. Ensure type safety and linting pass
-```
-
-### Spec-Driven Development
-
-This project uses a spec-driven development workflow documented in `specs/`. Before implementing features:
-
-1. Check if a spec exists in `specs/<feature-number>-<feature-name>/`
-2. Read the specification document
-3. Follow the implementation notes in the spec
-4. Update task status using the planning tools
+- [Code Standards](./.cursor/rules/code-standards.md)
+- [Architecture](./.cursor/rules/architecture.md)
+- [Git Workflow](./.cursor/rules/git-workflow.md)
+- [Testing Guidelines](./.cursor/rules/testing.md)
+- [System Plan](./GOALS_TRACKING_SYSTEM_PLAN.md)
 
 Thank you for contributing! 🎉
