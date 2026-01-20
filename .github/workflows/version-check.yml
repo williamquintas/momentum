@@ -1,0 +1,72 @@
+name: Version Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  version-consistency:
+    name: Version Consistency Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Validate semantic version format
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $VERSION"
+
+          # Check if version matches semantic versioning pattern
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'; then
+            echo "❌ Version '$VERSION' does not follow semantic versioning (MAJOR.MINOR.PATCH)"
+            exit 1
+          fi
+
+          echo "✅ Version format is valid"
+
+      - name: Check version in CHANGELOG
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Check if version exists in CHANGELOG.md
+          if ! grep -q "## \[$VERSION\]" CHANGELOG.md; then
+            echo "⚠️  Warning: Version $VERSION not found in CHANGELOG.md"
+            echo "Consider adding an entry for this version in the [Unreleased] section"
+          else
+            echo "✅ Version $VERSION found in CHANGELOG.md"
+          fi
+
+      - name: Check for version conflicts
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Check if tag already exists
+          if git ls-remote --tags origin | grep -q "refs/tags/v$VERSION$"; then
+            echo "❌ Error: Tag v$VERSION already exists"
+            echo "Please bump the version in package.json before creating a release"
+            exit 1
+          fi
+
+          echo "✅ No conflicting tags found"
+
+      - name: Validate package.json version format
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            const semver = /^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/;
+            if (!semver.test(pkg.version)) {
+              console.error('❌ Invalid version format in package.json:', pkg.version);
+              process.exit(1);
+            }
+            console.log('✅ package.json version is valid:', pkg.version);
+          "

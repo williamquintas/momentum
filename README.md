@@ -1,6 +1,12 @@
-# Goals Tracking Management System
+# Momentum
 
-A comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
+[![CI](https://github.com/williamquintas/momentum/workflows/CI/badge.svg)](https://github.com/williamquintas/momentum/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
+
+Momentum is a comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
 
 ## 🎯 Features
 
@@ -47,7 +53,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 
 ```bash
 git clone <repository-url>
-cd goals-tracking
+cd momentum
 ```
 
 2. Install dependencies:
@@ -73,7 +79,9 @@ npm run dev
 yarn dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:5173](http://localhost:5173) in your browser (Vite default port)
+
+> **Note**: The default port for Vite is 5173, not 3000. Check your terminal output for the actual port.
 
 ## 📁 Project Structure
 
@@ -158,22 +166,78 @@ npm run type-check   # Run TypeScript type checking
 
 ## 🤝 Contributing
 
-1. Follow the [Git Workflow](./.cursor/rules/git-workflow.md) guidelines
-2. Adhere to [Code Standards](./.cursor/rules/code-standards.md)
-3. Write tests for new features
-4. Ensure accessibility compliance
-5. Update documentation as needed
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details on:
+
+- How to set up your development environment
+- Code style and standards
+- How to submit pull requests
+- Testing requirements
+- Commit message conventions
+
+Before contributing, please read our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and linting (`npm run validate`)
+5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for more details.
+
+## 👥 Contributors
+
+Thank you to all the wonderful people who have contributed to this project!
+
+See [CONTRIBUTORS.md](./CONTRIBUTORS.md) for the full list of contributors.
+
+## 💬 Support
+
+Need help? Here are some ways to get support:
+
+- 📚 **Documentation**: Check our [README](./README.md) and [Contributing Guide](./CONTRIBUTING.md)
+- 💬 **Discussions**: Ask questions in [GitHub Discussions](https://github.com/williamquintas/momentum/discussions)
+- 🐛 **Bug Reports**: Report bugs using the [bug report template](https://github.com/williamquintas/momentum/issues/new?template=bug_report.md)
+- ✨ **Feature Requests**: Suggest features using the [feature request template](https://github.com/williamquintas/momentum/issues/new?template=feature_request.md)
+- 📖 **Support Guide**: See [.github/SUPPORT.md](.github/SUPPORT.md) for more information
 
 ## 📝 License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## 📦 Demo
+
+<!-- Add live demo link when available -->
+
+🚀 **Live Demo**: Coming soon!
+
+<!-- Add screenshots/GIFs when available -->
+
+### Screenshots
+
+<!-- Add screenshots here -->
+
+- Dashboard view
+- Goal list view
+- Goal detail view
 
 ## 🔗 Links
 
 - [System Planning Document](./GOALS_TRACKING_SYSTEM_PLAN.md)
 - [Development Guidelines Index](./AGENTS.md)
+- [Version Management Guide](./docs/VERSION_MANAGEMENT.md)
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Changelog](./CHANGELOG.md)
 - [Ant Design Documentation](https://ant.design/)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ---
 
-Built with ❤️ using React, TypeScript, and Ant Design
+Built with ❤️ and ☕️ using React, TypeScript, and Ant Design

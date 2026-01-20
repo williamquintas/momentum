@@ -1,6 +1,6 @@
-# Goal Tracking System - Workflow Charts
+# Momentum - Workflow Charts
 
-This document contains detailed workflow charts for key user journeys and system processes in the Goals Tracking Management System.
+This document contains detailed workflow charts for key user journeys and system processes in Momentum.
 
 **Note**: This system uses Local Storage for persistence instead of a backend API. All "save to database" references in workflows refer to saving to browser Local Storage with a normalized structure for optimal performance.
 

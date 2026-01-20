@@ -1,0 +1,36 @@
+# This file defines code owners for automatic PR review requests
+# Each line is a file pattern followed by one or more owners
+# Order is important; the last matching pattern takes precedence
+# More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owners - all files
+# * @williamquintas
+
+# Source code
+/src/ @williamquintas
+
+# Configuration files
+*.json @williamquintas
+*.yml @williamquintas
+*.yaml @williamquintas
+tsconfig.json @williamquintas
+vite.config.ts @williamquintas
+vitest.config.ts @williamquintas
+
+# Documentation
+/docs/ @williamquintas
+*.md @williamquintas
+
+# GitHub workflows
+/.github/ @williamquintas
+
+# Specifications
+/specs/ @williamquintas
+
+# Tests
+/__tests__/ @williamquintas
+*.test.ts @williamquintas
+*.test.tsx @williamquintas
+*.spec.ts @williamquintas
+*.spec.tsx @williamquintas
+

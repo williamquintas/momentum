@@ -1,4 +1,4 @@
-# Goal Tracking System - Data Flow Specifications
+# Momentum - Data Flow Specifications
 
 This document describes how data flows through the system for key operations, including Local Storage operations, state management, and UI updates.
 

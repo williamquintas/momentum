@@ -1,6 +1,6 @@
-# Goals Tracking System - Cursor Rules Index
+# Momentum - Cursor Rules Index
 
-This directory contains comprehensive guidelines for developing the Goals Tracking Management System. Each file covers a specific aspect of development.
+This directory contains comprehensive guidelines for developing Momentum. Each file covers a specific aspect of development.
 
 ## Quick Reference
 
@@ -90,7 +90,7 @@ When working on a specific aspect of the project, refer to the relevant file:
 
 ## Project Context
 
-This is a comprehensive goals tracking management system built with:
+Momentum is a comprehensive goals tracking management system built with:
 
 - React + TypeScript
 - Ant Design (antd)
