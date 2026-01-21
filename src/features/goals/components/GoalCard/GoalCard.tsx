@@ -95,7 +95,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) 
 
         {/* Description (if available) */}
         {goal.description && (
-          <Text type="secondary" ellipsis style={{ display: 'block' }}>
+          <Text type="secondary" ellipsis={{ tooltip: goal.description }} style={{ display: 'block', width: '100%' }}>
             {goal.description}
           </Text>
         )}

@@ -27,12 +27,15 @@ Closes #
 <!-- Describe the changes in detail -->
 
 ### What
+
 <!-- What changes are being made? -->
 
 ### Why
+
 <!-- Why are these changes needed? -->
 
 ### How
+
 <!-- How are the changes implemented? -->
 
 ## Testing
@@ -40,11 +43,13 @@ Closes #
 <!-- Describe how you tested your changes -->
 
 ### Test Steps
+
 1.
 2.
 3.
 
 ### Test Coverage
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] Manual testing completed
@@ -60,6 +65,7 @@ Closes #
 <!-- Mark completed items with an 'x' -->
 
 ### Code Quality
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Code is commented, particularly in hard-to-understand areas
@@ -67,6 +73,7 @@ Closes #
 - [ ] No commented-out code
 
 ### Functionality
+
 - [ ] Changes work as expected
 - [ ] All existing tests pass
 - [ ] New tests added for new functionality
@@ -74,18 +81,21 @@ Closes #
 - [ ] Edge cases considered
 
 ### Documentation
+
 - [ ] README updated (if needed)
 - [ ] Code comments added/updated
 - [ ] Type definitions updated (if applicable)
 - [ ] CHANGELOG.md updated (if applicable)
 
 ### Security & Performance
+
 - [ ] No security vulnerabilities introduced
 - [ ] Performance impact considered
 - [ ] No sensitive data exposed
 - [ ] Input validation implemented
 
 ### Accessibility
+
 - [ ] Keyboard navigation works
 - [ ] Screen reader compatibility verified
 - [ ] ARIA labels properly implemented
@@ -94,4 +104,3 @@ Closes #
 ## Additional Notes
 
 <!-- Any additional information, context, or notes for reviewers -->
-

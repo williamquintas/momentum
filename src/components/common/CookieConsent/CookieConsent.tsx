@@ -17,7 +17,6 @@ import { useEffect, useState } from 'react';
 
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Alert, Button, Space, message } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import { clearNonEssentialStorage, getCookieConsent, saveCookieConsent } from '@/utils/cookieConsent';
 
@@ -26,7 +25,6 @@ import { clearNonEssentialStorage, getCookieConsent, saveCookieConsent } from '@
  */
 export const CookieConsent = () => {
   const [showBanner, setShowBanner] = useState(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if consent has been given
@@ -39,7 +37,7 @@ export const CookieConsent = () => {
   const handleAccept = () => {
     saveCookieConsent('accepted');
     setShowBanner(false);
-    void message.success(t('cookieConsent.acceptedMessage'));
+    void message.success('Cookie consent accepted. Your preferences will be saved.');
   };
 
   const handleReject = () => {
@@ -53,7 +51,8 @@ export const CookieConsent = () => {
 
     // Show info message about limited functionality
     void message.info({
-      content: t('cookieConsent.rejectedMessage'),
+      content:
+        'Only necessary cookies enabled. Your preferences and goals will not be saved between sessions. You can change this in settings.',
       duration: 6,
     });
   };
@@ -64,16 +63,20 @@ export const CookieConsent = () => {
 
   return (
     <Alert
-      message={t('cookieConsent.title')}
+      message="Cookie Consent"
       description={
         <div>
-          <p style={{ marginBottom: 12 }}>{t('cookieConsent.description')}</p>
+          <p style={{ marginBottom: 12 }}>
+            We use cookies and local storage to enhance your experience, analyze site usage, and assist in our marketing
+            efforts. By clicking &quot;Accept&quot;, you consent to our use of cookies and local storage. Click
+            &quot;Necessary Only&quot; to use only essential functionality.
+          </p>
           <Space>
             <Button type="primary" icon={<CheckCircleOutlined />} onClick={handleAccept}>
-              {t('cookieConsent.accept')}
+              Accept
             </Button>
             <Button icon={<CloseCircleOutlined />} onClick={handleReject}>
-              {t('cookieConsent.necessaryOnly')}
+              Necessary Only
             </Button>
           </Space>
         </div>

@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import type { CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/goals/types';
 import { CreateGoalInputSchema, applyZodErrorsToForm } from '@/features/goals/utils/validation';
+import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -57,6 +58,9 @@ export const GoalForm: React.FC<GoalFormProps> = ({
 }) => {
   const [form] = Form.useForm<CreateGoalInput>(externalForm);
   const goalType = Form.useWatch('type', form);
+
+  // Get available goal types based on feature flags
+  const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
 
   // Set default values
   useEffect(() => {
@@ -200,9 +204,16 @@ export const GoalForm: React.FC<GoalFormProps> = ({
         <Col xs={24} sm={12}>
           <Form.Item name="type" label="Goal Type" rules={[{ required: true, message: 'Goal type is required' }]}>
             <Select placeholder="Select goal type">
-              <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
-              <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
-              <Option value={GoalType.BINARY}>Binary</Option>
+              {availableGoalTypes.includes(GoalType.QUANTITATIVE) && (
+                <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
+              )}
+              {availableGoalTypes.includes(GoalType.QUALITATIVE) && (
+                <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
+              )}
+              {availableGoalTypes.includes(GoalType.BINARY) && <Option value={GoalType.BINARY}>Binary</Option>}
+              {availableGoalTypes.includes(GoalType.MILESTONE) && <Option value={GoalType.MILESTONE}>Milestone</Option>}
+              {availableGoalTypes.includes(GoalType.RECURRING) && <Option value={GoalType.RECURRING}>Recurring</Option>}
+              {availableGoalTypes.includes(GoalType.HABIT) && <Option value={GoalType.HABIT}>Habit</Option>}
             </Select>
           </Form.Item>
         </Col>

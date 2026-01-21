@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ConfigProvider } from 'antd';
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
+import { ThemeProvider } from './providers';
 import './styles/globals.css';
 
 const queryClient = new QueryClient({
@@ -25,9 +25,9 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ConfigProvider>
+      <ThemeProvider>
         <App />
-      </ConfigProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );

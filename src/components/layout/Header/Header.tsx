@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
+import { HomeOutlined, AimOutlined } from '@ant-design/icons';
+import { Layout, Menu, Space, Typography, theme } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { DownloadOutlined, MenuOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Layout, Space, Tooltip, Typography, theme, Grid } from 'antd';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
-import { NotificationBell } from '@/components/common/NotificationBell';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
-import { usePwaInstall } from '@/hooks/usePwaInstall';
 import { APP_NAME } from '@/utils/constants';
-
-import './Header.css';
 
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
@@ -19,94 +11,51 @@ const { Text } = Typography;
 /**
  * Header Component
  *
- * Main application header with logo.
+ * Main application header with logo and navigation menu.
  * Provides horizontal navigation on desktop and mobile-friendly layout.
  *
  * Features:
  * - Logo that navigates to home
- * - Responsive design with extensible right side
+ * - Navigation menu with active route highlighting
+ * - Responsive design
  */
 export const Header = () => {
-  const { t } = useTranslation();
   const { token } = theme.useToken();
   const navigate = useNavigate();
-  const { canInstall, dismissed, promptInstall } = usePwaInstall();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const screens = Grid.useBreakpoint();
+  const location = useLocation();
+
+  // Determine active menu key based on current path
+  const getActiveKey = (): string => {
+    const path = location.pathname;
+    if (path === '/' || path === '/goals') {
+      return path === '/' ? '/' : '/goals';
+    }
+    if (path.startsWith('/goals/')) {
+      return '/goals';
+    }
+    return path;
+  };
+
+  const handleMenuClick = ({ key }: { key: string }) => {
+    navigate(key);
+  };
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
-  const isMobile = !screens.md;
-
-  // Mobile menu items with labels for each header action
-  const mobileMenuConfig = [
+  const menuItems = [
     {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: t('header.settings'),
-      onClick: () => navigate('/settings'),
+      key: '/',
+      icon: <HomeOutlined />,
+      label: 'Home',
     },
     {
-      key: 'notifications',
-      icon: null, // NotificationBell is complex, show as-is
-      label: null,
-      render: () => <NotificationBell />,
+      key: '/goals',
+      icon: <AimOutlined />,
+      label: 'Goals',
     },
-    canInstall &&
-      dismissed && {
-        key: 'install-app',
-        icon: <DownloadOutlined />,
-        label: t('header.installApp'),
-        onClick: () => void promptInstall(),
-      },
-  ].filter(Boolean) as Array<{
-    key: string;
-    icon: React.ReactNode;
-    label: string;
-    onClick?: () => void;
-    render?: () => React.ReactNode;
-  }>;
-
-  const mobileMenuItems = mobileMenuConfig.map((item) => ({
-    key: item.key,
-    label: (
-      <div className="mobile-menu-item">
-        {item.icon && <span className="mobile-menu-icon">{item.icon}</span>}
-        {item.render ? (
-          <span className="mobile-menu-component">{item.render()}</span>
-        ) : (
-          <span className="mobile-menu-label">{item.label}</span>
-        )}
-      </div>
-    ),
-    onClick: item.onClick,
-  }));
-
-  const headerRightItems = [
-    <LanguageSwitcher key="language" />,
-    canInstall && dismissed ? (
-      <Tooltip key="install" title={t('header.installApp')}>
-        <Button
-          icon={<DownloadOutlined />}
-          onClick={() => void promptInstall()}
-          type="text"
-          aria-label={t('header.installMomentumApp')}
-        />
-      </Tooltip>
-    ) : null,
-    <Tooltip key="settings" title={t('header.settings')}>
-      <Button
-        icon={<SettingOutlined />}
-        onClick={() => navigate('/settings')}
-        type="text"
-        aria-label={t('header.goToSettings')}
-      />
-    </Tooltip>,
-    <NotificationBell key="notifications" />,
-    <ThemeToggle key="theme" />,
-  ].filter(Boolean);
+  ];
 
   return (
     <AntHeader
@@ -114,14 +63,13 @@ export const Header = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: isMobile ? '0 16px' : '0 24px',
+        padding: '0 24px',
         background: token.colorBgContainer,
         borderBottom: `1px solid ${token.colorBorder}`,
       }}
     >
-      <div
-        className="logo-wrapper"
-        style={{ cursor: 'pointer' }}
+      <Space
+        style={{ cursor: 'pointer', height: '100%' }}
         onClick={handleLogoClick}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -131,39 +79,38 @@ export const Header = () => {
         }}
         tabIndex={0}
         role="button"
-        aria-label={t('header.navigateToHome')}
+        aria-label="Navigate to home"
       >
-        <div
-          className="logo-container"
+        {/* Logo - using SVG from public folder */}
+        <img
+          src="/logo.svg"
+          alt={`${APP_NAME} Logo`}
           style={{
-            borderColor: token.colorBorder,
-            backgroundColor: '#fff',
+            height: '32px',
+            width: 'auto',
+            marginRight: '12px',
           }}
-        >
-          <img src="/logo.png" alt={`${APP_NAME} Logo`} />
-        </div>
-        {!isMobile && (
-          <Text strong className="header-title" style={{ fontSize: '18px', userSelect: 'none' }}>
-            {APP_NAME}
-          </Text>
-        )}
-      </div>
+        />
+        <Text strong className="header-title" style={{ fontSize: '18px', userSelect: 'none' }}>
+          {APP_NAME}
+        </Text>
+      </Space>
 
-      {isMobile ? (
-        <Dropdown
-          menu={{ items: mobileMenuItems }}
-          trigger={['click']}
-          placement="bottomRight"
-          open={mobileMenuOpen}
-          onOpenChange={setMobileMenuOpen}
-        >
-          <Button type="text" icon={<MenuOutlined />} aria-label="Open menu" className="header-mobile-menu-btn" />
-        </Dropdown>
-      ) : (
-        <Space className="header-right" size={isMobile ? 8 : 12}>
-          {headerRightItems}
-        </Space>
-      )}
+      <Space>
+        <Menu
+          mode="horizontal"
+          selectedKeys={[getActiveKey()]}
+          items={menuItems}
+          onClick={handleMenuClick}
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            borderBottom: 'none',
+            minWidth: 0,
+          }}
+        />
+        <ThemeToggle />
+      </Space>
     </AntHeader>
   );
 };

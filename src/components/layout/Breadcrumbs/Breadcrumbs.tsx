@@ -15,7 +15,6 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
 import { Breadcrumb } from 'antd';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { goalService } from '@/services/api/goalService';
@@ -32,51 +31,36 @@ interface BreadcrumbItem {
 /**
  * Get breadcrumb items for current route
  */
-const getBreadcrumbItems = (pathname: string, t: (key: string) => string): BreadcrumbItem[] => {
+const getBreadcrumbItems = (pathname: string): BreadcrumbItem[] => {
   // Home page
   if (pathname === '/') {
-    return [{ title: t('breadcrumbs.home') }];
+    return [{ title: 'Home' }];
   }
 
   // Goals list page
   if (pathname === '/goals') {
-    return [{ title: t('breadcrumbs.home'), path: '/' }, { title: t('breadcrumbs.goals') }];
-  }
-
-  // Notifications page
-  if (pathname === '/notifications') {
-    return [{ title: t('breadcrumbs.home'), path: '/' }, { title: t('notifications.title') }];
-  }
-
-  // Settings page
-  if (pathname === '/settings') {
-    return [{ title: t('breadcrumbs.home'), path: '/' }, { title: t('settings.title') }];
+    return [{ title: 'Home', path: '/' }, { title: 'Goals' }];
   }
 
   // Goal detail page (pattern: /goals/:id)
   if (pathname.startsWith('/goals/')) {
-    return [
-      { title: t('breadcrumbs.home'), path: '/' },
-      { title: t('breadcrumbs.goals'), path: '/goals' },
-      { title: t('breadcrumbs.goalDetails') },
-    ];
+    return [{ title: 'Home', path: '/' }, { title: 'Goals', path: '/goals' }, { title: 'Goal Details' }];
   }
 
   // Default breadcrumb
-  return [{ title: t('breadcrumbs.home'), path: '/' }];
+  return [{ title: 'Home', path: '/' }];
 };
 
 /**
  * Breadcrumbs Component
  */
 export const Breadcrumbs = () => {
-  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams<Record<string, string>>();
 
   // Get breadcrumb items for current route
-  const baseBreadcrumbItems = getBreadcrumbItems(location.pathname, t);
+  const baseBreadcrumbItems = getBreadcrumbItems(location.pathname);
 
   // For dynamic routes with IDs, fetch the goal title
   const goalId = params?.id;
@@ -92,7 +76,7 @@ export const Breadcrumbs = () => {
   // Update breadcrumb items if we have goal data
   const finalBreadcrumbItems = baseBreadcrumbItems.map((item, index) => {
     // Replace "Goal Details" with actual goal title if available
-    if (index === baseBreadcrumbItems.length - 1 && goal && item.title === t('breadcrumbs.goalDetails')) {
+    if (index === baseBreadcrumbItems.length - 1 && goal && item.title === 'Goal Details') {
       return { ...item, title: goal.title };
     }
     return item;

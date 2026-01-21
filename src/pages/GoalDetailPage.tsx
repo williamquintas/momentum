@@ -18,6 +18,7 @@ import { useDeleteGoal } from '@/features/goals/hooks/useDeleteGoal';
 import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
 import { useUpdateProgress } from '@/features/goals/hooks/useUpdateProgress';
 import type { CreateGoalInput, UpdateGoalInput } from '@/features/goals/types';
+import { usePageTitle } from '@/hooks/usePageTitle';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
 
@@ -68,6 +69,9 @@ export const GoalDetailPage: React.FC = () => {
   const updateGoal = useUpdateGoal();
   const deleteGoal = useDeleteGoal();
   const updateProgress = useUpdateProgress();
+
+  // Set page title dynamically based on goal title
+  usePageTitle(goal?.title || 'Goal Details', 'Details');
 
   // Handle navigation back
   const handleBack = () => {
