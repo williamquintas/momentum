@@ -1,9 +1,10 @@
-import { HomeOutlined, AimOutlined } from '@ant-design/icons';
-import { Layout, Menu, Space, Typography, theme } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Layout, Space, Typography, theme } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { APP_NAME } from '@/utils/constants';
+
+import './Header.css';
 
 const { Header: AntHeader } = Layout;
 const { Text } = Typography;
@@ -11,51 +12,20 @@ const { Text } = Typography;
 /**
  * Header Component
  *
- * Main application header with logo and navigation menu.
+ * Main application header with logo.
  * Provides horizontal navigation on desktop and mobile-friendly layout.
  *
  * Features:
  * - Logo that navigates to home
- * - Navigation menu with active route highlighting
  * - Responsive design
  */
 export const Header = () => {
   const { token } = theme.useToken();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Determine active menu key based on current path
-  const getActiveKey = (): string => {
-    const path = location.pathname;
-    if (path === '/' || path === '/goals') {
-      return path === '/' ? '/' : '/goals';
-    }
-    if (path.startsWith('/goals/')) {
-      return '/goals';
-    }
-    return path;
-  };
-
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
-  };
 
   const handleLogoClick = () => {
     navigate('/');
   };
-
-  const menuItems = [
-    {
-      key: '/',
-      icon: <HomeOutlined />,
-      label: 'Home',
-    },
-    {
-      key: '/goals',
-      icon: <AimOutlined />,
-      label: 'Goals',
-    },
-  ];
 
   return (
     <AntHeader
@@ -68,8 +38,9 @@ export const Header = () => {
         borderBottom: `1px solid ${token.colorBorder}`,
       }}
     >
-      <Space
-        style={{ cursor: 'pointer', height: '100%' }}
+      <div
+        className="logo-wrapper"
+        style={{ cursor: 'pointer' }}
         onClick={handleLogoClick}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -81,34 +52,22 @@ export const Header = () => {
         role="button"
         aria-label="Navigate to home"
       >
-        {/* Logo - using SVG from public folder */}
-        <img
-          src="/logo.svg"
-          alt={`${APP_NAME} Logo`}
+        {/* Logo with curved square container */}
+        <div
+          className="logo-container"
           style={{
-            height: '32px',
-            width: 'auto',
-            marginRight: '12px',
+            borderColor: token.colorBorder,
+            backgroundColor: '#fff',
           }}
-        />
+        >
+          <img src="/logo.png" alt={`${APP_NAME} Logo`} />
+        </div>
         <Text strong className="header-title" style={{ fontSize: '18px', userSelect: 'none' }}>
           {APP_NAME}
         </Text>
-      </Space>
+      </div>
 
       <Space>
-        <Menu
-          mode="horizontal"
-          selectedKeys={[getActiveKey()]}
-          items={menuItems}
-          onClick={handleMenuClick}
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end',
-            borderBottom: 'none',
-            minWidth: 0,
-          }}
-        />
         <ThemeToggle />
       </Space>
     </AntHeader>
