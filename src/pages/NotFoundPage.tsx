@@ -1,8 +1,13 @@
 import { Result, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
+import { usePageTitle } from '@/hooks/usePageTitle';
+
 export const NotFoundPage = () => {
   const navigate = useNavigate();
+
+  // Set page title
+  usePageTitle('Page Not Found');
 
   return (
     <Result

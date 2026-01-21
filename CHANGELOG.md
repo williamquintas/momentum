@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Initial project setup
 - GitHub Actions CI/CD workflow
 - Comprehensive documentation structure
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2024-01-XX
 
 ### Added
+
 - Multiple goal types support (Quantitative, Qualitative, Binary, Milestone, Recurring, Habit)
 - Goal creation and management functionality
 - Progress tracking and visualization
@@ -29,12 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Development documentation
 
 ### Changed
+
 - Initial release
 
 ### Fixed
+
 - N/A (initial release)
 
 ### Security
+
 - Initial security configuration
 - Environment variable validation
 
@@ -48,4 +53,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Removed** for now removed features
 - **Fixed** for any bug fixes
 - **Security** for vulnerability fixes
-

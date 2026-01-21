@@ -196,7 +196,7 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               )}
 
               {/* Action Buttons */}
-              <Space>
+              <Space wrap style={{ width: '100%' }}>
                 {onUpdateProgress && (
                   <Button type="primary" icon={<RiseOutlined />} onClick={handleUpdateProgress}>
                     Update Progress

@@ -647,6 +647,11 @@ export const queryGoals = (filters: GoalFilters = {}): Goal[] => {
     })
     .filter((goal): goal is Goal => goal !== null)
     .filter((goal) => {
+      // Filter by priority
+      if (filters.priority && filters.priority.length > 0 && !filters.priority.includes(goal.priority)) {
+        return false;
+      }
+
       // Filter by archived
       if (filters.archived !== undefined && goal.archived !== filters.archived) {
         return false;
