@@ -67,6 +67,9 @@ export const GoalForm: React.FC<GoalFormProps> = ({
   // Get available goal types based on feature flags
   const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
 
+  // Get available goal types based on feature flags
+  const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
+
   // Set default values
   useEffect(() => {
     if (initialValues) {
