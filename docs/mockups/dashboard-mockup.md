@@ -234,6 +234,6 @@ This mockup serves as a reference for:
 
 ## Related Documentation
 
-- [UI Component Guidelines](../../.cursor/rules/ui-component-guidelines.md)
+- [UI Component Guidelines](../../.ai-assistant/rules/ui-component-guidelines.md)
 - [Feature Specifications](../../specs/features/goal-features.md)
 - [Architecture Documentation](../../specs/diagrams/architecture/)

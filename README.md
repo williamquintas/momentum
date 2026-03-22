@@ -110,18 +110,22 @@ src/
 
 ### Development Guidelines
 
-This project includes comprehensive development guidelines organized in the `.cursor/rules/` directory:
+This project includes comprehensive development guidelines organized in the `.ai-assistant/rules/` directory:
 
-- **[Code Standards](./.cursor/rules/code-standards.md)** - TypeScript, React patterns, naming conventions
-- **[Architecture](./.cursor/rules/architecture.md)** - System and component architecture
-- **[UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md)** - Component development and Ant Design usage
-- **[State Management](./.cursor/rules/state-management.md)** - State management patterns
-- **[API & Data Handling](./.cursor/rules/api-data-handling.md)** - API service patterns
-- **[Error Handling](./.cursor/rules/error-handling.md)** - Error handling strategies
-- **[Testing](./.cursor/rules/testing.md)** - Testing guidelines
-- **[Performance Optimization](./.cursor/rules/performance-optimization.md)** - Performance best practices
-- **[Accessibility](./.cursor/rules/accessibility.md)** - Accessibility guidelines
-- **[Security](./.cursor/rules/security.md)** - Security best practices
+- **[Code Standards](./.ai-assistant/rules/code-standards.md)** - TypeScript, React patterns, naming conventions
+- **[Architecture](./.ai-assistant/rules/architecture.md)** - System and component architecture
+- **[UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md)** - Component development and Ant Design usage
+- **[State Management](./.ai-assistant/rules/state-management.md)** - State management patterns
+- **[API & Data Handling](./.ai-assistant/rules/api-data-handling.md)** - API service patterns
+- **[Error Handling](./.ai-assistant/rules/error-handling.md)** - Error handling strategies
+- **[Testing](./.ai-assistant/rules/testing.md)** - Testing guidelines
+- **[Performance Optimization](./.ai-assistant/rules/performance-optimization.md)** - Performance best practices
+- **[Accessibility](./.ai-assistant/rules/accessibility.md)** - Accessibility guidelines
+- **[Security](./.ai-assistant/rules/security.md)** - Security best practices
+
+### AI Assistant Agnostic Guidance
+
+This documentation is designed for any AI coding assistant real-world workflow (GitHub Copilot, Claude Code, Cursor, Gemini, etc.). Use “AI assistant” terminology in prompts and templates instead of hardcoded brand names.
 
 For a complete list of all development guidelines, see [AGENTS.md](./AGENTS.md).
 

@@ -108,7 +108,7 @@ type Goal = {
 ### React
 
 - **Functional Components**: Use functional components with hooks
-- **Component Structure**: Follow the structure in [Code Standards](./.cursor/rules/code-standards.md)
+- **Component Structure**: Follow the structure in [Code Standards](./.ai-assistant/rules/code-standards.md)
 - **Props**: Define props interfaces above the component
 - **Hooks**: Custom hooks should start with `use`
 
@@ -154,8 +154,8 @@ src/
 ### Ant Design
 
 - **Component Usage**: Use Ant Design components consistently
-- **Theming**: Follow theme customization guidelines in [UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md)
-- **Accessibility**: Ensure all components are accessible (see [Accessibility](./.cursor/rules/accessibility.md))
+- **Theming**: Follow theme customization guidelines in [UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md)
+- **Accessibility**: Ensure all components are accessible (see [Accessibility](./.ai-assistant/rules/accessibility.md))
 
 ## How to Submit PRs
 
@@ -306,7 +306,7 @@ BREAKING CHANGE: Authentication now requires JWT tokens
 
 ## Project Structure
 
-See [File Organization](./.cursor/rules/file-organization.md) for detailed structure guidelines.
+See [File Organization](./.ai-assistant/rules/file-organization.md) for detailed structure guidelines.
 
 Key directories:
 
@@ -329,7 +329,7 @@ Key directories:
 
 - `README.md`: Project overview and quick start
 - `CHANGELOG.md`: Version history
-- `.cursor/rules/`: Development guidelines
+- `./.ai-assistant/rules/`: Development guidelines
 - `specs/`: Feature specifications
 
 ## Getting Help
@@ -341,10 +341,10 @@ Key directories:
 
 ## Additional Resources
 
-- [Code Standards](./.cursor/rules/code-standards.md)
-- [Architecture](./.cursor/rules/architecture.md)
-- [Git Workflow](./.cursor/rules/git-workflow.md)
-- [Testing Guidelines](./.cursor/rules/testing.md)
+- [Code Standards](./.ai-assistant/rules/code-standards.md)
+- [Architecture](./.ai-assistant/rules/architecture.md)
+- [Git Workflow](./.ai-assistant/rules/git-workflow.md)
+- [Testing Guidelines](./.ai-assistant/rules/testing.md)
 - [System Plan](./GOALS_TRACKING_SYSTEM_PLAN.md)
 
 Thank you for contributing! 🎉

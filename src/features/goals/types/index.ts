@@ -16,7 +16,7 @@
  */
 
 // Re-export enums (as values - this also exports them as types)
-export { GoalType, GoalStatus, Priority, RecurrenceFrequency, QualitativeStatus } from '@specs/types/goal.types';
+export { GoalType, GoalStatus, Priority, RecurrenceFrequency, QualitativeStatus } from '@specs/bkp/types/goal.types';
 
 // Re-export all types from specs
 export type {
@@ -49,7 +49,7 @@ export type {
   GoalSortOptions,
   // Progress Calculation Types
   ProgressCalculation,
-} from '@specs/types/goal.types';
+} from '@specs/bkp/types/goal.types';
 
 // Re-export type guards
 export {
@@ -59,4 +59,4 @@ export {
   isMilestoneGoal,
   isRecurringGoal,
   isHabitGoal,
-} from '@specs/types/goal.types';
+} from '@specs/bkp/types/goal.types';

@@ -12,7 +12,7 @@ import type {
   UpdateGoalInput,
   GoalFilters,
   ProgressEntry,
-} from '../../../specs/types/goal.types';
+} from '../../../specs/bkp/types/goal.types';
 
 /**
  * Generate a UUID v4

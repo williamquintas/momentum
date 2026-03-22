@@ -6,7 +6,7 @@ This document provides a step-by-step implementation guide based on:
 
 - **GOALS_TRACKING_SYSTEM_PLAN.md** - Phase 1 requirements
 - **specs/** - Complete specifications (types, validation, business rules, features)
-- **.cursor/rules/** - Architecture, file organization, and coding standards
+- **./.ai-assistant/rules/** - Architecture, file organization, and coding standards
 
 ## Implementation Strategy
 
@@ -444,7 +444,7 @@ src/
 - ✅ Types defined? → Yes, in `specs/types/goal.types.ts`
 - ✅ Validation schemas ready? → Yes, in `specs/validation/goal.schemas.ts`
 - ✅ Business rules documented? → Yes, in `specs/business-rules/goal-business-rules.md`
-- ✅ Architecture defined? → Yes, in `.cursor/rules/architecture.md`
-- ✅ File organization clear? → Yes, in `.cursor/rules/file-organization.md`
+- ✅ Architecture defined? → Yes, in `./.ai-assistant/rules/architecture.md`
+- ✅ File organization clear? → Yes, in `./.ai-assistant/rules/file-organization.md`
 
 **You're ready to start! Begin with Step 1: Local Storage Service Layer.**
