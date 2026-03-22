@@ -6,9 +6,7 @@
 ## Entities
 
 ### Goal (Base and Type-Specific)
-
 See @bkp/types/goal.types.ts for full definitions:
-
 - **BaseGoal**: Common fields for all goals
   - id: string (UUID)
   - title: string (1-200 chars per BR-001)
@@ -61,9 +59,7 @@ See @bkp/types/goal.types.ts for full definitions:
   - entries: HabitEntry[]
 
 ### CreateGoalInput
-
 Partial Goal structure for input validation (omits id, timestamps, progress fields):
-
 - Includes all required type-specific fields per type
 
 ## Data Flow
@@ -77,7 +73,6 @@ Partial Goal structure for input validation (omits id, timestamps, progress fiel
 ## Storage Strategy
 
 ### Local Storage
-
 - Uses normalized structure with indexes for type, status, category, tags
 - Indexes enable efficient filtering and search
 - See @bkp/services/storage/goalStorageService.ts
@@ -96,7 +91,6 @@ Partial Goal structure for input validation (omits id, timestamps, progress fiel
 - **Habit (BR-008)**: targetFrequency required; customFrequency required if targetFrequency is 'custom'
 
 ### Additional Validation
-
 - Dates: deadline after startDate if both provided
 - Dependencies: No cyclic dependencies in milestone milestones
 - Numeric: Respect allowDecimals setting

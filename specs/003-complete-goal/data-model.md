@@ -1,13 +1,11 @@
 # Data Model: Complete Goal
 
 ## Overview
-
 This document defines the data structures, validation rules, and storage patterns for the Complete Goal feature.
 
 ## Core Entities
 
 ### CompletionEvent
-
 ```typescript
 interface CompletionEvent {
   goalId: string;
@@ -20,7 +18,6 @@ interface CompletionEvent {
 ```
 
 ### GoalCompletion
-
 ```typescript
 interface GoalCompletion extends CompletionEvent {
   goalId: string;
@@ -31,7 +28,6 @@ interface GoalCompletion extends CompletionEvent {
 ```
 
 ### CompletionCriteria
-
 ```typescript
 interface CompletionCriteria {
   type: GoalType;
@@ -44,7 +40,6 @@ interface CompletionCriteria {
 ```
 
 ### CompletionMetrics
-
 ```typescript
 interface CompletionMetrics {
   totalTime: number; // Days from creation to completion
@@ -56,7 +51,6 @@ interface CompletionMetrics {
 ```
 
 ### CelebrationData
-
 ```typescript
 interface CelebrationData {
   type: 'achievement' | 'milestone' | 'streak' | 'deadline';
@@ -70,7 +64,6 @@ interface CelebrationData {
 ## Validation Rules
 
 ### BR-012: Completion Eligibility
-
 - Goal must be in 'active' status
 - For quantitative goals: currentValue >= targetValue
 - For milestone goals: all milestones completed
@@ -79,14 +72,12 @@ interface CelebrationData {
 - For habit goals: streak requirement met (if any)
 
 ### BR-013: Completion Immutability
-
 - Once completed, goal cannot be reactivated
 - Completion event is immutable
 - Progress updates blocked after completion
 - Status permanently set to 'completed'
 
 ### BR-014: Automatic Completion Detection
-
 - Quantitative: Trigger when currentValue >= targetValue
 - Binary: Trigger when achieved = true
 - Milestone: Trigger when all milestones completed
@@ -96,7 +87,6 @@ interface CelebrationData {
 ## Storage Strategy
 
 ### Completion History Table
-
 ```typescript
 interface CompletionHistory {
   [goalId: string]: GoalCompletion;
@@ -104,7 +94,6 @@ interface CompletionHistory {
 ```
 
 ### Goal Status Transitions
-
 ```typescript
 interface GoalStatusTransition {
   goalId: string;
@@ -117,7 +106,6 @@ interface GoalStatusTransition {
 ```
 
 ### Storage Schema
-
 - Store completion events separately from goals
 - Maintain goal snapshots for historical accuracy
 - Enable completion analytics and reporting
@@ -141,9 +129,9 @@ function canBeCompletedAutomatically(goal: Goal): boolean {
     case 'binary':
       return goal.achieved === true;
     case 'milestone':
-      return goal.milestones.every((m) => m.completed);
+      return goal.milestones.every(m => m.completed);
     case 'recurring':
-      return goal.occurrences.every((o) => o.status === 'completed');
+      return goal.occurrences.every(o => o.status === 'completed');
     case 'habit':
       return goal.streak >= (goal.streakTarget || 0);
     default:

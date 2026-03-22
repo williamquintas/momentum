@@ -7,7 +7,6 @@ This guide provides developers with everything needed to implement and extend th
 ## Getting Started
 
 ### Prerequisites
-
 ```bash
 # Required dependencies
 npm install zustand @tanstack/react-query zod antd
@@ -15,7 +14,6 @@ npm install --save-dev @types/node vitest @testing-library/react
 ```
 
 ### Basic Setup
-
 ```typescript
 // 1. Import required types and hooks
 import { useStatusManager } from '@/hooks/useStatusManager';
@@ -45,7 +43,6 @@ const MyComponent = ({ goalId }: { goalId: string }) => {
 ## Core Implementation Patterns
 
 ### Status Change Hook
-
 ```typescript
 // hooks/useStatusManager.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -68,19 +65,18 @@ export const useStatusManager = () => {
     },
     onError: (error: StatusError) => {
       showError(error.message);
-    },
+    }
   });
 
   return {
     changeStatus: changeStatusMutation.mutateAsync,
     isLoading: changeStatusMutation.isPending,
-    error: changeStatusMutation.error,
+    error: changeStatusMutation.error
   };
 };
 ```
 
 ### Status Validation Service
-
 ```typescript
 // services/statusValidation.ts
 import { GoalStatus } from '@/types/goal';
@@ -103,7 +99,7 @@ export class StatusValidationService {
     if (!allowedTransitions?.includes(newStatus)) {
       return {
         valid: false,
-        reason: `Cannot change status from ${currentStatus} to ${newStatus}`,
+        reason: `Cannot change status from ${currentStatus} to ${newStatus}`
       };
     }
 
@@ -121,7 +117,7 @@ export class StatusValidationService {
     if (timeSinceLastChange < this.constraints.minTimeBetweenChanges) {
       return {
         valid: false,
-        reason: `Please wait before making another status change`,
+        reason: `Please wait before making another status change`
       };
     }
 
@@ -136,7 +132,6 @@ export class StatusValidationService {
 ```
 
 ### Status History Component
-
 ```typescript
 // components/StatusHistory.tsx
 import React from 'react';
@@ -198,7 +193,6 @@ const getStatusColor = (status: GoalStatus): string => {
 ## Testing Strategies
 
 ### Unit Testing Examples
-
 ```typescript
 // tests/unit/statusValidation.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -213,9 +207,9 @@ describe('StatusValidationService', () => {
       [GoalStatus.PAUSED]: [GoalStatus.ACTIVE, GoalStatus.CANCELLED],
       [GoalStatus.CANCELLED]: [GoalStatus.ACTIVE],
       [GoalStatus.COMPLETED]: [],
-      [GoalStatus.ARCHIVED]: [],
+      [GoalStatus.ARCHIVED]: []
     },
-    minTimeBetweenChanges: 3600000, // 1 hour
+    minTimeBetweenChanges: 3600000 // 1 hour
   };
 
   beforeEach(() => {
@@ -223,33 +217,30 @@ describe('StatusValidationService', () => {
   });
 
   it('should allow valid transitions', () => {
-    const result = service.validateTransition(GoalStatus.ACTIVE, GoalStatus.PAUSED, {
-      canPause: true,
-      canResume: true,
-      canCancel: true,
-      canReactivate: true,
-    });
+    const result = service.validateTransition(
+      GoalStatus.ACTIVE,
+      GoalStatus.PAUSED,
+      { canPause: true, canResume: true, canCancel: true, canReactivate: true }
+    );
     expect(result.valid).toBe(true);
   });
 
   it('should reject invalid transitions', () => {
-    const result = service.validateTransition(GoalStatus.COMPLETED, GoalStatus.ACTIVE, {
-      canPause: true,
-      canResume: true,
-      canCancel: true,
-      canReactivate: true,
-    });
+    const result = service.validateTransition(
+      GoalStatus.COMPLETED,
+      GoalStatus.ACTIVE,
+      { canPause: true, canResume: true, canCancel: true, canReactivate: true }
+    );
     expect(result.valid).toBe(false);
     expect(result.reason).toContain('Cannot change status');
   });
 
   it('should enforce permission checks', () => {
-    const result = service.validateTransition(GoalStatus.ACTIVE, GoalStatus.PAUSED, {
-      canPause: false,
-      canResume: true,
-      canCancel: true,
-      canReactivate: true,
-    });
+    const result = service.validateTransition(
+      GoalStatus.ACTIVE,
+      GoalStatus.PAUSED,
+      { canPause: false, canResume: true, canCancel: true, canReactivate: true }
+    );
     expect(result.valid).toBe(false);
     expect(result.reason).toContain('Insufficient permissions');
   });
@@ -257,7 +248,6 @@ describe('StatusValidationService', () => {
 ```
 
 ### Component Testing
-
 ```typescript
 // tests/components/StatusHistory.test.tsx
 import { describe, it, expect } from 'vitest';
@@ -316,7 +306,6 @@ describe('StatusHistory', () => {
 ```
 
 ### Integration Testing
-
 ```typescript
 // tests/integration/statusWorkflow.test.ts
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
@@ -370,7 +359,6 @@ describe('Status Change Workflow', () => {
 ## Common Patterns
 
 ### Error Handling Pattern
-
 ```typescript
 // patterns/errorHandling.ts
 export class StatusError extends Error {
@@ -393,20 +381,32 @@ export const handleStatusError = (error: unknown): StatusError => {
   if (error instanceof Error) {
     // Map common errors to StatusError
     if (error.message.includes('permission')) {
-      return new StatusError('You do not have permission to perform this action', 'INSUFFICIENT_PERMISSIONS', 403);
+      return new StatusError(
+        'You do not have permission to perform this action',
+        'INSUFFICIENT_PERMISSIONS',
+        403
+      );
     }
 
     if (error.message.includes('transition')) {
-      return new StatusError('This status change is not allowed', 'INVALID_TRANSITION', 400);
+      return new StatusError(
+        'This status change is not allowed',
+        'INVALID_TRANSITION',
+        400
+      );
     }
   }
 
-  return new StatusError('An unexpected error occurred', 'UNKNOWN_ERROR', 500, error);
+  return new StatusError(
+    'An unexpected error occurred',
+    'UNKNOWN_ERROR',
+    500,
+    error
+  );
 };
 ```
 
 ### Caching Pattern
-
 ```typescript
 // patterns/statusCache.ts
 import { LRUCache } from 'lru-cache';
@@ -424,7 +424,7 @@ export class StatusCache {
     this.cache = new LRUCache({
       max: maxSize,
       ttl: 1000 * 60 * 5, // 5 minutes default TTL
-      allowStale: false,
+      allowStale: false
     });
   }
 
@@ -444,14 +444,14 @@ export class StatusCache {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl: ttlMs,
+      ttl: ttlMs
     });
   }
 
   invalidate(pattern: string): void {
     // Invalidate all keys matching pattern
     const keys = this.cache.keys();
-    keys.forEach((key) => {
+    keys.forEach(key => {
       if (key.includes(pattern)) {
         this.cache.delete(key);
       }
@@ -468,7 +468,6 @@ export const statusCache = new StatusCache(200); // Cache up to 200 entries
 ```
 
 ### Permission Checking Pattern
-
 ```typescript
 // patterns/permissions.ts
 export interface StatusPermissions {
@@ -481,7 +480,10 @@ export interface StatusPermissions {
 }
 
 export class PermissionChecker {
-  static async checkStatusPermissions(userId: string, goalId: string): Promise<StatusPermissions> {
+  static async checkStatusPermissions(
+    userId: string,
+    goalId: string
+  ): Promise<StatusPermissions> {
     // Check user's role and relationship to goal
     const userRole = await getUserRole(userId);
     const goalOwner = await getGoalOwner(goalId);
@@ -497,7 +499,7 @@ export class PermissionChecker {
       canCancel: isOwner || isAdmin, // Only owner/admin can cancel
       canReactivate: isOwner || isAdmin, // Only owner/admin can reactivate
       canBulkChange: isAdmin || userRole === 'manager',
-      canViewHistory: canEdit || isShared, // Shared users can view history
+      canViewHistory: canEdit || isShared // Shared users can view history
     };
   }
 }
@@ -506,7 +508,6 @@ export class PermissionChecker {
 ## Performance Optimization Tips
 
 ### Database Optimizations
-
 ```sql
 -- Add composite indexes for common queries
 CREATE INDEX CONCURRENTLY idx_status_changes_goal_user_timestamp
@@ -530,7 +531,6 @@ CREATE TEMP TABLE temp_bulk_changes (
 ```
 
 ### Frontend Optimizations
-
 ```typescript
 // Use React.memo for status components
 export const StatusIndicator = React.memo<StatusIndicatorProps>(
@@ -567,7 +567,6 @@ const StatusHistoryVirtual: React.FC<StatusHistoryProps> = ({ history }) => {
 ```
 
 ### API Optimizations
-
 ```typescript
 // Implement cursor-based pagination for history
 export const getStatusHistory = async (
@@ -583,14 +582,18 @@ export const getStatusHistory = async (
     LIMIT $2
   `;
 
-  const params = cursor ? [goalId, limit, new Date(cursor)] : [goalId, limit];
+  const params = cursor
+    ? [goalId, limit, new Date(cursor)]
+    : [goalId, limit];
 
   const result = await db.query(query, params);
 
   return {
     items: result.rows,
-    nextCursor: result.rows.length === limit ? result.rows[result.rows.length - 1].created_at.toISOString() : null,
-    hasMore: result.rows.length === limit,
+    nextCursor: result.rows.length === limit
+      ? result.rows[result.rows.length - 1].created_at.toISOString()
+      : null,
+    hasMore: result.rows.length === limit
   };
 };
 ```
@@ -600,19 +603,20 @@ export const getStatusHistory = async (
 ### Common Issues
 
 #### Status Change Fails with "Invalid Transition"
-
 **Symptoms**: Status change API returns 400 error
 **Causes**:
-
 - Attempting invalid status transition
 - Insufficient permissions
 - Goal in wrong current state
-  **Solutions**:
-
+**Solutions**:
 ```typescript
 // Check current goal state first
 const goal = await goalApi.getGoal(goalId);
-const validation = statusValidator.validateTransition(goal.status, newStatus, userPermissions);
+const validation = statusValidator.validateTransition(
+  goal.status,
+  newStatus,
+  userPermissions
+);
 
 if (!validation.valid) {
   throw new Error(validation.reason);
@@ -620,63 +624,55 @@ if (!validation.valid) {
 ```
 
 #### History Loading is Slow
-
 **Symptoms**: Status history takes > 2 seconds to load
 **Causes**:
-
 - Large number of status changes
 - Missing database indexes
 - Inefficient queries
-  **Solutions**:
+**Solutions**:
 - Add pagination to history queries
 - Ensure proper database indexes
 - Implement caching for recent history
 - Use cursor-based pagination
 
 #### Permission Errors in Bulk Operations
-
 **Symptoms**: Bulk status change fails for some goals
 **Causes**:
-
 - Mixed permissions across selected goals
 - Some goals owned by different users
 - Permission checks not handling bulk operations
-  **Solutions**:
-
+**Solutions**:
 ```typescript
 // Pre-validate all goals before starting bulk operation
-const validationResults = await Promise.all(goalIds.map((id) => checkPermissions(userId, id)));
+const validationResults = await Promise.all(
+  goalIds.map(id => checkPermissions(userId, id))
+);
 
-const failedValidations = validationResults.filter((r) => !r.valid);
+const failedValidations = validationResults.filter(r => !r.valid);
 if (failedValidations.length > 0) {
   throw new Error(`Cannot change status for ${failedValidations.length} goals due to permission issues`);
 }
 ```
 
 #### Memory Issues with Large History
-
 **Symptoms**: Browser becomes slow with many history items
 **Causes**:
-
 - Loading all history items at once
 - No virtualization for large lists
 - Memory leaks in history components
-  **Solutions**:
+**Solutions**:
 - Implement virtual scrolling
 - Load history in pages
 - Clean up event listeners
 - Use React.memo for history items
 
 #### Cache Invalidation Problems
-
 **Symptoms**: Status changes not reflected immediately
 **Causes**:
-
 - Cache not invalidated after changes
 - Stale cache data served
 - Cache keys not properly managed
-  **Solutions**:
-
+**Solutions**:
 ```typescript
 // Invalidate related caches after status change
 queryClient.invalidateQueries({ queryKey: ['goals'] });
@@ -688,7 +684,6 @@ statusCache.invalidate(`goal-${goalId}`);
 ```
 
 ### Debug Tools
-
 ```typescript
 // Debug status validation
 const debugValidation = (currentStatus: GoalStatus, newStatus: GoalStatus) => {
@@ -710,7 +705,6 @@ const debugPermissions = async (userId: string, goalId: string) => {
 ```
 
 ### Monitoring Queries
-
 ```sql
 -- Check status change frequency
 SELECT

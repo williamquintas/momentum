@@ -207,13 +207,13 @@ class GoalSearchIndex {
   // Add goal to index
   addGoal(goal: Goal): void {
     const terms = this.tokenizeGoal(goal);
-    terms.forEach((term) => {
+    terms.forEach(term => {
       if (!this.index.invertedIndex[term]) {
         this.index.invertedIndex[term] = { goals: [], totalFrequency: 0 };
       }
 
       const termEntry = this.index.invertedIndex[term];
-      const goalEntry = termEntry.goals.find((g) => g.goalId === goal.id);
+      const goalEntry = termEntry.goals.find(g => g.goalId === goal.id);
 
       if (goalEntry) {
         goalEntry.frequency += 1;
@@ -222,7 +222,7 @@ class GoalSearchIndex {
           goalId: goal.id,
           frequency: 1,
           positions: this.findTermPositions(goal, term),
-          field: 'title', // or 'description'
+          field: 'title' // or 'description'
         });
       }
 
@@ -233,7 +233,7 @@ class GoalSearchIndex {
       summary: goal,
       fields: this.indexFields(goal),
       indexedAt: new Date(),
-      indexVersion: this.index.version,
+      indexVersion: this.index.version
     };
 
     this.saveIndex();
@@ -244,10 +244,10 @@ class GoalSearchIndex {
     const terms = this.tokenizeQuery(query);
     const goalScores = new Map<string, number>();
 
-    terms.forEach((term) => {
+    terms.forEach(term => {
       const termEntry = this.index.invertedIndex[term];
       if (termEntry) {
-        termEntry.goals.forEach((goal) => {
+        termEntry.goals.forEach(goal => {
           const currentScore = goalScores.get(goal.goalId) || 0;
           const score = this.calculateScore(goal, termEntry, terms.length);
           goalScores.set(goal.goalId, currentScore + score);
@@ -261,7 +261,7 @@ class GoalSearchIndex {
       .map(([goalId, score]) => ({
         goalId,
         score,
-        goal: this.index.goalIndex[goalId].summary,
+        goal: this.index.goalIndex[goalId].summary
       }));
   }
 
@@ -297,7 +297,7 @@ class GoalSearchIndex {
       statistics: { totalTerms: 0, uniqueTerms: 0, avgTermsPerGoal: 0, sizeBytes: 0, lastOptimized: new Date() },
       invertedIndex: {},
       goalIndex: {},
-      fieldIndexes: {},
+      fieldIndexes: {}
     };
   }
 
@@ -339,7 +339,7 @@ class FilterCache {
     this.cache.set(key, {
       results,
       timestamp: Date.now(),
-      ttl: this.ttl,
+      ttl: this.ttl
     });
   }
 
@@ -357,7 +357,7 @@ class FilterCache {
       }
     }
 
-    keysToDelete.forEach((key) => this.cache.delete(key));
+    keysToDelete.forEach(key => this.cache.delete(key));
   }
 
   private generateKey(filters: GoalFilters, sort: SearchSort): string {
@@ -634,7 +634,7 @@ export const useGoalSearch = (initialFilters?: SearchFilters) => {
   }, [performSearch]);
 
   const updateFilters = useCallback((newFilters: Partial<SearchFilters>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }));
+    setFilters(prev => ({ ...prev, ...newFilters }));
   }, []);
 
   const clearFilters = useCallback(() => {
@@ -650,7 +650,7 @@ export const useGoalSearch = (initialFilters?: SearchFilters) => {
     results,
     loading,
     error,
-    performSearch,
+    performSearch
   };
 };
 ```
@@ -763,7 +763,6 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
 ## Performance Optimization Tips
 
 ### 1. Debounced Search
-
 ```typescript
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -783,7 +782,6 @@ const useDebounce = (value: string, delay: number) => {
 ```
 
 ### 2. Virtual Scrolling for Large Lists
-
 ```typescript
 import { FixedSizeList as List } from 'react-window';
 
@@ -806,14 +804,13 @@ const VirtualizedSearchResults: React.FC<{ results: SearchResult[] }> = ({ resul
 ```
 
 ### 3. Search Index Optimization
-
 ```typescript
 // Pre-compute common searches
 const precomputeCommonSearches = (index: SearchIndex) => {
   const commonTerms = ['goal', 'project', 'task', 'daily', 'weekly'];
   const precomputed = new Map<string, SearchResult[]>();
 
-  commonTerms.forEach((term) => {
+  commonTerms.forEach(term => {
     precomputed.set(term, index.search(term));
   });
 
@@ -872,13 +869,11 @@ const debugFilterApplication = (filters: SearchFilters, results: SearchResult[])
 ### Upgrading from Basic Search
 
 1. **Install new dependencies**
-
    ```bash
    npm install fuse.js react-window @react-hook/debounce
    ```
 
 2. **Update component imports**
-
    ```typescript
    // Before
    import { useSearch } from './old-search-hook';
@@ -889,7 +884,6 @@ const debugFilterApplication = (filters: SearchFilters, results: SearchResult[])
    ```
 
 3. **Migrate state management**
-
    ```typescript
    // Before
    const [results, setResults] = useState([]);
@@ -899,7 +893,6 @@ const debugFilterApplication = (filters: SearchFilters, results: SearchResult[])
    ```
 
 4. **Update rendering logic**
-
    ```typescript
    // Before
    {results.map(result => <div key={result.id}>{result.title}</div>)}

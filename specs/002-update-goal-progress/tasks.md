@@ -7,11 +7,11 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 ## Phase 1: Setup & Foundation (2-3 days)
 
 ### Type Definitions & Validation
-
 - [ ] Create `/src/features/goals/types/progress.ts`
   - [ ] Define ProgressUpdate base interface
   - [ ] Define type-specific update interfaces (Quantitative, Qualitative, Binary, Milestone, Recurring, Habit)
   - [ ] Define type guards
+  
 - [ ] Create `/src/features/goals/validation/progressSchemas.ts`
   - [ ] Zod schema for QuantitativeProgressUpdate
   - [ ] Zod schema for QualitativeProgressUpdate
@@ -30,20 +30,23 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Function: validateUpdateTimestamp(timestamp)
 
 ### Calculation Engine
-
 - [ ] Create `/src/features/goals/utils/progressCalculation.ts`
   - [ ] Function: calculateQuantitativeProgress(startValue, currentValue, targetValue)
     - [ ] Handle division by zero
     - [ ] Clamp to [0, 100]
     - [ ] Add unit parameter
+  
   - [ ] Function: calculateMilestoneProgress(completedCount, totalCount)
     - [ ] Validate minimum 1 milestone
     - [ ] Return percentage
+  
   - [ ] Function: calculateBinaryProgress(achieved)
     - [ ] Return 0 or 100
+  
   - [ ] Function: calculateHabitStreaks(goalId, updates)
     - [ ] Count consecutive completed days from today backwards
     - [ ] Return { currentStreak, longestStreak, bestDate }
+  
   - [ ] Function: recalculateProgress(goalId, allUpdates)
     - [ ] Use update history to recompute current progress
     - [ ] Return updated progress value
@@ -56,13 +59,13 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 ## Phase 2: State Management (1-2 days)
 
 ### Zustand Store Integration
-
 - [ ] Create `/src/features/goals/store/progressStore.ts`
   - [ ] State interface: ProgressState
     - [ ] updates: Map<goalId, ProgressUpdate[]>
     - [ ] progressCache: Map<goalId, { value: number; lastUpdated: number }>
     - [ ] loading: boolean
     - [ ] error?: Error
+  
   - [ ] Action: addProgressUpdate(goalId, update)
     - [ ] Validate update
     - [ ] Check duplicates
@@ -70,17 +73,19 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
     - [ ] Invalidate cache
     - [ ] Persist to localStorage
     - [ ] Return success/error
+  
   - [ ] Action: getProgressHistory(goalId)
     - [ ] Load from store or localStorage
     - [ ] Return updates array
+  
   - [ ] Action: getCurrentProgress(goalId)
     - [ ] Check cache first
     - [ ] Recalculate if stale or missing
     - [ ] Return cached value
+  
   - [ ] Action: invalidateProgressCache(goalId)
 
 ### Hook Integration
-
 - [ ] Create `/src/features/goals/hooks/useProgressUpdate.ts`
   - [ ] Hook: useProgressUpdate(goalId)
   - [ ] Returns: { progress, history, addUpdate, loading, error }
@@ -96,7 +101,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 ## Phase 3: Form Components (2-3 days)
 
 ### Base Form Component
-
 - [ ] Create `/src/features/goals/components/ProgressUpdateForm.tsx`
   - [ ] Props interface: ProgressUpdateFormProps
   - [ ] Accepts goalId, goalType, goal data
@@ -106,7 +110,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Calls onSuccess callback
 
 ### Type-Specific Form Fields
-
 - [ ] Create `/src/features/goals/components/QuantitativeProgressField.tsx`
   - [ ] Input: number with unit label
   - [ ] Shows current/target values
@@ -139,7 +142,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Completion date picker
 
 ### Form Integration
-
 - [ ] Update `/src/features/goals/pages/GoalDetailPage.tsx`
   - [ ] Add ProgressUpdateForm section
   - [ ] Wire form submission to store
@@ -149,7 +151,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 ## Phase 4: Storage & Persistence (1-2 days)
 
 ### LocalStorage Layer
-
 - [ ] Update `/src/services/storage/goalStorageService.ts`
   - [ ] Method: saveProgressUpdate(goalId, update)
   - [ ] Method: getProgressHistory(goalId)
@@ -163,7 +164,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Function: archiveOldUpdates(goalId, daysToKeep = 365)
 
 ### Goal Data Synchronization
-
 - [ ] Update `/src/services/api/goalService.ts`
   - [ ] When progress updates, also update goal.progress field
   - [ ] When progress updates, update goal.lastUpdated
@@ -172,7 +172,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 ## Phase 5: Integration Testing (2-3 days)
 
 ### Unit Tests
-
 - [ ] Create `/src/features/goals/utils/__tests__/progressCalculation.test.ts`
   - [ ] Test quantitative formula with various inputs
   - [ ] Test milestone formula
@@ -193,7 +192,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Test concurrent updates
 
 ### Component Tests
-
 - [ ] Create `/src/features/goals/components/__tests__/ProgressUpdateForm.test.tsx`
   - [ ] Test form rendering by goal type
   - [ ] Test form submission
@@ -207,7 +205,6 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Test loading states
 
 ### Integration Tests
-
 - [ ] Create `/src/features/goals/__tests__/progress-integration.test.ts`
   - [ ] Test end-to-end update flow
   - [ ] Test localStorage persistence
@@ -217,28 +214,24 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 ## Phase 6: Documentation & Polish (1-2 days)
 
 ### Code Documentation
-
 - [ ] Add JSDoc comments to all functions
 - [ ] Document Zod schema purposes
 - [ ] Add inline comments for complex logic
 - [ ] Document calculation formulas
 
 ### Developer Documentation
-
 - [ ] Update `research.md` with implementation notes
 - [ ] Update `quickstart.md` with usage examples
 - [ ] Add troubleshooting guide for common issues
 - [ ] Document duplicate detection behavior
 
 ### Quality Checks
-
 - [ ] Accessibility audit: form fields have labels, error messages announced
 - [ ] Performance: measure form submission time
 - [ ] Type safety: verify no `any` types in progress code
 - [ ] Error scenarios: test all validation edge cases
 
 ## Summary Stats
-
 - **Total Tasks**: 47
 - **Estimated Duration**: 12-16 days
 - **Priority Breakdown**: 32 P1 (MVP), 12 P2 (Polish), 3 P3 (Future)

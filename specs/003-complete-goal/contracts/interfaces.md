@@ -473,13 +473,10 @@ interface CompletionQueryOptions {
 // Local storage schema
 interface CompletionLocalStorage {
   completions: Record<string, CompletionEvent>;
-  eligibilityCache: Record<
-    string,
-    {
-      data: CompletionEligibilityResponse;
-      expiresAt: number;
-    }
-  >;
+  eligibilityCache: Record<string, {
+    data: CompletionEligibilityResponse;
+    expiresAt: number;
+  }>;
   preferences: CelebrationPreferences;
   lastSync: number;
 }

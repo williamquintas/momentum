@@ -1,13 +1,11 @@
 # Quickstart Guide: View Goal Details
 
 ## Overview
-
 This guide provides developers with everything needed to implement and test the View Goal Details feature. It includes code examples, testing strategies, and common implementation patterns.
 
 ## Getting Started
 
 ### Prerequisites
-
 - React 18+ with TypeScript
 - Ant Design 5.x components
 - Zustand for state management
@@ -15,7 +13,6 @@ This guide provides developers with everything needed to implement and test the 
 - React Router for navigation
 
 ### Installation
-
 ```bash
 npm install @ant-design/icons recharts date-fns
 # or
@@ -25,7 +22,6 @@ yarn add @ant-design/icons recharts date-fns
 ## Basic Implementation
 
 ### 1. Goal Detail Page Setup
-
 ```typescript
 // src/pages/GoalDetailPage.tsx
 import React from 'react';
@@ -44,7 +40,6 @@ export const GoalDetailPage: React.FC = () => {
 ```
 
 ### 2. Core Data Fetching Hook
-
 ```typescript
 // src/features/goals/hooks/useGoalDetail.ts
 import { useQuery } from '@tanstack/react-query';
@@ -87,7 +82,6 @@ export function useGoalDetail(goalId: string) {
 ```
 
 ### 3. Main Container Component
-
 ```typescript
 // src/features/goals/components/GoalDetailContainer.tsx
 import React, { useState } from 'react';
@@ -176,7 +170,6 @@ export const GoalDetailContainer: React.FC<GoalDetailContainerProps> = ({
 ## Component Examples
 
 ### Goal Header Component
-
 ```typescript
 // src/features/goals/components/GoalDetailHeader.tsx
 import React from 'react';
@@ -262,7 +255,6 @@ export const GoalDetailHeader: React.FC<GoalDetailHeaderProps> = ({
 ```
 
 ### Progress Visualization Component
-
 ```typescript
 // src/features/goals/components/ProgressVisualization.tsx
 import React from 'react';
@@ -344,7 +336,6 @@ export const ProgressVisualization: React.FC<ProgressVisualizationProps> = ({
 ```
 
 ### History Tab Component
-
 ```typescript
 // src/features/goals/components/tabs/GoalHistoryTab.tsx
 import React, { useState, useMemo } from 'react';
@@ -452,7 +443,6 @@ export const GoalHistoryTab: React.FC<GoalHistoryTabProps> = ({
 ## Testing Strategies
 
 ### Unit Tests
-
 ```typescript
 // src/features/goals/components/__tests__/GoalDetailHeader.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -490,7 +480,6 @@ describe('GoalDetailHeader', () => {
 ```
 
 ### Integration Tests
-
 ```typescript
 // src/features/goals/components/__tests__/GoalDetailContainer.integration.test.tsx
 import { render, screen, waitFor } from '@testing-library/react';
@@ -551,7 +540,6 @@ describe('GoalDetailContainer Integration', () => {
 ```
 
 ### E2E Tests
-
 ```typescript
 // e2e/goal-detail.spec.ts
 import { test, expect } from '@playwright/test';
@@ -599,7 +587,6 @@ test.describe('Goal Detail Page', () => {
 ## Performance Optimization
 
 ### Memoization Example
-
 ```typescript
 // src/features/goals/components/ProgressVisualization.tsx
 import React, { memo, useMemo } from 'react';
@@ -609,28 +596,27 @@ interface ProgressVisualizationProps {
   progress: GoalProgress;
 }
 
-export const ProgressVisualization: React.FC<ProgressVisualizationProps> = memo(({ goal, progress }) => {
+export const ProgressVisualization: React.FC<ProgressVisualizationProps> = memo(({
+  goal,
+  progress
+}) => {
   const progressColor = useMemo(() => {
     if (progress.percentage >= 80) return '#52c41a';
     if (progress.percentage >= 50) return '#1890ff';
     return '#faad14';
   }, [progress.percentage]);
 
-  const formattedStats = useMemo(
-    () => ({
-      current: formatValue(progress.current, goal),
-      target: formatValue(goal.target, goal),
-      velocity: progress.velocity.toFixed(2),
-    }),
-    [progress, goal]
-  );
+  const formattedStats = useMemo(() => ({
+    current: formatValue(progress.current, goal),
+    target: formatValue(goal.target, goal),
+    velocity: progress.velocity.toFixed(2)
+  }), [progress, goal]);
 
   // ... rest of component
 });
 ```
 
 ### Lazy Loading Example
-
 ```typescript
 // src/features/goals/components/tabs/GoalHistoryTab.tsx
 import React, { Suspense, lazy } from 'react';
@@ -661,7 +647,6 @@ export const GoalHistoryTab: React.FC<GoalHistoryTabProps> = ({ goalId }) => {
 ## Common Patterns
 
 ### Error Boundary
-
 ```typescript
 // src/features/goals/components/GoalDetailErrorBoundary.tsx
 import React from 'react';
@@ -716,7 +701,6 @@ export class GoalDetailErrorBoundary extends React.Component<Props, State> {
 ```
 
 ### Custom Hook for Tab State
-
 ```typescript
 // src/features/goals/hooks/useGoalDetailTabs.ts
 import { useState, useEffect } from 'react';
@@ -724,7 +708,9 @@ import { useSearchParams } from 'react-router-dom';
 
 export function useGoalDetailTabs(defaultTab: string = 'overview') {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || defaultTab);
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get('tab') || defaultTab
+  );
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -756,7 +742,6 @@ export function useGoalDetailTabs(defaultTab: string = 'overview') {
 5. **Mobile layout broken**: Test responsive breakpoints and touch interactions
 
 ### Debug Tools
-
 ```typescript
 // Add to development environment
 if (process.env.NODE_ENV === 'development') {

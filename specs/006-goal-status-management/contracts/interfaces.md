@@ -7,7 +7,6 @@ This document defines all TypeScript interfaces, API contracts, and type definit
 ## Core Type Definitions
 
 ### Status Types
-
 ```typescript
 // Status enum with all possible goal states
 export enum GoalStatus {
@@ -15,7 +14,7 @@ export enum GoalStatus {
   PAUSED = 'PAUSED',
   CANCELLED = 'CANCELLED',
   COMPLETED = 'COMPLETED',
-  ARCHIVED = 'ARCHIVED',
+  ARCHIVED = 'ARCHIVED'
 }
 
 // Status transition metadata
@@ -35,12 +34,11 @@ export enum StatusChangeReason {
   PRIORITY_CHANGED = 'PRIORITY_CHANGED',
   RESOURCE_UNAVAILABLE = 'RESOURCE_UNAVAILABLE',
   GOAL_RESTRUCTURED = 'GOAL_RESTRUCTURED',
-  OTHER = 'OTHER',
+  OTHER = 'OTHER'
 }
 ```
 
 ### Permission Types
-
 ```typescript
 // Permission levels for status operations
 export enum StatusPermission {
@@ -51,7 +49,7 @@ export enum StatusPermission {
   CAN_REACTIVATE = 'CAN_REACTIVATE',
   CAN_BULK_CHANGE = 'CAN_BULK_CHANGE',
   CAN_VIEW_HISTORY = 'CAN_VIEW_HISTORY',
-  CAN_EXPORT_HISTORY = 'CAN_EXPORT_HISTORY',
+  CAN_EXPORT_HISTORY = 'CAN_EXPORT_HISTORY'
 }
 
 // User permissions for a specific goal
@@ -76,7 +74,6 @@ export interface PermissionCheckResult {
 ## Data Model Interfaces
 
 ### Status Change Entity
-
 ```typescript
 // Core status change record
 export interface StatusChange {
@@ -135,7 +132,6 @@ export interface ValidationResult {
 ```
 
 ### Bulk Operation Types
-
 ```typescript
 // Bulk status change operation
 export interface BulkStatusOperation {
@@ -167,7 +163,7 @@ export enum BulkOperationStatus {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
   CANCELLED = 'CANCELLED',
-  ROLLED_BACK = 'ROLLED_BACK',
+  ROLLED_BACK = 'ROLLED_BACK'
 }
 
 // Operation progress tracking
@@ -222,7 +218,6 @@ export interface BulkOperationSummary {
 ### REST API Contracts
 
 #### Status Change API
-
 ```typescript
 // POST /api/goals/{goalId}/status
 export interface ChangeStatusRequest {
@@ -252,7 +247,6 @@ export interface GetStatusResponse {
 ```
 
 #### Status History API
-
 ```typescript
 // GET /api/goals/{goalId}/status-history
 export interface GetStatusHistoryRequest {
@@ -299,7 +293,6 @@ export interface HistorySummary {
 ```
 
 #### Bulk Operations API
-
 ```typescript
 // POST /api/goals/bulk-status
 export interface BulkStatusChangeRequest {
@@ -342,7 +335,6 @@ export interface CancelBulkOperationResponse {
 ```
 
 #### Validation API
-
 ```typescript
 // POST /api/goals/{goalId}/status/validate
 export interface ValidateStatusChangeRequest {
@@ -372,7 +364,6 @@ export interface StatusSuggestion {
 ### GraphQL Schema Types
 
 #### GraphQL Types
-
 ```graphql
 # Enums
 enum GoalStatus {
@@ -499,7 +490,6 @@ type StatusHistoryResult {
 ```
 
 #### GraphQL Operations
-
 ```graphql
 # Mutations
 mutation ChangeGoalStatus($goalId: ID!, $input: ChangeStatusInput!) {
@@ -599,7 +589,6 @@ subscription OnBulkOperationProgress($operationId: ID!) {
 ## Frontend Type Definitions
 
 ### React Hook Types
-
 ```typescript
 // Status management hook
 export interface UseStatusManagerResult {
@@ -631,7 +620,6 @@ export interface UseBulkOperationsResult {
 ```
 
 ### Component Prop Types
-
 ```typescript
 // Status indicator component
 export interface StatusIndicatorProps {
@@ -672,7 +660,6 @@ export interface BulkStatusSelectorProps {
 ```
 
 ### Form Validation Types
-
 ```typescript
 // Status change form validation
 export interface StatusChangeFormData {
@@ -706,7 +693,6 @@ export interface StatusChangeSubmission {
 ## Service Layer Interfaces
 
 ### Status Manager Service
-
 ```typescript
 // Main status management service
 export interface IStatusManager {
@@ -747,18 +733,12 @@ export interface StatusAnalytics {
 ```
 
 ### Permission Service
-
 ```typescript
 // Permission checking service
 export interface IPermissionService {
   checkStatusPermissions(userId: string, goalId: string): Promise<GoalStatusPermissions>;
   validateBulkPermissions(userId: string, goalIds: string[], operation: GoalStatus): Promise<PermissionCheckResult>;
-  grantPermissions(
-    granteeId: string,
-    goalId: string,
-    permissions: StatusPermission[],
-    granterId: string
-  ): Promise<void>;
+  grantPermissions(granteeId: string, goalId: string, permissions: StatusPermission[], granterId: string): Promise<void>;
   revokePermissions(granteeId: string, goalId: string, permissions: StatusPermission[]): Promise<void>;
   getPermissionHistory(goalId: string): Promise<PermissionChange[]>;
 }
@@ -777,7 +757,6 @@ export interface PermissionChange {
 ```
 
 ### Notification Service
-
 ```typescript
 // Status change notifications
 export interface INotificationService {
@@ -804,7 +783,6 @@ export interface StatusChangeNotification {
 ## Database Schema Types
 
 ### PostgreSQL Table Definitions
-
 ```sql
 -- Goals table extension
 CREATE TABLE goals (
@@ -881,28 +859,12 @@ CREATE TABLE goal_status_permissions (
 ```
 
 ### Database Types
-
 ```typescript
 // PostgreSQL custom types
 export type goal_status = 'ACTIVE' | 'PAUSED' | 'CANCELLED' | 'COMPLETED' | 'ARCHIVED';
-export type status_change_reason =
-  | 'USER_REQUEST'
-  | 'TIME_LIMIT_EXCEEDED'
-  | 'DEPENDENCY_COMPLETED'
-  | 'PRIORITY_CHANGED'
-  | 'RESOURCE_UNAVAILABLE'
-  | 'GOAL_RESTRUCTURED'
-  | 'OTHER';
+export type status_change_reason = 'USER_REQUEST' | 'TIME_LIMIT_EXCEEDED' | 'DEPENDENCY_COMPLETED' | 'PRIORITY_CHANGED' | 'RESOURCE_UNAVAILABLE' | 'GOAL_RESTRUCTURED' | 'OTHER';
 export type bulk_operation_status = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED' | 'ROLLED_BACK';
-export type status_permission =
-  | 'CAN_VIEW'
-  | 'CAN_PAUSE'
-  | 'CAN_RESUME'
-  | 'CAN_CANCEL'
-  | 'CAN_REACTIVATE'
-  | 'CAN_BULK_CHANGE'
-  | 'CAN_VIEW_HISTORY'
-  | 'CAN_EXPORT_HISTORY';
+export type status_permission = 'CAN_VIEW' | 'CAN_PAUSE' | 'CAN_RESUME' | 'CAN_CANCEL' | 'CAN_REACTIVATE' | 'CAN_BULK_CHANGE' | 'CAN_VIEW_HISTORY' | 'CAN_EXPORT_HISTORY';
 
 // Database row types
 export interface GoalRow {
@@ -954,7 +916,6 @@ export interface BulkOperationRow {
 ## Error Types
 
 ### Status-Specific Errors
-
 ```typescript
 // Base status error
 export class StatusError extends Error {
@@ -978,34 +939,40 @@ export enum StatusErrorCode {
   BULK_OPERATION_FAILED = 'BULK_OPERATION_FAILED',
   VALIDATION_FAILED = 'VALIDATION_FAILED',
   CONCURRENT_MODIFICATION = 'CONCURRENT_MODIFICATION',
-  SYSTEM_ERROR = 'SYSTEM_ERROR',
+  SYSTEM_ERROR = 'SYSTEM_ERROR'
 }
 
 // Specific error types
 export class InvalidTransitionError extends StatusError {
   constructor(currentStatus: GoalStatus, newStatus: GoalStatus) {
-    super(`Cannot change status from ${currentStatus} to ${newStatus}`, StatusErrorCode.INVALID_TRANSITION, 400, {
-      currentStatus,
-      newStatus,
-    });
+    super(
+      `Cannot change status from ${currentStatus} to ${newStatus}`,
+      StatusErrorCode.INVALID_TRANSITION,
+      400,
+      { currentStatus, newStatus }
+    );
   }
 }
 
 export class InsufficientPermissionsError extends StatusError {
   constructor(requiredPermissions: StatusPermission[], missingPermissions: StatusPermission[]) {
-    super('Insufficient permissions for this operation', StatusErrorCode.INSUFFICIENT_PERMISSIONS, 403, {
-      requiredPermissions,
-      missingPermissions,
-    });
+    super(
+      'Insufficient permissions for this operation',
+      StatusErrorCode.INSUFFICIENT_PERMISSIONS,
+      403,
+      { requiredPermissions, missingPermissions }
+    );
   }
 }
 
 export class BulkOperationError extends StatusError {
   constructor(operationId: string, failures: BulkOperationFailure[]) {
-    super(`Bulk operation ${operationId} failed`, StatusErrorCode.BULK_OPERATION_FAILED, 500, {
-      operationId,
-      failures,
-    });
+    super(
+      `Bulk operation ${operationId} failed`,
+      StatusErrorCode.BULK_OPERATION_FAILED,
+      500,
+      { operationId, failures }
+    );
   }
 }
 ```
@@ -1013,7 +980,6 @@ export class BulkOperationError extends StatusError {
 ## Configuration Types
 
 ### System Configuration
-
 ```typescript
 // Status management configuration
 export interface StatusConfig {
@@ -1056,7 +1022,7 @@ export const defaultStatusConfig: StatusConfig = {
     [GoalStatus.PAUSED]: [GoalStatus.ACTIVE, GoalStatus.CANCELLED],
     [GoalStatus.CANCELLED]: [GoalStatus.ACTIVE],
     [GoalStatus.COMPLETED]: [GoalStatus.ARCHIVED],
-    [GoalStatus.ARCHIVED]: [],
+    [GoalStatus.ARCHIVED]: []
   },
   requiredReasons: [GoalStatus.PAUSED, GoalStatus.CANCELLED],
   reactivationWindowDays: 30,
@@ -1067,8 +1033,8 @@ export const defaultStatusConfig: StatusConfig = {
   maxHistoryPageSize: 100,
   cacheTTL: {
     statusPermissions: 300, // 5 minutes
-    statusHistory: 600, // 10 minutes
-    bulkOperations: 60, // 1 minute
+    statusHistory: 600,    // 10 minutes
+    bulkOperations: 60     // 1 minute
   },
   enableBulkOperations: true,
   enableStatusAnalytics: true,
@@ -1077,7 +1043,7 @@ export const defaultStatusConfig: StatusConfig = {
   requireReasonForPause: true,
   requireReasonForCancel: true,
   enableIPLogging: true,
-  sessionTimeoutMinutes: 480, // 8 hours
+  sessionTimeoutMinutes: 480 // 8 hours
 };
 ```
 

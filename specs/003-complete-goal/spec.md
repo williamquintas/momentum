@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 3
 
-## User Scenarios & Testing _(mandatory)_
+## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Mark Goal Complete (Priority: P1)
 
@@ -40,7 +40,7 @@ As a user, I want confirmation and actions when completing goals.
 2. **Given** completion confirmed, **When** confirmed, **Then** user can add completion note
 3. **Given** related goals exist, **When** goal completes, **Then** dependent goals notified
 
-## Requirements _(mandatory)_
+## Requirements *(mandatory)*
 
 - **FR-001**: Validate progress is 100% before completion
 - **FR-002**: Set status to 'completed' and completedDate
@@ -48,7 +48,7 @@ As a user, I want confirmation and actions when completing goals.
 - **FR-004**: Allow manual override with confirmation
 - **FR-005**: Update related goals and statistics
 
-## Success Criteria _(mandatory)_
+## Success Criteria *(mandatory)*
 
 - **SC-001**: Completion succeeds for valid goals
 - **SC-002**: No data loss during completion

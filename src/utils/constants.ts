@@ -4,7 +4,7 @@
  * Centralized constants for the Momentum application including
  * branding, metadata, and configuration values.
  */
-import * as packageJson from '@/../package.json';
+import *  as packageJson from '@/../package.json';
 export const APP_NAME = 'Momentum';
 export const APP_VERSION = packageJson.version;
 

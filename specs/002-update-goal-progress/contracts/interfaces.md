@@ -19,7 +19,7 @@ export interface ProgressUpdate {
   notes?: string;
 }
 
-export type GoalProgressUpdate =
+export type GoalProgressUpdate = 
   | QuantitativeProgressUpdate
   | QualitativeProgressUpdate
   | BinaryProgressUpdate
@@ -139,42 +139,54 @@ export interface ProgressCalculationResult {
 /**
  * Type guard for QuantitativeProgressUpdate
  */
-export function isQuantitativeUpdate(update: ProgressUpdate): update is QuantitativeProgressUpdate {
+export function isQuantitativeUpdate(
+  update: ProgressUpdate
+): update is QuantitativeProgressUpdate {
   return update.type === 'quantitative';
 }
 
 /**
  * Type guard for QualitativeProgressUpdate
  */
-export function isQualitativeUpdate(update: ProgressUpdate): update is QualitativeProgressUpdate {
+export function isQualitativeUpdate(
+  update: ProgressUpdate
+): update is QualitativeProgressUpdate {
   return update.type === 'qualitative';
 }
 
 /**
  * Type guard for BinaryProgressUpdate
  */
-export function isBinaryUpdate(update: ProgressUpdate): update is BinaryProgressUpdate {
+export function isBinaryUpdate(
+  update: ProgressUpdate
+): update is BinaryProgressUpdate {
   return update.type === 'binary';
 }
 
 /**
  * Type guard for MilestoneProgressUpdate
  */
-export function isMilestoneUpdate(update: ProgressUpdate): update is MilestoneProgressUpdate {
+export function isMilestoneUpdate(
+  update: ProgressUpdate
+): update is MilestoneProgressUpdate {
   return update.type === 'milestone';
 }
 
 /**
  * Type guard for RecurringProgressUpdate
  */
-export function isRecurringUpdate(update: ProgressUpdate): update is RecurringProgressUpdate {
+export function isRecurringUpdate(
+  update: ProgressUpdate
+): update is RecurringProgressUpdate {
   return update.type === 'recurring';
 }
 
 /**
  * Type guard for HabitProgressUpdate
  */
-export function isHabitUpdate(update: ProgressUpdate): update is HabitProgressUpdate {
+export function isHabitUpdate(
+  update: ProgressUpdate
+): update is HabitProgressUpdate {
   return update.type === 'habit';
 }
 
@@ -288,7 +300,10 @@ export interface UseProgressFormReturn {
   reset: () => void;
 }
 
-export function useProgressForm(goalId: string, goalType: GoalType): UseProgressFormReturn {
+export function useProgressForm(
+  goalId: string,
+  goalType: GoalType
+): UseProgressFormReturn {
   // Implementation
 }
 ```
@@ -304,7 +319,11 @@ export function useProgressForm(goalId: string, goalType: GoalType): UseProgress
  * @returns Progress percentage [0, 100]
  * @throws Error if targetValue === startValue (cannot divide)
  */
-export function calculateQuantitativeProgress(startValue: number, currentValue: number, targetValue: number): number {
+export function calculateQuantitativeProgress(
+  startValue: number,
+  currentValue: number,
+  targetValue: number
+): number {
   // Implementation
 }
 
@@ -315,7 +334,10 @@ export function calculateQuantitativeProgress(startValue: number, currentValue: 
  * @returns Progress percentage [0, 100]
  * @throws Error if totalMilestones < 1
  */
-export function calculateMilestoneProgress(completedMilestones: number, totalMilestones: number): number {
+export function calculateMilestoneProgress(
+  completedMilestones: number,
+  totalMilestones: number
+): number {
   // Implementation
 }
 
@@ -334,7 +356,10 @@ export function calculateBinaryProgress(achieved: boolean): number {
  * @param history - Array of all updates (in chronological order)
  * @returns Current progress percentage
  */
-export function recalculateProgressFromHistory(goalId: string, history: ProgressUpdate[]): number {
+export function recalculateProgressFromHistory(
+  goalId: string,
+  history: ProgressUpdate[]
+): number {
   // Implementation
 }
 
@@ -343,11 +368,9 @@ export function recalculateProgressFromHistory(goalId: string, history: Progress
  * @param history - Array of habit updates
  * @returns Streak info: { current, longest, bestDate }
  */
-export function calculateHabitStreaks(history: HabitProgressUpdate[]): {
-  currentStreak: number;
-  longestStreak: number;
-  bestDate?: string;
-} {
+export function calculateHabitStreaks(
+  history: HabitProgressUpdate[]
+): { currentStreak: number; longestStreak: number; bestDate?: string } {
   // Implementation
 }
 
@@ -374,7 +397,10 @@ export function isDuplicateUpdate(
  * @param unit - Optional unit string (e.g., "km", "%")
  * @returns Formatted string (e.g., "65%", "32.5km")
  */
-export function formatProgressDisplay(value: number, unit?: string): string {
+export function formatProgressDisplay(
+  value: number,
+  unit?: string
+): string {
   // Implementation
 }
 
@@ -384,7 +410,10 @@ export function formatProgressDisplay(value: number, unit?: string): string {
  * @param format - Optional format string (default: "MMM dd, HH:mm")
  * @returns Formatted date string
  */
-export function formatUpdateTimestamp(timestamp: number, format?: string): string {
+export function formatUpdateTimestamp(
+  timestamp: number,
+  format?: string
+): string {
   // Implementation
 }
 ```

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 1
 
-## User Scenarios & Testing _(mandatory)_
+## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Create Basic Goal (Priority: P1)
 
@@ -49,7 +49,7 @@ As a user, I want clear validation feedback so that I can correct errors and cre
 2. **Given** past deadline, **When** user submits, **Then** warning allows override
 3. **Given** cyclic milestone dependencies, **When** user submits, **Then** error prevents creation
 
-## Requirements _(mandatory)_
+## Requirements *(mandatory)*
 
 ### Functional Requirements
 
@@ -60,12 +60,12 @@ As a user, I want clear validation feedback so that I can correct errors and cre
 - **FR-005**: System MUST save to Local Storage with indexes
 - **FR-006**: System MUST handle success navigation and error display
 
-### Key Entities _(include if feature involves data)_
+### Key Entities *(include if feature involves data)*
 
 - **Goal**: Core entity with type-specific extensions (see @bkp/types/goal.types.ts)
 - **CreateGoalInput**: Input DTO for creation
 
-## Success Criteria _(mandatory)_
+## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 

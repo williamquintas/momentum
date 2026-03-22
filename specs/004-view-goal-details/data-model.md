@@ -1,13 +1,11 @@
 # Data Model: View Goal Details
 
 ## Overview
-
 The View Goal Details feature requires comprehensive data structures to support displaying goal information, progress history, milestones, and metadata. This document defines the data models and validation schemas needed for goal detail views.
 
 ## Core Data Structures
 
 ### Goal Detail View Model
-
 ```typescript
 interface GoalDetailView {
   // Core goal information
@@ -34,7 +32,6 @@ interface GoalDetailView {
 ```
 
 ### Goal Display Properties
-
 ```typescript
 interface GoalDisplayProperties {
   // Formatted display values
@@ -69,7 +66,6 @@ interface GoalDisplayProperties {
 ```
 
 ### Progress View Model
-
 ```typescript
 interface GoalProgressView {
   // Current progress
@@ -108,7 +104,6 @@ interface ProgressChartData {
 ```
 
 ### Progress History View
-
 ```typescript
 interface ProgressHistoryView {
   // History data
@@ -181,7 +176,6 @@ interface ProgressHistorySummary {
 ## Type-Specific View Models
 
 ### Quantitative Goal View
-
 ```typescript
 interface QuantitativeGoalView {
   // Progress display
@@ -212,7 +206,6 @@ interface TrendChartData {
 ```
 
 ### Milestone Goal View
-
 ```typescript
 interface MilestoneGoalView {
   // Milestone hierarchy
@@ -265,7 +258,6 @@ interface MilestoneDependencyGraph {
 ```
 
 ### Recurring Goal View
-
 ```typescript
 interface RecurringGoalView {
   // Schedule information
@@ -304,7 +296,6 @@ interface RecurringCalendarData {
 ```
 
 ### Habit Goal View
-
 ```typescript
 interface HabitGoalView {
   // Streak information
@@ -346,7 +337,6 @@ interface HabitActivityEntry {
 ## Metadata and Relationships
 
 ### Goal Metadata View
-
 ```typescript
 interface GoalMetadataView {
   // Tags and categories
@@ -420,7 +410,6 @@ interface AuditEntry {
 ## UI State Management
 
 ### Goal Detail UI State
-
 ```typescript
 interface GoalDetailUIState {
   // Loading states
@@ -464,7 +453,6 @@ interface GoalDetailError {
 ## Validation Schemas
 
 ### View Model Validation
-
 ```typescript
 import { z } from 'zod';
 
@@ -513,7 +501,6 @@ const ProgressHistoryViewSchema = z.object({
 ## Data Transformation Functions
 
 ### View Model Builders
-
 ```typescript
 // Build display properties from goal
 function buildGoalDisplayProperties(goal: Goal): GoalDisplayProperties {
@@ -529,7 +516,10 @@ function buildGoalDisplayProperties(goal: Goal): GoalDisplayProperties {
 }
 
 // Build progress view from goal and history
-function buildGoalProgressView(goal: Goal, history: ProgressUpdate[]): GoalProgressView {
+function buildGoalProgressView(
+  goal: Goal,
+  history: ProgressUpdate[]
+): GoalProgressView {
   const current = getCurrentProgress(goal, history);
   const percentage = calculateProgressPercentage(goal, current);
 
@@ -569,7 +559,6 @@ function buildProgressHistoryView(
 ## Performance Optimizations
 
 ### Data Loading Strategies
-
 ```typescript
 // Progressive loading for large histories
 interface ProgressiveHistoryLoader {
@@ -580,14 +569,11 @@ interface ProgressiveHistoryLoader {
 
 // Caching strategies
 interface GoalDetailCache {
-  cache: Map<
-    string,
-    {
-      data: GoalDetailView;
-      timestamp: number;
-      expiresAt: number;
-    }
-  >;
+  cache: Map<string, {
+    data: GoalDetailView;
+    timestamp: number;
+    expiresAt: number;
+  }>;
 
   get: (goalId: string) => GoalDetailView | null;
   set: (goalId: string, data: GoalDetailView, ttl: number) => void;
@@ -599,7 +585,6 @@ interface GoalDetailCache {
 ## Error Handling
 
 ### View Model Errors
-
 ```typescript
 type GoalDetailViewError =
   | { type: 'GOAL_NOT_FOUND'; goalId: string }

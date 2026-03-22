@@ -130,7 +130,13 @@ export interface HabitGoal extends BaseGoal {
 }
 
 // Union type
-export type Goal = QuantitativeGoal | QualitativeGoal | BinaryGoal | MilestoneGoal | RecurringGoal | HabitGoal;
+export type Goal = 
+  | QuantitativeGoal 
+  | QualitativeGoal 
+  | BinaryGoal 
+  | MilestoneGoal 
+  | RecurringGoal 
+  | HabitGoal;
 ```
 
 ### Supporting Types

@@ -51,7 +51,7 @@
 - [ ] T012 [P] [US1] Implement form submission handler in CreateGoalForm.tsx
 - [ ] T013 [P] [US1] Add success navigation to goal detail page
 - [ ] T014 [P] [US1] Add error display and handling
-- [ ] T015 [P] [US1] Create component tests for CreateGoalForm in src/**tests**/features/goals/CreateGoalForm.test.tsx
+- [ ] T015 [P] [US1] Create component tests for CreateGoalForm in src/__tests__/features/goals/CreateGoalForm.test.tsx
 - [ ] T016 [P] [US1] Create integration test for basic creation flow
 
 **Definition of Done**: CreateGoalForm works for basic goals, validation shows errors, success navigates to detail page
@@ -92,7 +92,7 @@
 - [ ] T035 [P] [US3] Add cyclic dependency detection for milestone dependencies
 - [ ] T036 [P] [US3] Implement error display in CreateGoalForm with field-level feedback
 - [ ] T037 [P] [US3] Add warning for past deadlines with override option
-- [ ] T038 [P] [US3] Create validation unit tests in src/**tests**/features/goals/goalValidation.test.ts
+- [ ] T038 [P] [US3] Create validation unit tests in src/__tests__/features/goals/goalValidation.test.ts
 - [ ] T039 [P] [US3] Create error scenario integration tests
 
 **Definition of Done**: All validation rules enforced, error messages clear and actionable, users can correct and retry
