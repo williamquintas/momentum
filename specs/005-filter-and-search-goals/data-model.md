@@ -757,16 +757,19 @@ export type GoalPriority = 'low' | 'medium' | 'high' | 'critical';
 ## Data Flow Diagrams
 
 ### Search Request Flow
+
 ```
 User Input → Debounce (300ms) → Query Processing → Index Lookup → Relevance Scoring → Result Filtering → Highlighting → Response
 ```
 
 ### Filter Application Flow
+
 ```
 Filter Selection → Cache Check → Filter Computation → Result Intersection → Sorting → Pagination → UI Update
 ```
 
 ### Index Update Flow
+
 ```
 Goal Change → Index Invalidation → Background Re-indexing → Cache Invalidation → Search Update
 ```
@@ -811,23 +814,29 @@ export const DateRangeFiltersSchema = z.object({
   completed: DateRangeSchema.optional(),
 });
 
-export const NumberRangeSchema = z.object({
-  min: z.number().min(0).max(100),
-  max: z.number().min(0).max(100),
-}).refine(data => data.min <= data.max, 'Min must be less than or equal to max');
+export const NumberRangeSchema = z
+  .object({
+    min: z.number().min(0).max(100),
+    max: z.number().min(0).max(100),
+  })
+  .refine((data) => data.min <= data.max, 'Min must be less than or equal to max');
 
-export const DateRangeSchema = z.object({
-  start: z.date(),
-  end: z.date(),
-}).refine(data => data.start <= data.end, 'Start date must be before end date');
+export const DateRangeSchema = z
+  .object({
+    start: z.date(),
+    end: z.date(),
+  })
+  .refine((data) => data.start <= data.end, 'Start date must be before end date');
 
 export const SearchSortSchema = z.object({
   field: z.enum(['relevance', 'title', 'created', 'updated', 'progress', 'priority', 'type', 'status']),
   direction: z.enum(['asc', 'desc']),
-  secondary: z.object({
-    field: z.enum(['relevance', 'title', 'created', 'updated', 'progress', 'priority', 'type', 'status']),
-    direction: z.enum(['asc', 'desc']),
-  }).optional(),
+  secondary: z
+    .object({
+      field: z.enum(['relevance', 'title', 'created', 'updated', 'progress', 'priority', 'type', 'status']),
+      direction: z.enum(['asc', 'desc']),
+    })
+    .optional(),
 });
 
 export const SearchPaginationSchema = z.object({
@@ -867,24 +876,28 @@ export const FilterPresetSchema = z.object({
 ## Performance Benchmarks
 
 ### Search Performance Targets
+
 - **Query processing**: < 50ms for 10K goals
 - **Index lookup**: < 20ms average
 - **Relevance scoring**: < 30ms for 1K results
 - **Result highlighting**: < 10ms for 100 results
 
 ### Filter Performance Targets
+
 - **Simple filter application**: < 10ms
 - **Complex filter combination**: < 50ms
 - **Cache hit**: < 5ms
 - **Cache miss computation**: < 100ms
 
 ### Index Performance Targets
+
 - **Index build time**: < 5 seconds for 10K goals
 - **Index size**: < 10MB for 10K goals
 - **Index update time**: < 100ms per goal change
 - **Memory usage**: < 50MB during indexing
 
 ### Cache Performance Targets
+
 - **Cache hit rate**: > 80% for common filters
 - **Cache size**: < 100MB for active cache
 - **Cache invalidation**: < 50ms

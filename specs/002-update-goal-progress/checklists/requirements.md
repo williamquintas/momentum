@@ -3,10 +3,11 @@
 ## Requirements Verification
 
 ### Functional Requirements
+
 - [ ] **FR-001**: Accept progress updates for quantitative goals
   - [ ] Input field accepts numeric values
   - [ ] Values must be ≤ target value
-  - [ ] Formula calculates: ((current - start) / (target - start)) * 100
+  - [ ] Formula calculates: ((current - start) / (target - start)) \* 100
   - [ ] Result clamped to [0, 100]
   - [ ] Update persists to localStorage
 
@@ -39,6 +40,7 @@
   - [ ] No invalid data persisted
 
 ### Non-Functional Requirements
+
 - [ ] **NFR-001**: Form submission completes in <500ms average
   - [ ] Measure with performance profiler
   - [ ] Validate on production build
@@ -61,6 +63,7 @@
   - [ ] Max function length 150 lines
 
 ## Success Criteria
+
 - [ ] All 4 user stories have passing acceptance tests
 - [ ] Calculation formulas match BR-009, BR-010, BR-011 exactly
 - [ ] No progress data loss in any tested scenario
@@ -69,6 +72,7 @@
 - [ ] localStorage persists all updates across page reloads
 
 ## Component Structure
+
 - [ ] ProgressUpdateForm exists and renders conditionally
 - [ ] Type-specific fields implemented (Quantitative, Qualitative, Binary, Milestone, Recurring, Habit)
 - [ ] Form validation errors display prominently
@@ -76,11 +80,13 @@
 - [ ] Form resets after successful submission
 
 ## Hook Implementation
+
 - [ ] useProgressUpdate hook created and exported
 - [ ] useProgressForm hook created and exported
 - [ ] Both hooks tested in isolation
 
 ## State Management
+
 - [ ] Zustand progressStore created
 - [ ] addUpdate action validates and persists
 - [ ] getCurrentProgress action returns cached value
@@ -88,6 +94,7 @@
 - [ ] History retrieval returns updates in chronological order
 
 ## Validation & Error Handling
+
 - [ ] Zod schemas validate all update types
 - [ ] Duplicate detection prevents re-submissions
 - [ ] Type guards enable safe narrowing
@@ -95,6 +102,7 @@
 - [ ] Error messages are user-friendly and actionable
 
 ## Testing Coverage
+
 - [ ] Unit tests: All calculation functions (95%+ coverage)
 - [ ] Unit tests: All validation functions
 - [ ] Unit tests: Type guards and discriminators
@@ -105,6 +113,7 @@
 - [ ] Integration tests: localStorage persistence and retrieval
 
 ## Documentation
+
 - [ ] Calculation formulas documented with examples
 - [ ] Type definitions include JSDoc comments
 - [ ] Zod schemas include descriptions
@@ -112,6 +121,7 @@
 - [ ] Common edge cases documented
 
 ## Accessibility
+
 - [ ] Form fields have associated labels
 - [ ] Error messages announced to screen readers
 - [ ] Keyboard navigation works in all form fields
@@ -119,6 +129,7 @@
 - [ ] Loading and disabled states clear to assistive tech
 
 ## Performance
+
 - [ ] Form submission <500ms measured
 - [ ] Progress recalculation <100ms with 100+ updates
 - [ ] Cache hit rate >80% on repeated queries
@@ -126,12 +137,14 @@
 - [ ] Debounce rich text input if needed
 
 ## Browser Compatibility
+
 - [ ] Chrome/Edge ✅
 - [ ] Firefox ✅
 - [ ] Safari ✅
 - [ ] Mobile browsers ✅
 
 ## Integration Points
+
 - [ ] GoalDetailPage includes ProgressUpdateForm
 - [ ] Form updates trigger goal.progress refresh
 - [ ] Goal status transitions checked after update
@@ -139,6 +152,7 @@
 - [ ] Search/filter accounts for updated progress
 
 ## Sign-Off Checklist
+
 - [ ] Code review: All PRs approved
 - [ ] QA testing: All scenarios tested manually
 - [ ] Documentation: All docs complete and accurate

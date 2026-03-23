@@ -1,14 +1,17 @@
 # Implementation Plan: View Goal Details
 
 ## Overview
+
 The View Goal Details feature requires a comprehensive implementation strategy that supports displaying goal information across all goal types with optimal performance and user experience. This plan outlines the architecture, implementation phases, and technical decisions.
 
 ## Architecture Decisions
 
 ### Decision 1: Component Architecture - Single Page vs. Multi-Page
+
 **Status**: ACCEPTED (Single Page with Tabs)
 
 **Options**:
+
 1. Single page with tabs for different views
 2. Separate pages for each view type
 3. Hybrid approach with expandable sections
@@ -16,17 +19,20 @@ The View Goal Details feature requires a comprehensive implementation strategy t
 **Decision**: Option 1 - Single page with tabs
 
 **Rationale**:
+
 - **User Experience**: Keeps context when switching between views
 - **Performance**: Single data load with progressive enhancement
 - **Navigation**: Clear information hierarchy with tabs
 - **Mobile**: Better suited for mobile tab navigation
 
 **Trade-offs**:
+
 - Initial load time for all data
 - Complex state management
 - Tab switching animations
 
 **Implementation**:
+
 ```typescript
 // Main component structure
 <GoalDetailPage>
@@ -49,9 +55,11 @@ The View Goal Details feature requires a comprehensive implementation strategy t
 ```
 
 ### Decision 2: Data Loading Strategy - Eager vs. Lazy Loading
+
 **Status**: ACCEPTED (Progressive Loading with Caching)
 
 **Options**:
+
 1. Load all data eagerly on page load
 2. Lazy load data as tabs are accessed
 3. Progressive loading with prioritization
@@ -59,17 +67,20 @@ The View Goal Details feature requires a comprehensive implementation strategy t
 **Decision**: Option 3 - Progressive loading with prioritization
 
 **Rationale**:
+
 - **Performance**: Fast initial page load with essential data
 - **User Experience**: Immediate interaction with core information
 - **Scalability**: Handle goals with large datasets
 - **Caching**: Reduce redundant data fetching
 
 **Trade-offs**:
+
 - Complex loading state management
 - Potential for loading delays on tab switches
 - Cache invalidation complexity
 
 **Implementation**:
+
 ```typescript
 // Progressive data loading hook
 function useGoalDetailData(goalId: string) {
@@ -78,17 +89,17 @@ function useGoalDetailData(goalId: string) {
 
   // Phase 2: Progress data (after goal loads)
   const { progress, loading: loadingProgress } = useGoalProgress(goalId, {
-    enabled: !!goal
+    enabled: !!goal,
   });
 
   // Phase 3: History data (lazy loaded)
   const { history, loading: loadingHistory } = useProgressHistory(goalId, {
-    enabled: activeTab === 'history'
+    enabled: activeTab === 'history',
   });
 
   // Phase 4: Milestones (lazy loaded)
   const { milestones, loading: loadingMilestones } = useGoalMilestones(goalId, {
-    enabled: activeTab === 'milestones'
+    enabled: activeTab === 'milestones',
   });
 
   return {
@@ -97,16 +108,18 @@ function useGoalDetailData(goalId: string) {
       goal: loadingGoal,
       progress: loadingProgress,
       history: loadingHistory,
-      milestones: loadingMilestones
-    }
+      milestones: loadingMilestones,
+    },
   };
 }
 ```
 
 ### Decision 3: State Management - Local vs. Global State
+
 **Status**: ACCEPTED (Local State with Global Cache)
 
 **Options**:
+
 1. Pure local component state
 2. Global state management (Zustand)
 3. Hybrid with selective global state
@@ -114,17 +127,20 @@ function useGoalDetailData(goalId: string) {
 **Decision**: Option 3 - Hybrid approach
 
 **Rationale**:
+
 - **Performance**: Local state for UI interactions
 - **Consistency**: Global state for shared data
 - **Caching**: Global cache for frequently accessed goals
 - **Synchronization**: Proper state synchronization
 
 **Trade-offs**:
+
 - State synchronization complexity
 - Potential for stale data
 - Memory management for cache
 
 **Implementation**:
+
 ```typescript
 // Global goal detail cache
 interface GoalDetailCacheState {
@@ -143,9 +159,11 @@ interface GoalDetailLocalState {
 ```
 
 ### Decision 4: Progress Visualization - Charts vs. Simple Bars
+
 **Status**: ACCEPTED (Contextual Visualization)
 
 **Options**:
+
 1. Simple progress bars only
 2. Rich charts for all goal types
 3. Contextual visualization based on goal type
@@ -153,17 +171,20 @@ interface GoalDetailLocalState {
 **Decision**: Option 3 - Contextual visualization
 
 **Rationale**:
+
 - **Clarity**: Most appropriate visualization per goal type
 - **Performance**: Lighter weight for simple goals
 - **Accessibility**: Better screen reader support
 - **Mobile**: Responsive across devices
 
 **Trade-offs**:
+
 - Inconsistent UI patterns
 - More complex component logic
 - Type-specific testing requirements
 
 **Implementation**:
+
 ```typescript
 // Type-specific progress components
 const ProgressVisualization = ({ goal, progress }: Props) => {
@@ -185,9 +206,11 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 ## Implementation Phases
 
 ### Phase 1: Core Infrastructure (Week 1-2)
+
 **Goals**: Establish basic goal detail page structure and data loading
 
 **Tasks**:
+
 1. Create `GoalDetailPage` component with routing
 2. Implement basic goal data fetching hook
 3. Create tabbed interface skeleton
@@ -195,15 +218,18 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 5. Implement responsive layout foundation
 
 **Deliverables**:
+
 - Basic goal detail page loads
 - Tab navigation works
 - Loading and error states display
 - Mobile-responsive layout
 
 ### Phase 2: Overview Tab (Week 3-4)
+
 **Goals**: Complete the goal overview display with all basic information
 
 **Tasks**:
+
 1. Implement goal header with title, status, type
 2. Create goal metadata display (dates, tags, categories)
 3. Add basic progress visualization
@@ -211,15 +237,18 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 5. Add goal description display with formatting
 
 **Deliverables**:
+
 - Complete goal overview information
 - Progress bar displays correctly
 - Action buttons functional
 - Formatted text rendering
 
 ### Phase 3: Progress Tab (Week 5-6)
+
 **Goals**: Implement detailed progress visualization and tracking
 
 **Tasks**:
+
 1. Create type-specific progress components
 2. Implement progress calculation logic
 3. Add trend analysis and velocity calculations
@@ -227,15 +256,18 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 5. Implement real-time progress updates
 
 **Deliverables**:
+
 - All goal types show appropriate progress
 - Progress calculations accurate
 - Visual progress indicators work
 - Real-time updates functional
 
 ### Phase 4: History Tab (Week 7-8)
+
 **Goals**: Build comprehensive progress history display
 
 **Tasks**:
+
 1. Implement progress history data fetching
 2. Create history list component with pagination
 3. Add history filtering and sorting
@@ -243,15 +275,18 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 5. Add history visualization (timeline chart)
 
 **Deliverables**:
+
 - Progress history displays chronologically
 - Pagination works for large histories
 - Filtering and sorting functional
 - History statistics accurate
 
 ### Phase 5: Milestones Tab (Week 9-10)
+
 **Goals**: Complete milestone visualization and management
 
 **Tasks**:
+
 1. Create milestone hierarchy display
 2. Implement dependency visualization
 3. Add milestone progress tracking
@@ -259,15 +294,18 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 5. Implement milestone status updates
 
 **Deliverables**:
+
 - Milestone hierarchy displays correctly
 - Dependencies visualized
 - Milestone interactions work
 - Status updates reflected
 
 ### Phase 6: Polish and Optimization (Week 11-12)
+
 **Goals**: Performance optimization and UX polish
 
 **Tasks**:
+
 1. Implement caching and memoization
 2. Add progressive loading optimizations
 3. Polish animations and transitions
@@ -275,6 +313,7 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 5. Add comprehensive error handling
 
 **Deliverables**:
+
 - Page loads in <500ms
 - Smooth animations and transitions
 - Full accessibility compliance
@@ -283,6 +322,7 @@ const ProgressVisualization = ({ goal, progress }: Props) => {
 ## Technical Implementation
 
 ### Component Hierarchy
+
 ```
 GoalDetailPage
 ├── GoalDetailHeader
@@ -308,6 +348,7 @@ GoalDetailPage
 ```
 
 ### Data Flow Architecture
+
 ```typescript
 // Data fetching layers
 1. Route Level: Goal ID from URL params
@@ -325,24 +366,28 @@ GoalDetailPage
 ### Performance Optimizations
 
 #### Data Loading
+
 - **Progressive Loading**: Load essential data first, lazy load others
 - **Caching Strategy**: Cache goal details for 5 minutes
 - **Background Updates**: Refresh data in background for real-time feel
 - **Pagination**: Load history in pages of 20 items
 
 #### Rendering
+
 - **Memoization**: Memoize expensive calculations
 - **Virtualization**: Virtualize large lists (history, milestones)
 - **Debouncing**: Debounce filter inputs and searches
 - **Preloading**: Preload adjacent tab data
 
 #### Bundle Optimization
+
 - **Code Splitting**: Split each tab into separate chunks
 - **Lazy Loading**: Lazy load chart libraries
 - **Tree Shaking**: Remove unused visualization code
 - **Compression**: Compress component bundles
 
 ### Error Handling Strategy
+
 ```typescript
 // Error boundaries at different levels
 - Page Level: Network errors, data loading failures
@@ -359,24 +404,28 @@ GoalDetailPage
 ### Testing Strategy
 
 #### Unit Tests
+
 - Component rendering with different props
 - Data transformation functions
 - Hook logic and state management
 - Utility functions and calculations
 
 #### Integration Tests
+
 - Data loading and caching behavior
 - Tab switching and navigation
 - Filter and sort functionality
 - Error handling scenarios
 
 #### E2E Tests
+
 - Complete user journey through goal details
 - Mobile responsiveness
 - Accessibility compliance
 - Performance benchmarks
 
 ### Accessibility Implementation
+
 - **Keyboard Navigation**: Full keyboard support for all interactions
 - **Screen Readers**: Proper ARIA labels and descriptions
 - **Focus Management**: Logical tab order and focus trapping
@@ -384,6 +433,7 @@ GoalDetailPage
 - **Motion Preferences**: Respect user's motion preferences
 
 ### Mobile Optimization
+
 - **Responsive Design**: Breakpoints for mobile, tablet, desktop
 - **Touch Interactions**: Swipe gestures for tab navigation
 - **Performance**: Optimized for mobile networks and devices
@@ -392,12 +442,14 @@ GoalDetailPage
 ## Risk Mitigation
 
 ### Technical Risks
+
 1. **Large Dataset Performance**: Mitigated by pagination and virtualization
 2. **Complex State Management**: Mitigated by clear state boundaries
 3. **Browser Compatibility**: Mitigated by progressive enhancement
 4. **Memory Leaks**: Mitigated by proper cleanup and memoization
 
 ### Business Risks
+
 1. **Slow Page Loads**: Mitigated by performance optimizations
 2. **Poor Mobile Experience**: Mitigated by mobile-first design
 3. **Accessibility Issues**: Mitigated by accessibility audit
@@ -406,18 +458,21 @@ GoalDetailPage
 ## Success Metrics
 
 **Performance Metrics**:
+
 - First Contentful Paint: < 500ms
 - Largest Contentful Paint: < 1s
 - Cumulative Layout Shift: < 0.1
 - Bundle Size: < 200KB (initial), < 50KB (per tab)
 
 **Quality Metrics**:
+
 - Unit Test Coverage: > 95%
 - Accessibility Score: > 95%
 - Cross-browser Compatibility: All modern browsers
 - Mobile Responsiveness: Perfect on all devices
 
 **User Experience Metrics**:
+
 - Task Completion Rate: > 95%
 - User Satisfaction Score: > 4.5/5
 - Error Rate: < 0.1%

@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: Extracted from @bkp/features/goal-features.md Feature 9
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Track Daily Habits (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to mark daily habit completion and track streaks.
 2. **Given** consecutive completions, **When** one missed, **Then** streak resets
 3. **Given** habit calendar, **When** viewed, **Then** heatmap shows completion pattern
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: Daily marking UI
 - **FR-002**: Streak and habit strength calculation
 - **FR-003**: Calendar heatmap visualization
 - **FR-004**: History tracking with missed days
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Habit strength accurately reflects consistency
 - **SC-002**: Streak calculations correct

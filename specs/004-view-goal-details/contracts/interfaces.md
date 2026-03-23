@@ -799,26 +799,33 @@ export const GoalBasicInfoSchema = z.object({
   priority: GoalPrioritySchema,
   tags: z.array(z.string().max(50)).max(20, 'Too many tags'),
   category: z.string().max(100).optional(),
-  color: z.string().regex(/^#[0-9A-F]{6}$/i, 'Invalid color format').optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-F]{6}$/i, 'Invalid color format')
+    .optional(),
 });
 
-export const GoalProgressInfoSchema = z.object({
-  current: z.number().min(0, 'Progress cannot be negative'),
-  target: z.number().positive('Target must be positive'),
-  percentage: z.number().min(0).max(100, 'Percentage must be 0-100'),
-  trend: ProgressTrendSchema,
-  velocity: z.object({
-    perDay: z.number(),
-    perWeek: z.number(),
-    perMonth: z.number(),
-    unit: z.string().min(1),
-  }).optional(),
-  estimatedCompletion: z.date().optional(),
-  lastUpdated: z.date(),
-}).refine(data => data.current <= data.target, {
-  message: 'Current progress cannot exceed target',
-  path: ['current'],
-});
+export const GoalProgressInfoSchema = z
+  .object({
+    current: z.number().min(0, 'Progress cannot be negative'),
+    target: z.number().positive('Target must be positive'),
+    percentage: z.number().min(0).max(100, 'Percentage must be 0-100'),
+    trend: ProgressTrendSchema,
+    velocity: z
+      .object({
+        perDay: z.number(),
+        perWeek: z.number(),
+        perMonth: z.number(),
+        unit: z.string().min(1),
+      })
+      .optional(),
+    estimatedCompletion: z.date().optional(),
+    lastUpdated: z.date(),
+  })
+  .refine((data) => data.current <= data.target, {
+    message: 'Current progress cannot exceed target',
+    path: ['current'],
+  });
 
 // API request validation
 export const GoalDetailRequestSchema = z.object({
@@ -838,19 +845,23 @@ export const ProgressUpdateRequestSchema = z.object({
 });
 
 // History request validation
-export const GoalHistoryRequestSchema = z.object({
-  goalId: GoalIdSchema,
-  cursor: z.string().optional(),
-  limit: z.number().min(1).max(100, 'Limit must be 1-100').optional(),
-  dateRange: z.object({
-    start: z.date(),
-    end: z.date(),
-  }).optional(),
-  type: z.array(z.enum(['manual', 'automatic', 'milestone', 'completion', 'reset'])).optional(),
-}).refine(data => !data.dateRange || data.dateRange.start <= data.dateRange.end, {
-  message: 'Start date must be before end date',
-  path: ['dateRange'],
-});
+export const GoalHistoryRequestSchema = z
+  .object({
+    goalId: GoalIdSchema,
+    cursor: z.string().optional(),
+    limit: z.number().min(1).max(100, 'Limit must be 1-100').optional(),
+    dateRange: z
+      .object({
+        start: z.date(),
+        end: z.date(),
+      })
+      .optional(),
+    type: z.array(z.enum(['manual', 'automatic', 'milestone', 'completion', 'reset'])).optional(),
+  })
+  .refine((data) => !data.dateRange || data.dateRange.start <= data.dateRange.end, {
+    message: 'Start date must be before end date',
+    path: ['dateRange'],
+  });
 ```
 
 ## Testing Utilities
@@ -998,14 +1009,14 @@ export interface PerformanceBudgets {
 
   /** Bundle size limits */
   bundleSize: {
-    initial: 200000, // bytes
-    perTab: 50000,   // bytes
+    initial: 200000; // bytes
+    perTab: 50000; // bytes
   };
 
   /** Memory usage limits */
   memoryUsage: {
-    typical: 50000000, // bytes (50MB)
-    maximum: 100000000, // bytes (100MB)
+    typical: 50000000; // bytes (50MB)
+    maximum: 100000000; // bytes (100MB)
   };
 }
 
@@ -1032,6 +1043,7 @@ export interface PerformanceMetrics {
 ## Contract Compliance Checklist
 
 ### Type Safety
+
 - [x] All interfaces properly typed with TypeScript
 - [x] Zod schemas for runtime validation
 - [x] Generic type constraints for extensibility
@@ -1039,6 +1051,7 @@ export interface PerformanceMetrics {
 - [x] Optional chaining support throughout
 
 ### API Design
+
 - [x] RESTful resource naming conventions
 - [x] Consistent error response formats
 - [x] Pagination support for large datasets
@@ -1046,6 +1059,7 @@ export interface PerformanceMetrics {
 - [x] Backward compatibility considerations
 
 ### State Management
+
 - [x] Immutable update patterns
 - [x] Action type definitions
 - [x] State slice separation
@@ -1053,6 +1067,7 @@ export interface PerformanceMetrics {
 - [x] Loading state management
 
 ### Component Architecture
+
 - [x] Props interface definitions
 - [x] Event handler contracts
 - [x] Render prop patterns where needed
@@ -1060,18 +1075,21 @@ export interface PerformanceMetrics {
 - [x] Accessibility prop contracts
 
 ### Testing Support
+
 - [x] Test data factory interfaces
 - [x] Mock data generator contracts
 - [x] Test utility type definitions
 - [x] Assertion helper interfaces
 
 ### Error Handling
+
 - [x] Custom error class definitions
 - [x] Error code enumerations
 - [x] Recovery option interfaces
 - [x] Error boundary contracts
 
 ### Performance
+
 - [x] Performance budget definitions
 - [x] Metrics collection interfaces
 - [x] Monitoring contract specifications
