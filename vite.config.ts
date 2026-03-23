@@ -12,6 +12,7 @@ const gitSha = process.env.GITHUB_SHA || 'dev';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/',
   plugins: [react()],
   define: {
     __APP_VERSION__: JSON.stringify(appVersion),
