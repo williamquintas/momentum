@@ -9,14 +9,17 @@ This document contains the technical research, decision logs, benchmarks, and al
 ### Status Transition Patterns Analysis
 
 #### Research Question
+
 What are the most common status transition patterns in goal tracking applications?
 
 #### Methodology
+
 - Analyzed 15 popular goal tracking apps (Habitica, Todoist, Trello, Asana, Jira)
 - Reviewed 50+ user interviews and feedback sessions
 - Examined 1000+ goal completion patterns from existing systems
 
 #### Key Findings
+
 ```
 Most Common Transitions:
 1. ACTIVE → PAUSED (23% of all transitions)
@@ -39,6 +42,7 @@ User Behavior Insights:
 ```
 
 #### Implications for Design
+
 - **Reactivation Window**: Implement 30-day reactivation window based on user behavior
 - **Bulk Operations**: Support bulk pause/resume for multiple goals
 - **Smart Defaults**: Auto-suggest pause reasons based on common patterns
@@ -49,6 +53,7 @@ User Behavior Insights:
 #### Database Performance Testing
 
 ##### Test Setup
+
 ```sql
 -- Test database: PostgreSQL 15
 -- Hardware: 8-core CPU, 32GB RAM, NVMe SSD
@@ -57,6 +62,7 @@ User Behavior Insights:
 ```
 
 ##### Benchmark Results
+
 ```
 Single Status Change:
 - Average latency: 45ms
@@ -84,6 +90,7 @@ Concurrent Load (100 users):
 ```
 
 ##### Optimization Insights
+
 - **Indexing Strategy**: Composite indexes on `(goal_id, created_at DESC)` improved history queries by 300%
 - **JSONB Performance**: Using JSONB for metadata added 15ms overhead but enabled flexible querying
 - **Connection Pooling**: PgBouncer reduced connection overhead by 40%
@@ -92,6 +99,7 @@ Concurrent Load (100 users):
 #### Frontend Performance Testing
 
 ##### Test Setup
+
 ```typescript
 // Test environment: Chrome 120, React 18.2
 // Component load: 100 status history items
@@ -99,6 +107,7 @@ Concurrent Load (100 users):
 ```
 
 ##### Benchmark Results
+
 ```
 Component Render Time:
 - StatusHistory (100 items): 45ms
@@ -117,6 +126,7 @@ Network Requests:
 ```
 
 ##### Optimization Findings
+
 - **Virtual Scrolling**: Reduced memory usage by 60% for large history lists
 - **Memoization**: React.memo reduced re-renders by 75%
 - **Lazy Loading**: Code splitting reduced initial bundle size by 25KB
@@ -127,9 +137,11 @@ Network Requests:
 #### Authorization Patterns Analysis
 
 ##### Research Question
+
 What are the most secure and user-friendly authorization patterns for status management?
 
 #### Findings
+
 ```
 Permission Models Evaluated:
 1. Role-Based Access Control (RBAC): 45% adoption
@@ -149,7 +161,9 @@ Best Practices Identified:
 ```
 
 #### Implementation Decision
+
 **Chosen Approach**: Hybrid RBAC + Ownership model
+
 - **Roles**: Admin, Manager, Editor, Viewer
 - **Ownership**: Goal creators have full control
 - **Sharing**: Granular permissions (view, edit, manage)
@@ -160,6 +174,7 @@ Best Practices Identified:
 #### Load Testing Results
 
 ##### Test Scenarios
+
 ```
 Scenario 1: Peak Usage (1000 concurrent users)
 - Status changes: 500/minute
@@ -178,6 +193,7 @@ Scenario 3: History Archival (1M records)
 ```
 
 ##### Scaling Strategies
+
 ```
 Horizontal Scaling:
 - Read replicas for history queries
@@ -198,103 +214,124 @@ Queue Management:
 ## Decision Logs
 
 ### Decision 1: Status State Machine vs. Simple Enum
+
 **Date**: 2024-01-15
 **Context**: Need to model goal status transitions with validation
 **Options Considered**:
+
 1. Simple enum with validation in application code
 2. Finite state machine with transition rules
 3. Database constraints with triggers
 
 **Decision**: Finite state machine with application-level validation
 **Rationale**:
+
 - Provides clear transition rules and prevents invalid states
 - Easier to test and maintain than database triggers
 - More flexible than simple enum for future extensions
 - Better error messages and user feedback
 
 **Alternatives Rejected**:
+
 - Simple enum: Too permissive, allows invalid transitions
 - Database triggers: Harder to test, vendor-specific, performance concerns
 
 ### Decision 2: Audit Table vs. JSONB Metadata
+
 **Date**: 2024-01-18
 **Context**: Need to track all status changes with metadata
 **Options Considered**:
+
 1. Separate audit table with fixed schema
 2. JSONB column in goals table
 3. Event sourcing with separate event store
 
 **Decision**: Separate audit table with JSONB metadata
 **Rationale**:
+
 - Balances flexibility (JSONB) with structure (fixed columns)
 - Easier querying and indexing than pure JSONB
 - Better performance than event sourcing for simple queries
 - Maintains data integrity and referential constraints
 
 **Alternatives Rejected**:
+
 - Pure JSONB: Harder to query, no referential integrity
 - Event sourcing: Overkill for this use case, complex queries
 
 ### Decision 3: Synchronous vs. Asynchronous Status Changes
+
 **Date**: 2024-01-22
 **Context**: Handle bulk operations and ensure consistency
 **Options Considered**:
+
 1. Synchronous processing with transaction
 2. Asynchronous processing with queues
 3. Hybrid approach with small batches synchronous
 
 **Decision**: Hybrid approach - small operations synchronous, large operations asynchronous
 **Rationale**:
+
 - Immediate feedback for single changes
 - Prevents timeouts for bulk operations
 - Maintains data consistency
 - Better user experience with progress tracking
 
 **Alternatives Rejected**:
+
 - Fully synchronous: Poor performance for bulk operations
 - Fully asynchronous: Complex error handling, delayed feedback
 
 ### Decision 4: Permission Model Complexity
+
 **Date**: 2024-01-25
 **Context**: Balance security with usability for goal sharing
 **Options Considered**:
+
 1. Simple ownership-based permissions
 2. Complex RBAC with inheritance
 3. ABAC with dynamic rules
 
 **Decision**: Ownership-based with sharing permissions
 **Rationale**:
+
 - Simple to understand for users
 - Secure by default (owner control)
 - Flexible sharing without complexity
 - Easier to implement and maintain
 
 **Alternatives Rejected**:
+
 - Complex RBAC: Too confusing for users
 - ABAC: Overkill, performance concerns
 
 ### Decision 5: Caching Strategy
+
 **Date**: 2024-01-28
 **Context**: Optimize performance for status history and validation
 **Options Considered**:
+
 1. In-memory cache only
 2. Redis with TTL
 3. Multi-layer cache (Memory → Redis → Database)
 
 **Decision**: Multi-layer cache with Redis
 **Rationale**:
+
 - Handles server restarts (Redis persistence)
 - Scales across multiple servers
 - Fast local cache for hot data
 - Configurable TTL for different data types
 
 **Alternatives Rejected**:
+
 - In-memory only: Lost on restart, doesn't scale
 - Database only: Too slow for frequent queries
 
 ## Alternative Approaches Considered
 
 ### Approach 1: Event Sourcing Architecture
+
 ```
 Pros:
 - Complete audit trail
@@ -312,6 +349,7 @@ Decision: Rejected - Too complex for current requirements
 ```
 
 ### Approach 2: Status as Separate Microservice
+
 ```
 Pros:
 - Independent scaling
@@ -329,6 +367,7 @@ Decision: Rejected - Monolithic approach sufficient for now
 ```
 
 ### Approach 3: Optimistic Locking for Concurrency
+
 ```
 Pros:
 - Simple implementation
@@ -346,6 +385,7 @@ Decision: Rejected - Queue-based approach better for bulk ops
 ```
 
 ### Approach 4: Status Templates and Workflows
+
 ```
 Pros:
 - Standardized processes
@@ -366,12 +406,12 @@ Decision: Deferred - Consider for future versions
 
 ### Status Management Performance Comparison
 
-| System | Single Change | Bulk (100) | History Query | Memory Usage |
-|--------|---------------|------------|---------------|--------------|
-| Current Design | 45ms | 320ms | 85ms | 2.1GB |
-| Event Sourcing | 120ms | 850ms | 45ms | 3.8GB |
-| Simple CRUD | 25ms | 280ms | 150ms | 1.5GB |
-| Microservice | 85ms | 520ms | 95ms | 4.2GB |
+| System         | Single Change | Bulk (100) | History Query | Memory Usage |
+| -------------- | ------------- | ---------- | ------------- | ------------ |
+| Current Design | 45ms          | 320ms      | 85ms          | 2.1GB        |
+| Event Sourcing | 120ms         | 850ms      | 45ms          | 3.8GB        |
+| Simple CRUD    | 25ms          | 280ms      | 150ms         | 1.5GB        |
+| Microservice   | 85ms          | 520ms      | 95ms          | 4.2GB        |
 
 ### Security Benchmark Results
 
@@ -402,12 +442,14 @@ Concurrent Users | Response Time | Error Rate | CPU Usage
 ## Technical Debt Analysis
 
 ### Identified Issues
+
 1. **JSONB Query Performance**: Complex queries on metadata are slower
 2. **Memory Leaks**: Status cache not properly cleaned up in some scenarios
 3. **Error Handling**: Inconsistent error messages across different operations
 4. **Testing Coverage**: Integration tests for bulk operations incomplete
 
 ### Mitigation Plans
+
 1. **JSONB Optimization**: Add GIN indexes and consider computed columns
 2. **Memory Management**: Implement proper cleanup and size limits
 3. **Error Standardization**: Create centralized error handling system
@@ -416,6 +458,7 @@ Concurrent Users | Response Time | Error Rate | CPU Usage
 ## Future Research Areas
 
 ### Areas Requiring Further Investigation
+
 1. **Machine Learning**: Predict optimal pause timing based on user patterns
 2. **Real-time Collaboration**: Handle concurrent status changes from multiple users
 3. **Mobile Synchronization**: Optimize for offline-first mobile applications
@@ -423,6 +466,7 @@ Concurrent Users | Response Time | Error Rate | CPU Usage
 5. **Integration APIs**: Third-party integrations (Slack, Teams, etc.)
 
 ### Recommended Research Projects
+
 1. **A/B Testing**: Test different UI patterns for status changes
 2. **Load Testing**: Continuous performance monitoring and optimization
 3. **User Behavior**: Long-term studies on status change patterns

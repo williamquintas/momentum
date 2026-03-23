@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 7
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Manage Milestones (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to create, update, reorder, and complete milestones.
 2. **Given** milestone with dependencies, **When** unmet dependencies exist, **Then** completion blocked
 3. **Given** milestones, **When** reordered, **Then** sequence updates without cycles
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: CRUD operations for milestones
 - **FR-002**: Dependency validation (no cycles)
 - **FR-003**: Reordering support with order preservation
 - **FR-004**: Progress recalculation on milestone completion
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: No cyclic dependencies allowed
 - **SC-002**: Progress updates correctly

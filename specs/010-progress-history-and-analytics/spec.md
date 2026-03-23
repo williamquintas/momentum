@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 10
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - View Progress History (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to see progress timeline and trends.
 2. **Given** progress chart, **When** viewed, **Then** trend line shows direction
 3. **Given** time range selector, **When** adjusted, **Then** analytics update for period
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: Display progress history timeline
 - **FR-002**: Show analytics dashboard with charts
 - **FR-003**: Calculate trends and statistics
 - **FR-004**: Export progress data
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: History loads quickly (< 1s)
 - **SC-002**: Analytics calculations accurate

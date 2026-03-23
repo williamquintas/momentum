@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 14
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Set Deadlines (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to set and manage deadlines.
 2. **Given** approaching deadline, **When** viewed, **Then** alert shows urgency
 3. **Given** overdue goal, **When** viewed, **Then** status indicates overdue
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: Set/update deadlines
 - **FR-002**: Display countdown
 - **FR-003**: Alert for approaching deadlines
 - **FR-004**: Mark overdue status
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Accurate countdown
 - **SC-002**: Timely alerts

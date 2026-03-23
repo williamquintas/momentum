@@ -45,6 +45,7 @@ The following user flows are extracted from `specs/workflows/goal-workflows.md`:
 The following domain entities are extracted from `specs/types/goal.types.ts`:
 
 ### Core Entities
+
 - **Goal**: Main entity representing a goal, with subtypes:
   - QuantitativeGoal (numeric targets)
   - QualitativeGoal (descriptive with self-assessment)
@@ -54,6 +55,7 @@ The following domain entities are extracted from `specs/types/goal.types.ts`:
   - HabitGoal (daily habits with streaks)
 
 ### Supporting Entities
+
 - **Milestone**: Individual sub-goals within milestone goals
 - **ProgressEntry**: Records of progress updates with timestamps
 - **Note**: Text notes attached to goals
@@ -65,6 +67,7 @@ The following domain entities are extracted from `specs/types/goal.types.ts`:
 - **Recurrence**: Configuration for recurring goals (frequency, interval, etc.)
 
 ### Enums
+
 - GoalType, GoalStatus, Priority, RecurrenceFrequency, QualitativeStatus
 
 ## Constraints
@@ -72,6 +75,7 @@ The following domain entities are extracted from `specs/types/goal.types.ts`:
 The following constraints are extracted from `specs/business-rules/goal-business-rules.md` and `specs/validation/goal.schemas.ts`:
 
 ### Business Rules (BR-001 to BR-011+)
+
 - BR-001: Goal title must be 1-200 characters
 - BR-002: Goal must have exactly one type
 - BR-003: New goals must start as 'active' or 'paused'
@@ -80,11 +84,12 @@ The following constraints are extracted from `specs/business-rules/goal-business
 - BR-006: Milestone goals must have at least one milestone
 - BR-007: Recurring goals must have valid recurrence configuration
 - BR-008: Habit goals must specify targetFrequency
-- BR-009: Quantitative progress formula: ((current - start) / (target - start)) * 100
-- BR-010: Milestone progress: (completedMilestones / totalMilestones) * 100
-- BR-011: Binary goal progress: (currentCount / targetCount) * 100 if targetCount set
+- BR-009: Quantitative progress formula: ((current - start) / (target - start)) \* 100
+- BR-010: Milestone progress: (completedMilestones / totalMilestones) \* 100
+- BR-011: Binary goal progress: (currentCount / targetCount) \* 100 if targetCount set
 
 ### Validation Schemas
+
 - Title: min 1, max 200 characters
 - Description: max 5000 characters
 - Numeric values: within min/max if specified, respect allowDecimals
@@ -97,6 +102,7 @@ The following constraints are extracted from `specs/business-rules/goal-business
 - Progress: 0-100 for percentage
 
 ### Additional Constraints
+
 - Progress cannot exceed 100% unless over-achievement allowed
 - Goals cannot be created as 'completed' or 'cancelled'
 - Sequential completion for milestone goals if configured

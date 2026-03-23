@@ -3,6 +3,7 @@
 ## Core Search Types
 
 ### Search Query Types
+
 ```typescript
 export interface SearchQuery {
   /** The search text entered by the user */
@@ -45,6 +46,7 @@ export interface SearchHistory {
 ```
 
 ### Filter Types
+
 ```typescript
 export interface GoalFilters {
   /** Filter by goal status */
@@ -98,6 +100,7 @@ export interface CustomFilter {
 ```
 
 ### Sort and Pagination Types
+
 ```typescript
 export type SearchSortField = 'relevance' | 'created' | 'updated' | 'due' | 'priority' | 'progress' | 'title';
 
@@ -133,6 +136,7 @@ export type SearchViewMode = 'grid' | 'list' | 'table';
 ## Search State Management
 
 ### Search State Interface
+
 ```typescript
 export interface SearchState {
   /** Current search query */
@@ -259,6 +263,7 @@ export interface SearchError {
 ```
 
 ### Saved Search Types
+
 ```typescript
 export interface SavedSearch {
   /** Unique identifier */
@@ -302,6 +307,7 @@ export interface SearchSharing {
 ## API Contracts
 
 ### Search API Request/Response
+
 ```typescript
 export interface SearchRequest {
   /** Search query parameters */
@@ -365,6 +371,7 @@ export interface BatchSearchResponse {
 ```
 
 ### Filter API Contracts
+
 ```typescript
 export interface FilterRequest {
   /** Goals to filter */
@@ -435,6 +442,7 @@ export interface FacetResponse {
 ## State Management Contracts
 
 ### Zustand Store Contract
+
 ```typescript
 export interface SearchStore {
   // State
@@ -488,6 +496,7 @@ export interface SearchSelectors {
 ```
 
 ### React Query Contracts
+
 ```typescript
 export interface SearchQueries {
   // Search queries
@@ -523,6 +532,7 @@ export interface SearchMutations {
 ## Validation Schemas
 
 ### Zod Validation Schemas
+
 ```typescript
 import { z } from 'zod';
 
@@ -557,12 +567,16 @@ export const GoalFiltersSchema = z.object({
   progressRange: ProgressRangeFilterSchema.optional(),
   tags: z.array(z.string()).optional(),
   assigneeId: z.string().uuid().optional(),
-  custom: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    predicate: z.function(), // Runtime validation only
-    active: z.boolean(),
-  })).optional(),
+  custom: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        predicate: z.function(), // Runtime validation only
+        active: z.boolean(),
+      })
+    )
+    .optional(),
 });
 
 // Sort and Pagination Schemas
@@ -604,18 +618,22 @@ export const SearchStateSchema = z.object({
       type: z.record(z.number()),
       priority: z.record(z.number()),
       tags: z.record(z.number()),
-      dateRanges: z.array(z.object({
-        label: z.string(),
-        start: z.date(),
-        end: z.date(),
-        count: z.number(),
-      })),
-      progressRanges: z.array(z.object({
-        label: z.string(),
-        min: z.number(),
-        max: z.number(),
-        count: z.number(),
-      })),
+      dateRanges: z.array(
+        z.object({
+          label: z.string(),
+          start: z.date(),
+          end: z.date(),
+          count: z.number(),
+        })
+      ),
+      progressRanges: z.array(
+        z.object({
+          label: z.string(),
+          min: z.number(),
+          max: z.number(),
+          count: z.number(),
+        })
+      ),
     }),
     metadata: z.object({
       executionTime: z.number(),
@@ -625,43 +643,49 @@ export const SearchStateSchema = z.object({
       indexVersion: z.string(),
     }),
   }),
-  history: z.array(z.object({
-    id: z.string(),
-    query: z.string(),
-    timestamp: z.date(),
-    resultCount: z.number(),
-    filters: GoalFiltersSchema,
-    userId: z.string(),
-  })),
-  savedSearches: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    query: SearchQuerySchema,
-    filters: GoalFiltersSchema,
-    sort: SearchSortSchema,
-    viewMode: z.enum(['grid', 'list', 'table']),
-    createdAt: z.date(),
-    lastUsedAt: z.date(),
-    usageCount: z.number(),
-    isFavorite: z.boolean(),
-    tags: z.array(z.string()),
-    sharing: z.object({
-      isPublic: z.boolean(),
-      allowedUsers: z.array(z.string()),
-      allowedTeams: z.array(z.string()),
-      permissions: z.enum(['view', 'edit', 'admin']),
-    }),
-  })),
+  history: z.array(
+    z.object({
+      id: z.string(),
+      query: z.string(),
+      timestamp: z.date(),
+      resultCount: z.number(),
+      filters: GoalFiltersSchema,
+      userId: z.string(),
+    })
+  ),
+  savedSearches: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      query: SearchQuerySchema,
+      filters: GoalFiltersSchema,
+      sort: SearchSortSchema,
+      viewMode: z.enum(['grid', 'list', 'table']),
+      createdAt: z.date(),
+      lastUsedAt: z.date(),
+      usageCount: z.number(),
+      isFavorite: z.boolean(),
+      tags: z.array(z.string()),
+      sharing: z.object({
+        isPublic: z.boolean(),
+        allowedUsers: z.array(z.string()),
+        allowedTeams: z.array(z.string()),
+        permissions: z.enum(['view', 'edit', 'admin']),
+      }),
+    })
+  ),
   status: z.object({
     isSearching: z.boolean(),
     isFiltering: z.boolean(),
     isLoading: z.boolean(),
-    error: z.object({
-      code: z.string(),
-      message: z.string(),
-      details: z.any().optional(),
-      recoverable: z.boolean(),
-    }).nullable(),
+    error: z
+      .object({
+        code: z.string(),
+        message: z.string(),
+        details: z.any().optional(),
+        recoverable: z.boolean(),
+      })
+      .nullable(),
     progress: z.number().min(0).max(100),
   }),
 });
@@ -670,6 +694,7 @@ export const SearchStateSchema = z.object({
 ## Testing Utilities
 
 ### Test Data Factories
+
 ```typescript
 export interface SearchTestData {
   mockGoals: Goal[];
@@ -691,6 +716,7 @@ export interface SearchTestFactories {
 ```
 
 ### Test Helpers
+
 ```typescript
 export interface SearchTestHelpers {
   // State setup helpers
@@ -728,6 +754,7 @@ export interface FilterPerformance {
 ```
 
 ### Test Constants
+
 ```typescript
 export const SEARCH_TEST_CONSTANTS = {
   // Performance thresholds
@@ -772,6 +799,7 @@ export const SEARCH_TEST_CONSTANTS = {
 ## Integration Contracts
 
 ### Component Props Interfaces
+
 ```typescript
 export interface SearchInputProps {
   value: string;
@@ -823,6 +851,7 @@ export interface SearchControlsProps {
 ```
 
 ### Hook Interfaces
+
 ```typescript
 export interface UseSearchResult {
   // State

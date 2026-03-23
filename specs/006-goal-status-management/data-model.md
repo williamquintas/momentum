@@ -14,14 +14,14 @@ export enum GoalStatus {
   PAUSED = 'paused',
   CANCELLED = 'cancelled',
   COMPLETED = 'completed',
-  ARCHIVED = 'archived'
+  ARCHIVED = 'archived',
 }
 
 export enum StatusChangeType {
   MANUAL = 'manual',
   AUTOMATIC = 'automatic',
   BULK = 'bulk',
-  SYSTEM = 'system'
+  SYSTEM = 'system',
 }
 
 export enum StatusTransitionReason {
@@ -29,7 +29,7 @@ export enum StatusTransitionReason {
   TIME_EXPIRED = 'time_expired',
   DEPENDENCY_FAILED = 'dependency_failed',
   SYSTEM_MAINTENANCE = 'system_maintenance',
-  BULK_OPERATION = 'bulk_operation'
+  BULK_OPERATION = 'bulk_operation',
 }
 ```
 
@@ -262,7 +262,7 @@ export enum BulkOperationStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 export interface BulkOperationProgress {
@@ -308,96 +308,105 @@ export interface BulkOperationResult {
 import { z } from 'zod';
 
 // Status Change Request Schema
-export const StatusChangeRequestSchema = z.object({
-  goalId: z.string().uuid('Invalid goal ID'),
-  newStatus: z.nativeEnum(GoalStatus, {
-    errorMap: () => ({ message: 'Invalid status value' })
-  }),
-  reason: z.string().max(500, 'Reason must be less than 500 characters').optional(),
-  changeType: z.nativeEnum(StatusChangeType).default(StatusChangeType.MANUAL),
-  metadata: z.object({
-    userAgent: z.string().optional(),
-    sessionId: z.string().uuid().optional(),
-    context: z.record(z.any()).optional(),
-    offline: z.boolean().default(false)
-  }).optional()
-}).refine(
-  (data) => {
-    // Require reason for cancellation and reactivation
-    if ([GoalStatus.CANCELLED].includes(data.newStatus) && !data.reason?.trim()) {
-      return false;
+export const StatusChangeRequestSchema = z
+  .object({
+    goalId: z.string().uuid('Invalid goal ID'),
+    newStatus: z.nativeEnum(GoalStatus, {
+      errorMap: () => ({ message: 'Invalid status value' }),
+    }),
+    reason: z.string().max(500, 'Reason must be less than 500 characters').optional(),
+    changeType: z.nativeEnum(StatusChangeType).default(StatusChangeType.MANUAL),
+    metadata: z
+      .object({
+        userAgent: z.string().optional(),
+        sessionId: z.string().uuid().optional(),
+        context: z.record(z.any()).optional(),
+        offline: z.boolean().default(false),
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      // Require reason for cancellation and reactivation
+      if ([GoalStatus.CANCELLED].includes(data.newStatus) && !data.reason?.trim()) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: 'Reason is required when cancelling goals',
+      path: ['reason'],
     }
-    return true;
-  },
-  {
-    message: 'Reason is required when cancelling goals',
-    path: ['reason']
-  }
-);
+  );
 
 // Status Transition Validation Schema
-export const StatusTransitionSchema = z.object({
-  currentStatus: z.nativeEnum(GoalStatus),
-  newStatus: z.nativeEnum(GoalStatus),
-  userPermissions: z.object({
-    canPause: z.boolean(),
-    canResume: z.boolean(),
-    canCancel: z.boolean(),
-    canReactivate: z.boolean()
+export const StatusTransitionSchema = z
+  .object({
+    currentStatus: z.nativeEnum(GoalStatus),
+    newStatus: z.nativeEnum(GoalStatus),
+    userPermissions: z.object({
+      canPause: z.boolean(),
+      canResume: z.boolean(),
+      canCancel: z.boolean(),
+      canReactivate: z.boolean(),
+    }),
   })
-}).refine(
-  (data) => {
-    const allowedTransitions: Record<GoalStatus, GoalStatus[]> = {
-      [GoalStatus.ACTIVE]: [GoalStatus.PAUSED, GoalStatus.CANCELLED],
-      [GoalStatus.PAUSED]: [GoalStatus.ACTIVE, GoalStatus.CANCELLED],
-      [GoalStatus.CANCELLED]: [GoalStatus.ACTIVE], // Within time window
-      [GoalStatus.COMPLETED]: [], // No transitions allowed
-      [GoalStatus.ARCHIVED]: [] // No transitions allowed
-    };
+  .refine(
+    (data) => {
+      const allowedTransitions: Record<GoalStatus, GoalStatus[]> = {
+        [GoalStatus.ACTIVE]: [GoalStatus.PAUSED, GoalStatus.CANCELLED],
+        [GoalStatus.PAUSED]: [GoalStatus.ACTIVE, GoalStatus.CANCELLED],
+        [GoalStatus.CANCELLED]: [GoalStatus.ACTIVE], // Within time window
+        [GoalStatus.COMPLETED]: [], // No transitions allowed
+        [GoalStatus.ARCHIVED]: [], // No transitions allowed
+      };
 
-    return allowedTransitions[data.currentStatus]?.includes(data.newStatus) ?? false;
-  },
-  {
-    message: 'Invalid status transition',
-    path: ['newStatus']
-  }
-).refine(
-  (data) => {
-    // Check permissions
-    const permissionChecks = {
-      [GoalStatus.PAUSED]: data.userPermissions.canPause,
-      [GoalStatus.ACTIVE]: data.userPermissions.canResume,
-      [GoalStatus.CANCELLED]: data.userPermissions.canCancel
-    };
+      return allowedTransitions[data.currentStatus]?.includes(data.newStatus) ?? false;
+    },
+    {
+      message: 'Invalid status transition',
+      path: ['newStatus'],
+    }
+  )
+  .refine(
+    (data) => {
+      // Check permissions
+      const permissionChecks = {
+        [GoalStatus.PAUSED]: data.userPermissions.canPause,
+        [GoalStatus.ACTIVE]: data.userPermissions.canResume,
+        [GoalStatus.CANCELLED]: data.userPermissions.canCancel,
+      };
 
-    return permissionChecks[data.newStatus] ?? true;
-  },
-  {
-    message: 'Insufficient permissions for this status change',
-    path: ['newStatus']
-  }
-);
+      return permissionChecks[data.newStatus] ?? true;
+    },
+    {
+      message: 'Insufficient permissions for this status change',
+      path: ['newStatus'],
+    }
+  );
 ```
 
 ### Bulk Operation Validation
 
 ```typescript
-export const BulkStatusOperationSchema = z.object({
-  goalIds: z.array(z.string().uuid()).min(1).max(100, 'Maximum 100 goals per bulk operation'),
-  newStatus: z.nativeEnum(GoalStatus),
-  reason: z.string().max(500).optional(),
-  requiresConfirmation: z.boolean().default(true)
-}).refine(
-  (data) => {
-    // All goals must be in a valid state for the transition
-    // This would be validated against current goal states
-    return true; // Placeholder - actual validation in business logic
-  },
-  {
-    message: 'Some goals are not in a valid state for this transition',
-    path: ['goalIds']
-  }
-);
+export const BulkStatusOperationSchema = z
+  .object({
+    goalIds: z.array(z.string().uuid()).min(1).max(100, 'Maximum 100 goals per bulk operation'),
+    newStatus: z.nativeEnum(GoalStatus),
+    reason: z.string().max(500).optional(),
+    requiresConfirmation: z.boolean().default(true),
+  })
+  .refine(
+    (data) => {
+      // All goals must be in a valid state for the transition
+      // This would be validated against current goal states
+      return true; // Placeholder - actual validation in business logic
+    },
+    {
+      message: 'Some goals are not in a valid state for this transition',
+      path: ['goalIds'],
+    }
+  );
 ```
 
 ## Database Schema
@@ -664,10 +673,10 @@ COMMIT;
 // Migration script to populate initial status changes for existing goals
 export async function migrateExistingGoalStatuses(): Promise<void> {
   const goals = await db.goals.findMany({
-    select: { id: true, status: true, createdAt: true, updatedAt: true }
+    select: { id: true, status: true, createdAt: true, updatedAt: true },
   });
 
-  const statusChanges = goals.map(goal => ({
+  const statusChanges = goals.map((goal) => ({
     goalId: goal.id,
     userId: 'system', // System user for migrations
     oldStatus: GoalStatus.ACTIVE, // Assume all existing goals were active
@@ -675,7 +684,7 @@ export async function migrateExistingGoalStatuses(): Promise<void> {
     changeType: StatusChangeType.SYSTEM,
     reason: 'Initial status migration',
     timestamp: goal.createdAt,
-    metadata: { migration: true }
+    metadata: { migration: true },
   }));
 
   await db.goalStatusChanges.createMany({ data: statusChanges });
@@ -685,18 +694,21 @@ export async function migrateExistingGoalStatuses(): Promise<void> {
 ## Performance Considerations
 
 ### Indexing Strategy
+
 - Composite indexes on frequently queried columns
 - Partial indexes for time-based queries
 - JSONB indexes for metadata searches
 - Foreign key indexes for referential integrity
 
 ### Caching Strategy
+
 - Cache status constraints in memory
 - Cache recent status changes for quick access
 - Cache permission checks with TTL
 - Invalidate caches on status changes
 
 ### Query Optimization
+
 - Use pagination for history queries
 - Implement cursor-based pagination for large datasets
 - Use database views for complex aggregations

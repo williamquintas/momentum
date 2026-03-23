@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 2
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Update Quantitative Progress (Priority: P1)
 
@@ -50,7 +50,7 @@ As a user, I want my progress changes tracked so that I can see the history.
 1. **Given** multiple progress updates, **When** viewed, **Then** progressHistory array contains all entries with timestamps
 2. **Given** user adds note to progress, **When** saved, **Then** note appears in history entry
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: System MUST support all goal type progress updates
 - **FR-002**: System MUST validate inputs and calculate progress per BR-009 to BR-011
@@ -58,7 +58,7 @@ As a user, I want my progress changes tracked so that I can see the history.
 - **FR-004**: System MUST update Local Storage and indexes
 - **FR-005**: System MUST handle edge cases (over-achievement, past dates, etc.)
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Progress updates in < 500ms
 - **SC-002**: Calculations accurate for all types

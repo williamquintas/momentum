@@ -7,43 +7,47 @@ This document serves as a navigation hub for the 16 individual feature specs tha
 
 ## Feature Specs Overview
 
-| ID | Feature | Branch | Status | Priority | Description |
-|---|---------|--------|--------|----------|-------------|
-| 001 | Create Goal | `001-create-goal` | ✅ Complete | P1 | Create goals of all types with validation |
-| 002 | Update Goal Progress | `002-update-goal-progress` | ✅ Complete | P1 | Update progress for all goal types |
-| 003 | Complete Goal | `003-complete-goal` | ✅ Complete | P1 | Mark goals as completed |
-| 004 | View Goal Details | `004-view-goal-details` | ✅ Complete | P2 | Display comprehensive goal information |
-| 005 | Filter and Search Goals | `005-filter-and-search-goals` | ✅ Complete | P2 | Search and filter goals by criteria |
-| 006 | Goal Status Management | `006-goal-status-management` | ✅ Complete | P2 | Manage goal lifecycle (pause, cancel, resume) |
-| 007 | Milestone Management | `007-milestone-management` | ⏳ Planned | P3 | CRUD operations for milestones |
-| 008 | Recurring Goal Occurrence Tracking | `008-recurring-goal-occurrence-tracking` | ⏳ Planned | P3 | Track recurring goal occurrences |
-| 009 | Habit Goal Tracking | `009-habit-goal-tracking` | ⏳ Planned | P3 | Daily habit completion and streaks |
-| 010 | Progress History and Analytics | `010-progress-history-and-analytics` | ⏳ Planned | P4 | View history and analytics |
-| 011 | Notes and Attachments | `011-notes-and-attachments` | ⏳ Planned | P4 | Add notes and file attachments |
-| 012 | Related Goals | `012-related-goals` | ⏳ Planned | P4 | Link related goals |
-| 013 | Goal Categories and Tags | `013-goal-categories-and-tags` | ⏳ Planned | P4 | Organize with categories/tags |
-| 014 | Deadline Management | `014-deadline-management` | ⏳ Planned | P4 | Set and manage deadlines |
-| 015 | Goal Archiving | `015-goal-archiving` | ⏳ Planned | P5 | Archive old/completed goals |
-| 016 | Goal Favorites | `016-goal-favorites` | ⏳ Planned | P5 | Mark goals as favorites |
+| ID  | Feature                            | Branch                                   | Status      | Priority | Description                                   |
+| --- | ---------------------------------- | ---------------------------------------- | ----------- | -------- | --------------------------------------------- |
+| 001 | Create Goal                        | `001-create-goal`                        | ✅ Complete | P1       | Create goals of all types with validation     |
+| 002 | Update Goal Progress               | `002-update-goal-progress`               | ✅ Complete | P1       | Update progress for all goal types            |
+| 003 | Complete Goal                      | `003-complete-goal`                      | ✅ Complete | P1       | Mark goals as completed                       |
+| 004 | View Goal Details                  | `004-view-goal-details`                  | ✅ Complete | P2       | Display comprehensive goal information        |
+| 005 | Filter and Search Goals            | `005-filter-and-search-goals`            | ✅ Complete | P2       | Search and filter goals by criteria           |
+| 006 | Goal Status Management             | `006-goal-status-management`             | ✅ Complete | P2       | Manage goal lifecycle (pause, cancel, resume) |
+| 007 | Milestone Management               | `007-milestone-management`               | ⏳ Planned  | P3       | CRUD operations for milestones                |
+| 008 | Recurring Goal Occurrence Tracking | `008-recurring-goal-occurrence-tracking` | ⏳ Planned  | P3       | Track recurring goal occurrences              |
+| 009 | Habit Goal Tracking                | `009-habit-goal-tracking`                | ⏳ Planned  | P3       | Daily habit completion and streaks            |
+| 010 | Progress History and Analytics     | `010-progress-history-and-analytics`     | ⏳ Planned  | P4       | View history and analytics                    |
+| 011 | Notes and Attachments              | `011-notes-and-attachments`              | ⏳ Planned  | P4       | Add notes and file attachments                |
+| 012 | Related Goals                      | `012-related-goals`                      | ⏳ Planned  | P4       | Link related goals                            |
+| 013 | Goal Categories and Tags           | `013-goal-categories-and-tags`           | ⏳ Planned  | P4       | Organize with categories/tags                 |
+| 014 | Deadline Management                | `014-deadline-management`                | ⏳ Planned  | P4       | Set and manage deadlines                      |
+| 015 | Goal Archiving                     | `015-goal-archiving`                     | ⏳ Planned  | P5       | Archive old/completed goals                   |
+| 016 | Goal Favorites                     | `016-goal-favorites`                     | ⏳ Planned  | P5       | Mark goals as favorites                       |
 
 ## Implementation Roadmap
 
 ### Phase 1: MVP (P1 Priority - Critical)
+
 1. **001-create-goal**: Enable users to create all goal types
 2. **002-update-goal-progress**: Track progress for active goals
 3. **003-complete-goal**: Complete goals and celebrate achievements
 
 ### Phase 2: Essential Features (P2 Priority)
+
 4. **004-view-goal-details**: Display all goal information
 5. **005-filter-and-search-goals**: Find goals quickly
 6. **006-goal-status-management**: Manage goal lifecycle
 
 ### Phase 3: Advanced Tracking (P3 Priority)
+
 7. **007-milestone-management**: Complex goal breakdowns
 8. **008-recurring-goal-occurrence-tracking**: Recurring patterns
 9. **009-habit-goal-tracking**: Habit formation
 
 ### Phase 4: Polish & Analytics (P4 Priority)
+
 10. **010-progress-history-and-analytics**: Insights and trends
 11. **011-notes-and-attachments**: Rich goal documentation
 12. **012-related-goals**: Goal relationships
@@ -51,6 +55,7 @@ This document serves as a navigation hub for the 16 individual feature specs tha
 14. **014-deadline-management**: Time-based urgency
 
 ### Phase 5: UI/UX Enhancements (P5 Priority)
+
 15. **015-goal-archiving**: Keep interface clean
 16. **016-goal-favorites**: Quick access to important goals
 
@@ -108,7 +113,9 @@ All specs maintain references to legacy specifications for consistency:
 ## Getting Started
 
 ### For a Single Feature
+
 Navigate to the desired spec folder (e.g., `specs/001-create-goal/`) and follow:
+
 1. Read `spec.md` for requirements
 2. Review `data-model.md` for data structures
 3. Check `plan.md` for architecture
@@ -116,6 +123,7 @@ Navigate to the desired spec folder (e.g., `specs/001-create-goal/`) and follow:
 5. Follow `quickstart.md` for coding
 
 ### For the Full System
+
 1. Start with Phase 1 features (001, 002, 003)
 2. Implement MVP features in parallel
 3. Progress to Phase 2, 3, etc. as features stabilize
@@ -131,6 +139,7 @@ Navigate to the desired spec folder (e.g., `specs/001-create-goal/`) and follow:
 ## Continuous Updates
 
 This index will be updated as:
+
 - Features move through implementation phases
 - Dependencies resolve
 - New specs are created

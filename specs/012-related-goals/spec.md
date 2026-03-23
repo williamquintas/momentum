@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 12
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Link Goals (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to link related goals together.
 2. **Given** related goals, **When** viewed, **Then** links displayed with navigation
 3. **Given** self-link attempted, **When** submitted, **Then** validation prevents it
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: Add/remove goal links
 - **FR-002**: Display related goals
 - **FR-003**: Prevent self-linking and duplicates
 - **FR-004**: Navigate to related goals
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Links persist
 - **SC-002**: No invalid links created

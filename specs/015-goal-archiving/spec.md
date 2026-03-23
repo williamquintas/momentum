@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 15
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Archive Goals (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to archive old goals to reduce clutter.
 2. **Given** archived goal, **When** unarchived, **Then** it reappears
 3. **Given** archived goals, **When** searched, **Then** they can still be found
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: Archive/unarchive goals
 - **FR-002**: Separate archived view
 - **FR-003**: Preserve all data
 - **FR-004**: Search/filter archived goals
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Archiving succeeds without data loss
 - **SC-002**: Archived goals remain searchable

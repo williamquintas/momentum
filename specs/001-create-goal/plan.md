@@ -23,31 +23,36 @@ Implement goal creation functionality supporting all goal types (quantitative, q
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 ### Quality-First Engineering ✅
+
 - TypeScript strict mode enforced via tsconfig
 - Validation: All business rules (BR-001 to BR-008) enforced via Zod schemas
 - Testing: Unit tests for validation, component tests for form, integration tests for creation flow
 - Error handling: Clear, actionable validation messages for users
 
 ### User Experience and Performance ✅
+
 - Performance: Form interactive < 1s, creation complete < 2s
 - Accessibility: Keyboard navigation for all form fields, ARIA labels for inputs
 - Responsive: Form adapts to mobile and desktop viewports
 - Intuitive: Type selection guides user through type-specific fields
 
 ### Clean Architecture and Componentization ✅
+
 - Components: CreateGoalForm component in src/features/goals/components/
 - Hooks: useCreateGoal hook in src/features/goals/hooks/
 - Utilities: Validation utilities in src/features/goals/utils/
 - Modularity: Separate logic for each goal type
 
 ### Observability, DevOps, and Infrastructure ✅
+
 - Error handling: Creation failures logged with context
 - Monitoring: Goal creation events tracked for analytics
 
 ### Documentation and Governance ✅
+
 - Documentation: Creation flow documented in spec.md
 - Code: Type-safe code with TypeScript and Zod validation
 - Governance: Follows existing goals feature patterns
@@ -104,7 +109,6 @@ src/
 
 1. **Form Component Strategy**: Single CreateGoalForm with conditional type-specific field rendering (vs. separate forms per type)
    - **Rationale**: Reduces duplication, maintains consistent UX flow
-   
 2. **Validation Approach**: Zod schemas with type guards per goal type
    - **Rationale**: Type-safe, matches existing @bkp/validation/goal.schemas.ts patterns
 

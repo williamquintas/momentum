@@ -9,6 +9,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Status Transition Management (25 Requirements)
 
 #### Core Status Transitions
+
 - [ ] **REQ-STM-001**: System supports ACTIVE → PAUSED transition
   - **Acceptance Criteria**: User can pause active goals with optional reason
   - **Validation**: Status changes to PAUSED, progress preserved, notifications sent
@@ -35,6 +36,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Complete active goal, verify celebration and status
 
 #### Advanced Transitions
+
 - [ ] **REQ-STM-006**: System supports PAUSED → CANCELLED transition
   - **Acceptance Criteria**: Paused goals can be cancelled
   - **Validation**: Status changes to CANCELLED, maintains paused timestamp
@@ -61,6 +63,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Wait 31 days, attempt reactivation, verify failure
 
 #### Transition Validation
+
 - [ ] **REQ-STM-011**: System validates user permissions for transitions
   - **Acceptance Criteria**: Users can only change status of goals they own or have edit access to
   - **Validation**: Permission check before allowing status change
@@ -89,6 +92,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Bulk Status Operations (15 Requirements)
 
 #### Bulk Operation Basics
+
 - [ ] **REQ-BSO-001**: System supports bulk pause operations
   - **Acceptance Criteria**: User can pause multiple goals simultaneously
   - **Validation**: All selected goals change to PAUSED status
@@ -115,6 +119,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Monitor progress during 50-goal bulk operation
 
 #### Bulk Operation Validation
+
 - [ ] **REQ-BSO-006**: System validates permissions for all goals in bulk operation
   - **Acceptance Criteria**: User must have permission for all selected goals
   - **Validation**: Operation fails if any goal lacks permission
@@ -141,6 +146,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Include completed goal in bulk pause, verify rejection
 
 #### Bulk Operation UI/UX
+
 - [ ] **REQ-BSO-011**: System provides bulk selection interface
   - **Acceptance Criteria**: Checkbox selection for multiple goals
   - **Validation**: Select all/deselect all functionality works
@@ -169,6 +175,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Status History and Audit (20 Requirements)
 
 #### History Tracking
+
 - [ ] **REQ-SHA-001**: System tracks all status changes
   - **Acceptance Criteria**: Every status change is recorded with timestamp
   - **Validation**: Complete audit trail for all transitions
@@ -195,6 +202,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Search history by date range, verify correct results
 
 #### Audit Trail Integrity
+
 - [ ] **REQ-SHA-006**: System ensures audit trail immutability
   - **Acceptance Criteria**: Status change records cannot be modified
   - **Validation**: Database constraints prevent updates
@@ -221,6 +229,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Bulk operation, verify detailed logging
 
 #### History Permissions
+
 - [ ] **REQ-SHA-011**: System controls history view permissions
   - **Acceptance Criteria**: Only goal owners and authorized users can view history
   - **Validation**: Permission checks for history access
@@ -249,6 +258,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### User Interface Requirements (30 Requirements)
 
 #### Status Display Components
+
 - [ ] **REQ-UI-001**: System displays current status with color coding
   - **Acceptance Criteria**: Status badges with appropriate colors
   - **Validation**: Visual distinction between all status types
@@ -275,6 +285,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Status change, verify timestamp display
 
 #### Status History UI
+
 - [ ] **REQ-UI-006**: System provides status history timeline
   - **Acceptance Criteria**: Chronological timeline of changes
   - **Validation**: Clear visual representation of history
@@ -301,6 +312,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Goal with many changes, verify pagination
 
 #### Bulk Operation UI
+
 - [ ] **REQ-UI-011**: System provides bulk selection controls
   - **Acceptance Criteria**: Select multiple goals with checkboxes
   - **Validation**: Select all/deselect all works
@@ -327,6 +339,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Bulk operation, then undo, verify reversal
 
 #### Mobile Responsiveness
+
 - [ ] **REQ-UI-016**: System adapts status UI for mobile
   - **Acceptance Criteria**: Touch-friendly controls
   - **Validation**: Works on mobile devices
@@ -355,6 +368,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### API Requirements (25 Requirements)
 
 #### REST API Endpoints
+
 - [ ] **REQ-API-001**: System provides status change endpoint
   - **Acceptance Criteria**: `POST /api/goals/{id}/status`
   - **Validation**: Accepts status, reason, validates transition
@@ -381,6 +395,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Analytics call, verify data accuracy
 
 #### API Security
+
 - [ ] **REQ-API-006**: System requires authentication for status changes
   - **Acceptance Criteria**: JWT token required
   - **Validation**: Unauthenticated requests rejected
@@ -407,6 +422,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: API call, verify logging
 
 #### API Performance
+
 - [ ] **REQ-API-011**: System meets API response time SLA
   - **Acceptance Criteria**: 95% of requests < 200ms
   - **Validation**: Performance monitoring
@@ -433,6 +449,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Invalid API call, verify error response
 
 #### GraphQL API (Optional)
+
 - [ ] **REQ-API-016**: System provides GraphQL status mutations
   - **Acceptance Criteria**: Status change mutations
   - **Validation**: GraphQL schema supports status operations
@@ -461,6 +478,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Data Management Requirements (20 Requirements)
 
 #### Database Schema
+
 - [ ] **REQ-DM-001**: System creates goals table with status column
   - **Acceptance Criteria**: Status enum with check constraints
   - **Validation**: Database schema correct
@@ -487,6 +505,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Attempt invalid FK, verify constraint violation
 
 #### Data Integrity
+
 - [ ] **REQ-DM-006**: System prevents orphaned status records
   - **Acceptance Criteria**: Cascade deletes work correctly
   - **Validation**: Deleting goal removes status history
@@ -513,6 +532,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Export data, verify completeness
 
 #### Performance Optimization
+
 - [ ] **REQ-DM-011**: System optimizes status history queries
   - **Acceptance Criteria**: Queries complete in < 100ms
   - **Validation**: Performance benchmarks met
@@ -541,6 +561,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Security Requirements (15 Requirements)
 
 #### Authentication & Authorization
+
 - [ ] **REQ-SEC-001**: System requires user authentication
   - **Acceptance Criteria**: All status operations authenticated
   - **Validation**: Unauthenticated access blocked
@@ -567,6 +588,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Failed access, verify logging
 
 #### Data Protection
+
 - [ ] **REQ-SEC-006**: System encrypts sensitive status data
   - **Acceptance Criteria**: PII in status reasons encrypted
   - **Validation**: Data encrypted at rest
@@ -593,6 +615,7 @@ This document contains comprehensive requirements checklists for the Goal Status
   - **Test Case**: Attempt to modify audit, verify detection
 
 #### Compliance
+
 - [ ] **REQ-SEC-011**: System meets GDPR requirements
   - **Acceptance Criteria**: Data subject rights supported
   - **Validation**: GDPR compliance audit
@@ -623,6 +646,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Performance Requirements (15 Requirements)
 
 #### Response Time
+
 - [ ] **REQ-PERF-001**: Status change completes in < 500ms (95th percentile)
 - [ ] **REQ-PERF-002**: Status history loads in < 200ms for 20 items
 - [ ] **REQ-PERF-003**: Bulk operation (50 goals) completes in < 5 seconds
@@ -630,6 +654,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-PERF-005**: API responses within 200ms under normal load
 
 #### Throughput
+
 - [ ] **REQ-PERF-006**: Supports 100 status changes per second
 - [ ] **REQ-PERF-007**: Handles 1000 concurrent users
 - [ ] **REQ-PERF-008**: Processes 10 bulk operations per minute
@@ -637,6 +662,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-PERF-010**: Maintains performance under 80% CPU load
 
 #### Scalability
+
 - [ ] **REQ-PERF-011**: Horizontal scaling to 10 application servers
 - [ ] **REQ-PERF-012**: Database read scaling to 3 replicas
 - [ ] **REQ-PERF-013**: Cache scaling across multiple Redis instances
@@ -646,6 +672,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Reliability Requirements (10 Requirements)
 
 #### Availability
+
 - [ ] **REQ-REL-001**: 99.9% uptime SLA
 - [ ] **REQ-REL-002**: < 4 hours monthly downtime
 - [ ] **REQ-REL-003**: Automatic failover within 30 seconds
@@ -653,6 +680,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-REL-005**: Cache redundancy and failover
 
 #### Error Handling
+
 - [ ] **REQ-REL-006**: Graceful degradation under load
 - [ ] **REQ-REL-007**: Circuit breakers for external services
 - [ ] **REQ-REL-008**: Retry logic with exponential backoff
@@ -662,6 +690,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Usability Requirements (10 Requirements)
 
 #### User Experience
+
 - [ ] **REQ-USAB-001**: Intuitive status change workflow
 - [ ] **REQ-USAB-002**: Clear status indicators and colors
 - [ ] **REQ-USAB-003**: Helpful validation messages
@@ -669,6 +698,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-USAB-005**: Mobile-responsive design
 
 #### User Assistance
+
 - [ ] **REQ-USAB-006**: Contextual help for status operations
 - [ ] **REQ-USAB-007**: Tooltips explaining status meanings
 - [ ] **REQ-USAB-008**: Guided workflows for complex operations
@@ -678,6 +708,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ### Compatibility Requirements (5 Requirements)
 
 #### Browser Support
+
 - [ ] **REQ-COMP-001**: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 - [ ] **REQ-COMP-002**: Mobile browsers: iOS Safari, Chrome Mobile
 - [ ] **REQ-COMP-003**: Responsive design for all screen sizes
@@ -687,6 +718,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ## Testing Requirements
 
 ### Unit Testing (15 Requirements)
+
 - [ ] **REQ-TEST-UNIT-001**: Status validation logic tested (100% coverage)
 - [ ] **REQ-TEST-UNIT-002**: Permission checking functions tested
 - [ ] **REQ-TEST-UNIT-003**: State machine transitions tested
@@ -704,6 +736,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-TEST-UNIT-015**: Performance benchmarks included
 
 ### Integration Testing (10 Requirements)
+
 - [ ] **REQ-TEST-INT-001**: Full status change workflow tested
 - [ ] **REQ-TEST-INT-002**: Bulk operations end-to-end tested
 - [ ] **REQ-TEST-INT-003**: API integration tested
@@ -716,6 +749,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-TEST-INT-010**: External service integrations tested
 
 ### End-to-End Testing (10 Requirements)
+
 - [ ] **REQ-TEST-E2E-001**: User status change journey tested
 - [ ] **REQ-TEST-E2E-002**: Bulk operation user flow tested
 - [ ] **REQ-E2E-003**: History viewing tested
@@ -728,6 +762,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-E2E-010**: Backup/restore tested
 
 ### Performance Testing (5 Requirements)
+
 - [ ] **REQ-TEST-PERF-001**: Load testing with 1000 concurrent users
 - [ ] **REQ-TEST-PERF-002**: Stress testing beyond normal limits
 - [ ] **REQ-TEST-PERF-003**: Memory leak testing
@@ -735,6 +770,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] **REQ-TEST-PERF-005**: API performance benchmarking
 
 ### Security Testing (5 Requirements)
+
 - [ ] **REQ-TEST-SEC-001**: Penetration testing completed
 - [ ] **REQ-TEST-SEC-002**: SQL injection testing
 - [ ] **REQ-TEST-SEC-003**: XSS vulnerability testing
@@ -744,6 +780,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 ## Validation Checklist
 
 ### Pre-Implementation Validation
+
 - [ ] All requirements reviewed and approved
 - [ ] Technical feasibility confirmed
 - [ ] Security review completed
@@ -751,6 +788,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] Test plans created
 
 ### Implementation Validation
+
 - [ ] Code reviews completed
 - [ ] Unit tests passing (100% coverage)
 - [ ] Integration tests passing
@@ -758,6 +796,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] Security testing passed
 
 ### Pre-Release Validation
+
 - [ ] End-to-end tests passing
 - [ ] Load testing completed
 - [ ] Security audit passed
@@ -765,6 +804,7 @@ This document contains comprehensive requirements checklists for the Goal Status
 - [ ] Cross-browser testing completed
 
 ### Post-Release Validation
+
 - [ ] Production monitoring active
 - [ ] User acceptance testing completed
 - [ ] Performance monitoring established
@@ -774,11 +814,13 @@ This document contains comprehensive requirements checklists for the Goal Status
 ---
 
 **Total Requirements: 165**
+
 - Functional: 90 (55%)
 - Non-Functional: 30 (18%)
 - Testing: 45 (27%)
 
 **Requirements by Category:**
+
 - Status Transitions: 25
 - Bulk Operations: 15
 - Status History/Audit: 20

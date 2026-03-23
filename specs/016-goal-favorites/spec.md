@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 16
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Mark Favorites (Priority: P1)
 
@@ -17,14 +17,14 @@ As a user, I want to mark important goals as favorites.
 2. **Given** favorites list, **When** viewed, **Then** only favorite goals appear
 3. **Given** favorite goal, **When** unfavorited, **Then** removed from favorites
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: Toggle favorite status
 - **FR-002**: Filter favorite goals
 - **FR-003**: Display favorites prominently
 - **FR-004**: Persist favorite status
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Toggle works consistently
 - **SC-002**: Filtering accurate

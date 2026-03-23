@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 11
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Manage Notes (Priority: P1)
 
@@ -25,14 +25,14 @@ As a user, I want to upload file attachments.
 1. **Given** goal detail page, **When** file uploaded, **Then** it stores and displays
 2. **Given** attachment, **When** downloaded, **Then** file opens correctly
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 - **FR-001**: CRUD for notes
 - **FR-002**: File upload/download
 - **FR-003**: Display attachments list
 - **FR-004**: Delete attachments
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 - **SC-001**: Notes and attachments persist
 - **SC-002**: File size limits respected
