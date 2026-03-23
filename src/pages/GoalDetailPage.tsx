@@ -18,6 +18,7 @@ import { useDeleteGoal } from '@/features/goals/hooks/useDeleteGoal';
 import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
 import { useUpdateProgress } from '@/features/goals/hooks/useUpdateProgress';
 import type { CreateGoalInput, UpdateGoalInput } from '@/features/goals/types';
+import { useMetaTags } from '@/hooks/useMetaTags';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
@@ -72,6 +73,15 @@ export const GoalDetailPage: React.FC = () => {
 
   // Set page title dynamically based on goal title
   usePageTitle(goal?.title || 'Goal Details', 'Details');
+
+  // Set meta tags dynamically based on goal data
+  useMetaTags({
+    title: goal?.title || 'Goal Details',
+    description: goal?.description || `View details and track progress for ${goal?.title || 'this goal'}.`,
+    url: `/goals/${id}`,
+    type: 'article',
+    keywords: goal?.tags || ['goal', 'tracking', 'progress'],
+  });
 
   // Handle navigation back
   const handleBack = () => {

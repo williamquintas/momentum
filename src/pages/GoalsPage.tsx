@@ -27,6 +27,7 @@ import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useViewMode } from '@/features/goals/hooks/useViewMode';
 import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
+import { useMetaTags } from '@/hooks/useMetaTags';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
@@ -40,8 +41,15 @@ export const GoalsPage: React.FC = () => {
   const navigate = useNavigate();
   const { viewMode, setViewMode } = useViewMode();
 
-  // Set page title
+  // Set page title and meta tags
   usePageTitle('Goals');
+  useMetaTags({
+    title: 'Goals',
+    description:
+      'Manage and track your goals. Create, update, and monitor your progress towards achieving your objectives.',
+    url: '/goals',
+    keywords: ['goals', 'goal management', 'tracking', 'productivity', 'progress'],
+  });
 
   // Get available goal types based on feature flags
   const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
