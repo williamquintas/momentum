@@ -4,11 +4,11 @@
 
 ### Task 1.1: Project Setup and Routing
 
-- [x] Create `GoalDetailPage.tsx` component with proper routing
-- [x] Set up route parameters for goal ID extraction
-- [x] Implement route guards for goal ownership verification
-- [x] Add loading skeleton for initial page load
-- [x] Create basic error boundary for the page
+- [ ] Create `GoalDetailPage.tsx` component with proper routing
+- [ ] Set up route parameters for goal ID extraction
+- [ ] Implement route guards for goal ownership verification
+- [ ] Add loading skeleton for initial page load
+- [ ] Create basic error boundary for the page
 
 **Acceptance Criteria**:
 
@@ -19,11 +19,11 @@
 
 ### Task 1.2: Data Fetching Infrastructure
 
-- [x] Create `useGoalDetail` hook for core data fetching
-- [x] Implement `useGoalProgress` hook for progress data
-- [x] Set up caching layer for goal detail data
-- [x] Add error handling for network failures
-- [x] Implement retry logic for failed requests
+- [ ] Create `useGoalDetail` hook for core data fetching
+- [ ] Implement `useGoalProgress` hook for progress data
+- [ ] Set up caching layer for goal detail data
+- [ ] Add error handling for network failures
+- [ ] Implement retry logic for failed requests
 
 **Acceptance Criteria**:
 
@@ -34,11 +34,11 @@
 
 ### Task 1.3: UI Foundation and Layout
 
-- [x] Create responsive layout structure with header and content areas
-- [x] Implement tab navigation component with accessibility
-- [x] Set up mobile-responsive design foundation
-- [x] Add proper spacing and typography using design system
-- [x] Implement dark/light theme support
+- [ ] Create responsive layout structure with header and content areas
+- [ ] Implement tab navigation component with accessibility
+- [ ] Set up mobile-responsive design foundation
+- [ ] Add proper spacing and typography using design system
+- [ ] Implement dark/light theme support
 
 **Acceptance Criteria**:
 
@@ -49,12 +49,11 @@
 
 ### Task 1.4: State Management Setup
 
-- [x] Implement local state for UI interactions (active tab, expanded sections)
-- [x] Set up global state integration for goal cache
-- [x] Create state synchronization between URL and component state
-- [x] Add state persistence for user preferences
-- [x] Implement optimistic updates for better UX
-- [x] Verify page load < 500ms with Lighthouse
+- [ ] Implement local state for UI interactions (active tab, expanded sections)
+- [ ] Set up global state integration for goal cache
+- [ ] Create state synchronization between URL and component state
+- [ ] Add state persistence for user preferences
+- [ ] Implement optimistic updates for better UX
 
 **Acceptance Criteria**:
 
@@ -62,17 +61,16 @@
 - UI state maintained during navigation
 - Global cache shared across components
 - Optimistic updates provide immediate feedback
-- Performance benchmark met
 
 ## Phase 2: Overview Tab Implementation (Estimated: 2 weeks)
 
 ### Task 2.1: Goal Header Component
 
-- [x] Create goal title display with proper truncation
-- [x] Implement status badge with color coding
-- [x] Add goal type icon and display name
-- [x] Create action buttons (edit, complete, pause, etc.)
-- [x] Add contextual actions based on goal status
+- [ ] Create goal title display with proper truncation
+- [ ] Implement status badge with color coding
+- [ ] Add goal type icon and display name
+- [ ] Create action buttons (edit, complete, pause, etc.)
+- [ ] Add contextual actions based on goal status
 
 **Acceptance Criteria**:
 
@@ -83,11 +81,11 @@
 
 ### Task 2.2: Goal Description Display
 
-- [x] Implement rich text rendering for goal descriptions
-- [x] Add support for markdown formatting
-- [x] Handle empty descriptions gracefully
-- [x] Implement expandable/collapsible description for long text
-- [x] Add copy functionality for description text
+- [ ] Implement rich text rendering for goal descriptions
+- [ ] Add support for markdown formatting
+- [ ] Handle empty descriptions gracefully
+- [ ] Implement expandable/collapsible description for long text
+- [ ] Add copy functionality for description text
 
 **Acceptance Criteria**:
 
@@ -98,11 +96,11 @@
 
 ### Task 2.3: Goal Metadata Display
 
-- [x] Display creation and modification dates
-- [x] Show goal tags with color coding
-- [x] Display categories with icons
-- [x] Add priority level visualization
-- [x] Show deadline information when present
+- [ ] Display creation and modification dates
+- [ ] Show goal tags with color coding
+- [ ] Display categories with icons
+- [ ] Add priority level visualization
+- [ ] Show deadline information when present
 
 **Acceptance Criteria**:
 
@@ -113,11 +111,11 @@
 
 ### Task 2.4: Basic Progress Visualization
 
-- [x] Create progress bar component for quantitative goals
-- [x] Implement percentage calculation and display
-- [x] Add progress trend indicators (up/down/stable)
-- [x] Create completion status indicators
-- [x] Add estimated completion date calculation
+- [ ] Create progress bar component for quantitative goals
+- [ ] Implement percentage calculation and display
+- [ ] Add progress trend indicators (up/down/stable)
+- [ ] Create completion status indicators
+- [ ] Add estimated completion date calculation
 
 **Acceptance Criteria**:
 
@@ -126,30 +124,7 @@
 - Trends show appropriate icons/colors
 - Completion status clearly indicated
 
-### Task 2.5: Client-Side Validation
-
-- [x] Add form validation for progress updates
-- [x] Implement schema constraints before API calls
-- [x] Display accessible inline feedback for validation errors
-- [x] Add validation for goal ID parameter
-
-**Acceptance Criteria**:
-
-- Validation runs before network requests
-- Error messages are accessible (ARIA, screen reader compatible)
-- Invalid inputs prevented from being submitted
-
-### Task 2.6: Integration Tests - Overview Tab
-
-- [ ] Create integration tests for data loading and caching behavior
-- [ ] Add tests for tab switching and navigation
-- [ ] Implement tests for filter and sort functionality
-- [ ] Add error handling test scenarios
-
-**Acceptance Criteria**:
-
-- Integration tests pass consistently
-- Critical user paths covered
+## Phase 3: Progress Tab Implementation (Estimated: 2 weeks)
 
 ### Task 3.1: Type-Specific Progress Components
 
@@ -166,15 +141,7 @@
 - Visual components responsive and accessible
 - Real-time updates work correctly
 
-### Task 3.2: Integration Tests - Progress Tab
-
-- [ ] Create integration tests for progress calculations
-- [ ] Add tests for real-time update behavior
-- [ ] Implement tests for concurrent progress modifications
-
-**Acceptance Criteria**:
-
-- All progress-related integration tests passing
+### Task 3.2: Progress Calculations Engine
 
 - [ ] Implement progress percentage calculations
 - [ ] Add velocity and trend analysis

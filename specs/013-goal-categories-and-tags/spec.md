@@ -1,8 +1,8 @@
 # Feature Specification: Goal Categories and Tags
 
-**Feature Branch**: `015-goal-categories-and-tags`
-**Created**: 2026-03-22
-**Status**: Draft
+**Feature Branch**: `015-goal-categories-and-tags`  
+**Created**: 2026-03-22  
+**Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 13
 
 ## User Scenarios & Testing _(mandatory)_

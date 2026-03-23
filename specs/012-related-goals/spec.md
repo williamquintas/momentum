@@ -1,8 +1,8 @@
 # Feature Specification: Related Goals
 
-**Feature Branch**: `014-related-goals`
-**Created**: 2026-03-22
-**Status**: Draft
+**Feature Branch**: `014-related-goals`  
+**Created**: 2026-03-22  
+**Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 12
 
 ## User Scenarios & Testing _(mandatory)_

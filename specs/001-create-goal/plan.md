@@ -1,7 +1,7 @@
 # Implementation Plan: Create Goal
 
-**Branch**: `001-create-goal` | **Date**: 2026-03-22 | **Spec**: [specs/001-create-goal/spec.md](specs/001-create-goal/spec.md)
-**Input**: Feature specification from `/specs/001-create-goal/spec.md`
+**Branch**: `003-create-goal` | **Date**: 2026-03-22 | **Spec**: [specs/003-create-goal/spec.md](specs/003-create-goal/spec.md)
+**Input**: Feature specification from `/specs/003-create-goal/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 

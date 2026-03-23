@@ -1,6 +1,6 @@
 # Feature Specification: Create Goal
 
-**Feature Branch**: `001-create-goal`  
+**Feature Branch**: `003-create-goal`  
 **Created**: 2026-03-22  
 **Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 1

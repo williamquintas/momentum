@@ -1,8 +1,8 @@
 # Feature Specification: Notes and Attachments
 
-**Feature Branch**: `013-notes-and-attachments`
-**Created**: 2026-03-22
-**Status**: Draft
+**Feature Branch**: `013-notes-and-attachments`  
+**Created**: 2026-03-22  
+**Status**: Draft  
 **Input**: Extracted from @bkp/features/goal-features.md Feature 11
 
 ## User Scenarios & Testing _(mandatory)_

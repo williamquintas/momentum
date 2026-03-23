@@ -30,8 +30,6 @@ As a user, I want recurring and habit goals to handle completion differently.
 1. **Given** recurring goal, **When** user marks complete, **Then** occurrence marked done, goal remains active
 2. **Given** habit goal, **When** user marks today complete, **Then** daily entry recorded, goal remains active
 
-**Clarification**: Marking recurring/habit goals complete creates a completion entry (HabitEntry) for the occurrence/day, but does NOT change the goal status to 'completed'. The goal remains 'active' with status 'active'.
-
 ### User Story 3 - Completion Actions (Priority: P2)
 
 As a user, I want confirmation and actions when completing goals.
@@ -56,42 +54,13 @@ As a user, I want confirmation and actions when completing goals.
 - **SC-002**: No data loss during completion
 - **SC-003**: Recurring/habit goals remain trackable
 
-## Non-Functional Requirements
-
-- **NFR-001**: Performance: Page load <1.5s (median 3G), completion flow <2s
-- **NFR-002**: Accessibility: WCAG 2.1 AA - keyboard navigable, screen reader support, ARIA labels
-- **NFR-003**: Test Coverage: 95% unit test coverage for completion logic
-
-## Extended Features (P2)
-
-- **FR-006**: Automatic completion detection when eligibility criteria are met
-- **FR-007**: Advanced celebration system with badges, sounds, and animations
-- **FR-008**: Completion analytics dashboard
-- **FR-009**: Social sharing of achievements
-- **FR-010**: Completion undo capability (archive pattern)
-
-## Accessibility & Performance Requirements
-
-This feature implements the following NFRs from 017-add-a11y-perf-nfrs:
-
-### Accessibility (WCAG 2.1 AA)
-
-- **A11y-001**: Completion dialogs must be keyboard accessible (Tab, Enter, Space, Escape)
-- **A11y-002**: Screen reader must announce completion status changes via aria-live regions
-- **A11y-003**: Color contrast in completion UI must meet 4.5:1 (text) / 3:1 (interactive)
-
-### Performance
-
-- **Perf-001**: Completion flow must complete in <2 seconds
-- **Perf-002**: All completion UI interactions must respond within 200ms
-
 ## Assumptions
 
-- Follows docs/workflows/goal-workflows.md
-- Status transitions per docs/diagrams/decision-trees/status-transition-decision_tree.mmd
+- Follows @bkp/workflows/goal-workflows.md
+- Status transitions per @bkp/decision-trees/status-transition-decision-tree.mmd
 
 ## Dependencies
 
-- Goal types from specs/bkp/types/goal.types.ts
+- Goal types from @bkp/types/goal.types.ts
 - Workflows from @bkp/workflows/goal-workflows.md
 - Storage service from @bkp/services/storage/goalStorageService.ts
