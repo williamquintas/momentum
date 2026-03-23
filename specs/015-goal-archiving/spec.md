@@ -1,8 +1,8 @@
 # Feature Specification: Goal Archiving
 
-**Feature Branch**: `017-goal-archiving`  
-**Created**: 2026-03-22  
-**Status**: Draft  
+**Feature Branch**: `017-goal-archiving`
+**Created**: 2026-03-22
+**Status**: Draft
 **Input**: Extracted from @bkp/features/goal-features.md Feature 15
 
 ## User Scenarios & Testing _(mandatory)_

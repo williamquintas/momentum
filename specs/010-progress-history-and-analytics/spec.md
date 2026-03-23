@@ -1,8 +1,8 @@
 # Feature Specification: Progress History and Analytics
 
-**Feature Branch**: `012-progress-history-and-analytics`  
-**Created**: 2026-03-22  
-**Status**: Draft  
+**Feature Branch**: `012-progress-history-and-analytics`
+**Created**: 2026-03-22
+**Status**: Draft
 **Input**: Extracted from @bkp/features/goal-features.md Feature 10
 
 ## User Scenarios & Testing _(mandatory)_

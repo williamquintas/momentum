@@ -1,8 +1,8 @@
 # Feature Specification: Deadline Management
 
-**Feature Branch**: `016-deadline-management`  
-**Created**: 2026-03-22  
-**Status**: Draft  
+**Feature Branch**: `016-deadline-management`
+**Created**: 2026-03-22
+**Status**: Draft
 **Input**: Extracted from @bkp/features/goal-features.md Feature 14
 
 ## User Scenarios & Testing _(mandatory)_

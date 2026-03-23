@@ -1,8 +1,8 @@
 # Feature Specification: Habit Goal Tracking
 
-**Feature Branch**: `011-habit-goal-tracking`  
-**Created**: 2026-03-22  
-**Status**: Draft  
+**Feature Branch**: `011-habit-goal-tracking`
+**Created**: 2026-03-22
+**Status**: Draft
 **Input**: Extracted from @bkp/features/goal-features.md Feature 9
 
 ## User Scenarios & Testing _(mandatory)_
