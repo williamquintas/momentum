@@ -66,5 +66,5 @@ All workflows use the default `GITHUB_TOKEN` with the following permissions:
 ## Related Documentation
 
 - [Version Management Guide](../docs/VERSION_MANAGEMENT.md) - Comprehensive guide on version management
-- [Git Workflow](../.cursor/rules/git-workflow.md) - Branching strategy and commit conventions
-- [Deployment](../.cursor/rules/deployment.md) - Deployment process and best practices
+- [Git Workflow](../.ai-assistant/rules/git-workflow.md) - Branching strategy and commit conventions
+- [Deployment](../.ai-assistant/rules/deployment.md) - Deployment process and best practices

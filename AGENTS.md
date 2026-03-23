@@ -1,47 +1,47 @@
-# Momentum - Cursor Rules Index
+# Momentum - AI Assistant Rules Index
 
-This directory contains comprehensive guidelines for developing Momentum. Each file covers a specific aspect of development.
+This directory contains comprehensive guidelines for developing Momentum, aimed at all AI coding assistants. Each file covers a specific aspect of development.
 
 ## Quick Reference
 
 ### Core Development
 
-- **[Code Standards](./.cursor/rules/code-standards.md)** - TypeScript, React patterns, component structure, naming conventions, and code quality
-- **[File Organization](./.cursor/rules/file-organization.md)** - Directory structure and naming conventions
-- **[Architecture](./.cursor/rules/architecture.md)** - System architecture, component architecture, and design patterns
+- **[Code Standards](./.ai-assistant/rules/code-standards.md)** - TypeScript, React patterns, component structure, naming conventions, and code quality
+- **[File Organization](./.ai-assistant/rules/file-organization.md)** - Directory structure and naming conventions
+- **[Architecture](./.ai-assistant/rules/architecture.md)** - System architecture, component architecture, and design patterns
 
 ### Data & State
 
-- **[State Management](./.cursor/rules/state-management.md)** - Zustand/Redux patterns and React Query usage
-- **[API & Data Handling](./.cursor/rules/api-data-handling.md)** - API service patterns, data transformation, and error handling
+- **[State Management](./.ai-assistant/rules/state-management.md)** - Zustand/Redux patterns and React Query usage
+- **[API & Data Handling](./.ai-assistant/rules/api-data-handling.md)** - API service patterns, data transformation, and error handling
 
 ### UI & Components
 
-- **[UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md)** - Component guidelines, Ant Design usage, spacing, theming, and responsive design
-- **[Accessibility](./.cursor/rules/accessibility.md)** - HTML semantics, ARIA, keyboard navigation, and visual accessibility
+- **[UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md)** - Component guidelines, Ant Design usage, spacing, theming, and responsive design
+- **[Accessibility](./.ai-assistant/rules/accessibility.md)** - HTML semantics, ARIA, keyboard navigation, and visual accessibility
 
 ### Implementation
 
-- **[Common Patterns](./.cursor/rules/common-patterns.md)** - Reusable patterns for common workflows
-- **[Error Handling](./.cursor/rules/error-handling.md)** - Comprehensive error handling strategies
+- **[Common Patterns](./.ai-assistant/rules/common-patterns.md)** - Reusable patterns for common workflows
+- **[Error Handling](./.ai-assistant/rules/error-handling.md)** - Comprehensive error handling strategies
 
 ### Quality & Testing
 
-- **[Testing Considerations](./.cursor/rules/testing.md)** - Unit, component, and integration testing guidelines
-- **[Linting & Formatting](./.cursor/rules/linting-formatting.md)** - ESLint, Prettier, and TypeScript configuration
-- **[Performance Optimization](./.cursor/rules/performance-optimization.md)** - Rendering, data loading, and bundle optimization
+- **[Testing Considerations](./.ai-assistant/rules/testing.md)** - Unit, component, and integration testing guidelines
+- **[Linting & Formatting](./.ai-assistant/rules/linting-formatting.md)** - ESLint, Prettier, and TypeScript configuration
+- **[Performance Optimization](./.ai-assistant/rules/performance-optimization.md)** - Rendering, data loading, and bundle optimization
 
 ### Operations
 
-- **[Observability & Logging](./.cursor/rules/observability-logging.md)** - Monitoring, metrics, error tracking, structured logging, and best practices
-- **[Deployment](./.cursor/rules/deployment.md)** - CI/CD, build process, and deployment strategies
-- **[Environment Configuration](./.cursor/rules/environment-config.md)** - Environment variables and configuration management
+- **[Observability & Logging](./.ai-assistant/rules/observability-logging.md)** - Monitoring, metrics, error tracking, structured logging, and best practices
+- **[Deployment](./.ai-assistant/rules/deployment.md)** - CI/CD, build process, and deployment strategies
+- **[Environment Configuration](./.ai-assistant/rules/environment-config.md)** - Environment variables and configuration management
 
 ### Security & Workflow
 
-- **[Security](./.cursor/rules/security.md)** - Authentication, authorization, data protection, and security best practices
-- **[Git Workflow](./.cursor/rules/git-workflow.md)** - Branching strategy, commit messages, and PR process
-- **[Dependencies](./.cursor/rules/dependencies.md)** - Package management, updates, and security audits
+- **[Security](./.ai-assistant/rules/security.md)** - Authentication, authorization, data protection, and security best practices
+- **[Git Workflow](./.ai-assistant/rules/git-workflow.md)** - Branching strategy, commit messages, and PR process
+- **[Dependencies](./.ai-assistant/rules/dependencies.md)** - Package management, updates, and security audits
 
 ### Specifications & Requirements
 
@@ -60,33 +60,33 @@ When working on a specific aspect of the project, refer to the relevant file:
 
 ### Getting Started
 
-- **Starting a new feature?** → Check [File Organization](./.cursor/rules/file-organization.md), [Architecture](./.cursor/rules/architecture.md), and [UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md)
-- **Setting up the project?** → See [Environment Configuration](./.cursor/rules/environment-config.md) and [Dependencies](./.cursor/rules/dependencies.md)
+- **Starting a new feature?** → Check [File Organization](./.ai-assistant/rules/file-organization.md), [Architecture](./.ai-assistant/rules/architecture.md), and [UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md)
+- **Setting up the project?** → See [Environment Configuration](./.ai-assistant/rules/environment-config.md) and [Dependencies](./.ai-assistant/rules/dependencies.md)
 
 ### Development
 
-- **Working with goals?** → See [Common Patterns](./.cursor/rules/common-patterns.md), [State Management](./.cursor/rules/state-management.md), and [Business Rules](./specs/business-rules/goal-business-rules.md)
-- **Building components?** → Review [Code Standards](./.cursor/rules/code-standards.md), [UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md), and [Feature Specifications](./specs/features/goal-features.md)
-- **Setting up state?** → Check [State Management](./.cursor/rules/state-management.md) and [Data Flow](./specs/data-flow/goal-data-flow.md)
-- **Implementing API calls?** → See [API & Data Handling](./.cursor/rules/api-data-handling.md), [Error Handling](./.cursor/rules/error-handling.md), and [Data Flow](./specs/data-flow/goal-data-flow.md)
-- **Following common workflows?** → Review [Common Patterns](./.cursor/rules/common-patterns.md) and [Workflow Charts](./specs/workflows/goal-workflows.md)
+- **Working with goals?** → See [Common Patterns](./.ai-assistant/rules/common-patterns.md), [State Management](./.ai-assistant/rules/state-management.md), and [Business Rules](./specs/business-rules/goal-business-rules.md)
+- **Building components?** → Review [Code Standards](./.ai-assistant/rules/code-standards.md), [UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md), and [Feature Specifications](./specs/features/goal-features.md)
+- **Setting up state?** → Check [State Management](./.ai-assistant/rules/state-management.md) and [Data Flow](./specs/data-flow/goal-data-flow.md)
+- **Implementing API calls?** → See [API & Data Handling](./.ai-assistant/rules/api-data-handling.md), [Error Handling](./.ai-assistant/rules/error-handling.md), and [Data Flow](./specs/data-flow/goal-data-flow.md)
+- **Following common workflows?** → Review [Common Patterns](./.ai-assistant/rules/common-patterns.md) and [Workflow Charts](./specs/workflows/goal-workflows.md)
 - **Understanding business logic?** → Check [Business Rules](./specs/business-rules/goal-business-rules.md) and [Decision Trees](./specs/decision-trees/goal-decision-trees.md)
 - **Defining types?** → Use [Type Definitions](./specs/types/goal.types.ts) and [Validation Schemas](./specs/validation/goal.schemas.ts)
 
 ### Quality & Operations
 
-- **Writing tests?** → See [Testing Considerations](./.cursor/rules/testing.md) and [Test Specifications](./specs/tests/goal-test-specs.md)
-- **Setting up linting?** → Check [Linting & Formatting](./.cursor/rules/linting-formatting.md)
-- **Optimizing performance?** → Review [Performance Optimization](./.cursor/rules/performance-optimization.md)
-- **Ensuring accessibility?** → Check [Accessibility](./.cursor/rules/accessibility.md)
-- **Setting up monitoring?** → See [Observability & Logging](./.cursor/rules/observability-logging.md)
+- **Writing tests?** → See [Testing Considerations](./.ai-assistant/rules/testing.md) and [Test Specifications](./specs/tests/goal-test-specs.md)
+- **Setting up linting?** → Check [Linting & Formatting](./.ai-assistant/rules/linting-formatting.md)
+- **Optimizing performance?** → Review [Performance Optimization](./.ai-assistant/rules/performance-optimization.md)
+- **Ensuring accessibility?** → Check [Accessibility](./.ai-assistant/rules/accessibility.md)
+- **Setting up monitoring?** → See [Observability & Logging](./.ai-assistant/rules/observability-logging.md)
 - **Verifying feature completeness?** → Check [Feature Specifications](./specs/features/goal-features.md) for acceptance criteria
 
 ### Deployment & Security
 
-- **Deploying the app?** → Check [Deployment](./.cursor/rules/deployment.md) and [Environment Configuration](./.cursor/rules/environment-config.md)
-- **Security concerns?** → Review [Security](./.cursor/rules/security.md)
-- **Git workflow?** → See [Git Workflow](./.cursor/rules/git-workflow.md)
+- **Deploying the app?** → Check [Deployment](./.ai-assistant/rules/deployment.md) and [Environment Configuration](./.ai-assistant/rules/environment-config.md)
+- **Security concerns?** → Review [Security](./.ai-assistant/rules/security.md)
+- **Git workflow?** → See [Git Workflow](./.ai-assistant/rules/git-workflow.md)
 
 ## Project Context
 

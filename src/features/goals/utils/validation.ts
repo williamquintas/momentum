@@ -32,7 +32,7 @@ import {
   type UpdateGoalInput,
   type GoalFilters,
   type UpdateProgressInput,
-} from '@specs/validation/goal.schemas';
+} from '@specs/bkp/validation/goal.schemas';
 
 // Re-export all schemas from specs
 export {
@@ -88,7 +88,7 @@ export {
   type GoalSortOptions,
   type UpdateProgressInput,
   type UpdateQuantitativeValue,
-} from '@specs/validation/goal.schemas';
+} from '@specs/bkp/validation/goal.schemas';
 
 // ============================================================================
 // Validation Helper Functions
