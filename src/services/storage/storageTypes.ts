@@ -17,6 +17,7 @@ export const STORAGE_KEYS = {
   GOALS_BY_STATUS: 'goals_by_status',
   GOALS_BY_CATEGORY: 'goals_by_category',
   GOALS_BY_TAG: 'goals_by_tag',
+  COMPLETIONS: 'goal_completions',
   STORAGE_VERSION: 'goals_storage_version',
 } as const;
 
@@ -153,3 +154,38 @@ export class StorageError extends Error {
     this.name = 'StorageError';
   }
 }
+
+/**
+ * Serialized completion event (dates as timestamps)
+ */
+export interface SerializedCompletionEvent {
+  id: string;
+  goalId: string;
+  completedAt: number;
+  completionType: 'manual' | 'automatic' | 'override';
+  finalProgress: number;
+  metrics: {
+    totalTime: number;
+    totalUpdates: number;
+    averageProgressRate: number;
+    calculatedAt: number;
+    version: string;
+    progressVelocity?: number;
+    overshootPercentage?: number;
+    updateFrequency?: number;
+  };
+  celebration: {
+    type: 'subtle' | 'moderate' | 'enthusiastic';
+    message: string;
+    badge?: string;
+    animation: boolean;
+    sound: boolean;
+  };
+  note?: string;
+  overrideReason?: string;
+}
+
+/**
+ * Completions data - map of goalId to completion event
+ */
+export type CompletionsData = Record<string, SerializedCompletionEvent>;
