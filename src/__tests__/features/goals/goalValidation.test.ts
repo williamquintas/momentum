@@ -16,6 +16,11 @@ import type {
   HabitGoal,
 } from '@/features/goals/types';
 import {
+  validateMilestoneUpdate,
+  getUnmetDependencies,
+  canCompleteMilestone,
+} from '@/features/goals/utils/progressValidation';
+import {
   safeValidateGoal,
   zodErrorToFieldErrors,
   formatZodError,
@@ -490,6 +495,132 @@ describe('Goal Validation', () => {
 
       const result = safeValidateGoal(goal);
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe('BR-027: Milestone Dependency Validation', () => {
+    it('returns no unmet dependencies when none exist', () => {
+      const m1 = { id: 'm1', title: 'First', order: 0, status: 'completed' as const };
+      const m2 = { id: 'm2', title: 'Second', order: 1, status: 'pending' as const };
+      const milestones = [m1, m2];
+
+      const unmet = getUnmetDependencies(m2, milestones);
+      expect(unmet).toHaveLength(0);
+    });
+
+    it('detects unmet dependencies', () => {
+      const m1 = { id: 'm1', title: 'First', order: 0, status: 'pending' as const };
+      const m2 = { id: 'm2', title: 'Second', order: 1, status: 'pending' as const, dependencies: ['m1'] as string[] };
+      const milestones = [m1, m2];
+
+      const unmet = getUnmetDependencies(m2, milestones);
+      expect(unmet).toContain('m1');
+    });
+
+    it('allows completion when all dependencies are completed', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'completed' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const, dependencies: ['m1'] as string[] },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, false);
+      expect(result.canComplete).toBe(true);
+    });
+
+    it('blocks completion when dependencies are unmet', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'pending' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const, dependencies: ['m1'] as string[] },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, false);
+      expect(result.canComplete).toBe(false);
+      expect(result.reason).toContain('Unmet dependencies');
+    });
+
+    it('blocks completion when milestone not found', () => {
+      const milestones = [{ id: 'm1', title: 'First', order: 0, status: 'pending' as const }];
+
+      const result = canCompleteMilestone('nonexistent', milestones, false);
+      expect(result.canComplete).toBe(false);
+      expect(result.reason).toContain('not found');
+    });
+
+    it('blocks completion for already completed milestone', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'completed' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'completed' as const },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, false);
+      expect(result.canComplete).toBe(false);
+      expect(result.reason).toContain('already completed');
+    });
+
+    it('blocks completion for skipped milestone', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'pending' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'skipped' as const, dependencies: ['m1'] as string[] },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, false);
+      expect(result.canComplete).toBe(false);
+      expect(result.reason).toContain('skipped');
+    });
+
+    it('blocks sequential completion when previous not done', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'pending' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, true);
+      expect(result.canComplete).toBe(false);
+      expect(result.reason).toContain('Previous milestone');
+    });
+
+    it('allows sequential completion when previous is completed', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'completed' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, true);
+      expect(result.canComplete).toBe(true);
+    });
+
+    it('allows sequential completion when previous is skipped', () => {
+      const milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'skipped' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const },
+      ];
+
+      const result = canCompleteMilestone('m2', milestones, true);
+      expect(result.canComplete).toBe(true);
+    });
+
+    it('validateMilestoneUpdate rejects completion with unmet dependencies', () => {
+      const goal = createMilestoneGoal();
+      goal.milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'pending' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const, dependencies: ['m1'] as string[] },
+      ];
+      goal.requireSequentialCompletion = false;
+
+      const result = validateMilestoneUpdate(goal, 'm2', true, []);
+      expect(result.isValid).toBe(false);
+      expect(result.errors[0]).toContain('Unmet dependencies');
+    });
+
+    it('validateMilestoneUpdate allows completion when all dependencies met', () => {
+      const goal = createMilestoneGoal();
+      goal.milestones = [
+        { id: 'm1', title: 'First', order: 0, status: 'completed' as const },
+        { id: 'm2', title: 'Second', order: 1, status: 'pending' as const, dependencies: ['m1'] as string[] },
+      ];
+
+      const result = validateMilestoneUpdate(goal, 'm2', true, []);
+      expect(result.isValid).toBe(true);
     });
   });
 });
