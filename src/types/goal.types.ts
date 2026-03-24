@@ -198,6 +198,7 @@ export interface QuantitativeGoal extends BaseGoal {
   currentValue: number;
   unit: string;
   allowDecimals: boolean;
+  allowOverAchievement?: boolean;
   minValue?: number;
   maxValue?: number;
 }
