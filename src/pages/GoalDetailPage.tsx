@@ -77,6 +77,17 @@ export const GoalDetailPage: React.FC = () => {
   const deleteGoal = useDeleteGoal();
   const updateProgress = useUpdateProgress();
 
+  // Fetch related goals
+  const relatedGoalIds = goal?.relatedGoals ?? [];
+  const { data: relatedGoals = [] } = useQuery({
+    queryKey: queryKeys.goals.list({ ids: relatedGoalIds }),
+    queryFn: async () => {
+      const allGoals = await goalService.getAll();
+      return allGoals.filter((g) => relatedGoalIds.includes(g.id));
+    },
+    enabled: relatedGoalIds.length > 0,
+  });
+
   // Completion detection
   const { isEligible, canComplete } = useCompletionDetection(goal);
 
@@ -162,6 +173,40 @@ export const GoalDetailPage: React.FC = () => {
     })();
   };
 
+  // Handle toggle favorite
+  const handleToggleFavorite = async (goalId: string) => {
+    const currentGoal = goal;
+    if (currentGoal) {
+      try {
+        await updateGoal.mutateAsync({
+          id: goalId,
+          updates: { favorite: !currentGoal.favorite, updatedAt: new Date() },
+        });
+        void message.success(currentGoal.favorite ? 'Removed from favorites' : 'Added to favorites');
+      } catch (error) {
+        void message.error('Failed to update favorite status');
+        console.error('Error toggling favorite:', error);
+      }
+    }
+  };
+
+  // Handle toggle archive
+  const handleToggleArchive = async (goalId: string) => {
+    const currentGoal = goal;
+    if (currentGoal) {
+      try {
+        await updateGoal.mutateAsync({
+          id: goalId,
+          updates: { archived: !currentGoal.archived, updatedAt: new Date() },
+        });
+        void message.success(currentGoal.archived ? 'Goal unarchived' : 'Goal archived');
+      } catch (error) {
+        void message.error('Failed to update archive status');
+        console.error('Error toggling archive:', error);
+      }
+    }
+  };
+
   // Handle progress update
   const handleUpdateProgress = async (input: Parameters<typeof updateProgress.mutateAsync>[0]) => {
     try {
@@ -228,6 +273,9 @@ export const GoalDetailPage: React.FC = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onUpdateProgress={handleUpdateProgress}
+        onToggleFavorite={handleToggleFavorite}
+        onToggleArchive={handleToggleArchive}
+        relatedGoals={relatedGoals}
         deleting={deleteGoal.isPending}
         updatingProgress={updateProgress.isPending}
       />

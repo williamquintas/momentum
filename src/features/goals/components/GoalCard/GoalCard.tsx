@@ -7,6 +7,7 @@
 
 import React from 'react';
 
+import { StarFilled, StarOutlined } from '@ant-design/icons';
 import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
 
 import type { Goal } from '@/features/goals/types';
@@ -29,6 +30,11 @@ export interface GoalCardProps {
    * Callback when card is clicked
    */
   onClick?: (goal: Goal) => void;
+
+  /**
+   * Callback when favorite is toggled
+   */
+  onToggleFavorite?: (goalId: string) => void;
 
   /**
    * Additional CSS class name
@@ -59,13 +65,20 @@ const getProgressStatus = (progress: number): 'success' | 'exception' | 'active'
 /**
  * GoalCard Component
  */
-export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) => {
+export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavorite, className }) => {
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
 
   const handleClick = () => {
     if (onClick) {
       onClick(goal);
+    }
+  };
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onToggleFavorite) {
+      onToggleFavorite(goal.id);
     }
   };
 
@@ -77,12 +90,30 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, className }) 
       style={{ marginBottom: 16 }}
     >
       <Space direction="vertical" size="small" style={{ width: '100%' }}>
-        {/* Header: Title and Tags */}
+        {/* Header: Title, Favorite, and Tags */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Title level={5} style={{ margin: 0, flex: 1 }}>
             {goal.title}
           </Title>
           <Space size="small">
+            <span
+              onClick={handleFavoriteClick}
+              style={{ cursor: onToggleFavorite ? 'pointer' : 'default', fontSize: '16px' }}
+              role={onToggleFavorite ? 'button' : undefined}
+              tabIndex={onToggleFavorite ? 0 : undefined}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleFavoriteClick(e as unknown as React.MouseEvent);
+                }
+              }}
+            >
+              {goal.favorite ? (
+                <StarFilled style={{ color: '#faad14' }} />
+              ) : (
+                <StarOutlined style={{ color: '#d9d9d9' }} />
+              )}
+            </span>
+            {goal.archived && <Tag color="default">Archived</Tag>}
             <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
             <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
           </Space>

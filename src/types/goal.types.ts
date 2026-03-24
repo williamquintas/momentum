@@ -340,6 +340,7 @@ export interface GoalFilters {
   search?: string;
   archived?: boolean;
   favorite?: boolean;
+  ids?: string[];
 }
 
 export type GoalSortField = 'createdAt' | 'updatedAt' | 'deadline' | 'priority' | 'progress' | 'title';

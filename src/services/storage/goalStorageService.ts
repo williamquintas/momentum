@@ -658,6 +658,11 @@ export const queryGoals = (filters: GoalFilters = {}): Goal[] => {
         return false;
       }
 
+      // Filter by IDs
+      if (filters.ids && filters.ids.length > 0 && !filters.ids.includes(goal.id)) {
+        return false;
+      }
+
       // Filter by assignee
       if (filters.assignee && goal.assignee !== filters.assignee) {
         return false;
