@@ -6,13 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
-import type {
-  Goal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-  ProgressEntry,
-} from '../../../specs/bkp/types/goal.types';
+import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters, ProgressEntry } from '@/types/goal.types';
 
 /**
  * Generate a UUID v4

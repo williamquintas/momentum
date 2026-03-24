@@ -5,7 +5,7 @@
  * The structure uses indexes for efficient querying by type, status, category, and tags.
  */
 
-import type { Goal } from '../../../specs/bkp/types/goal.types';
+import type { Goal } from '@/types/goal.types';
 
 /**
  * Storage keys used in Local Storage
