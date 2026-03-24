@@ -208,6 +208,17 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
   - [ ] Trigger completion detection
   - [ ] Show completion prompt when eligible
 
+### Related Goals Integration (FR-005)
+
+- [ ] Update `/src/features/goals/utils/completionRelatedGoals.ts`
+  - [ ] Function: getRelatedGoals(goalId)
+    - [ ] Query related goals from goal.relatedGoals array
+    - [ ] Return goal IDs and their current status
+  - [ ] Function: updateRelatedGoalsOnCompletion(goalId)
+    - [ ] Check if related goals have completion dependencies
+    - [ ] Update dependent goal progress/status if configured
+    - [ ] Trigger notification indicators for related goals
+
 ### Automatic Completion Detection
 
 - [ ] Create `/src/features/goals/hooks/useAutomaticCompletion.ts`
@@ -270,10 +281,19 @@ Organized by implementation phase and priority. Track status with [TODO], [IN PR
 - [ ] Type safety: no `any` types in completion code
 - [ ] Error scenarios: graceful handling of completion failures
 
+### Accessibility & Performance Verification (from 017)
+
+- [ ] T054 [P] Audit CompleteGoalDialog with axe-core: Identify a11y violations
+- [ ] T055 [P] Verify keyboard navigation: Tab, Enter, Space, Escape work in completion dialog
+- [ ] T056 Test screen reader: Completion status announced via aria-live regions
+- [ ] T057 Verify color contrast: All text ≥4.5:1, interactive ≥3:1 in completion UI
+- [ ] T058 Performance test: Completion flow <2s end-to-end
+- [ ] T059 Performance test: All interactions <200ms response time
+
 ## Summary Stats
 
-- **Total Tasks**: 58
+- **Total Tasks**: 64 (58 feature + 6 a11y/performance)
 - **Estimated Duration**: 12-16 days
-- **Priority Breakdown**: 38 P1 (MVP), 15 P2 (Enhanced), 5 P3 (Future)
+- **Priority Breakdown**: 38 P1 (MVP), 15 P2 (Enhanced), 11 P3 (Quality/NFR)
 - **Test Coverage Target**: 95%+
 - **Key Dependencies**: 001-create-goal, 002-update-goal-progress
