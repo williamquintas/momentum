@@ -25,10 +25,12 @@
 **Assignee**: Full-stack Developer
 **Acceptance Criteria**:
 
-- [ ] All enums defined (GoalStatus, StatusChangeType, etc.)
-- [ ] Core interfaces created (StatusChange, StatusConstraints, etc.)
-- [ ] Type definitions compile without errors
-- [ ] Interfaces documented with JSDoc comments
+- [x] All enums defined (GoalStatus, StatusChangeType, etc.)
+- [x] Core interfaces created (StatusChange, StatusConstraints, etc.)
+- [x] Type definitions compile without errors
+- [x] Interfaces documented with JSDoc comments
+
+**Note**: Implemented in src/types/goal.types.ts - GoalStatus enum includes ACTIVE, COMPLETED, PAUSED, CANCELLED
 
 #### Task 1.3: Validation Schemas
 
