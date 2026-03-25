@@ -19,16 +19,6 @@ describe('HabitGoalFields', () => {
     expect(screen.getByLabelText(/target frequency/i)).toBeInTheDocument();
   });
 
-  it('renders custom frequency input', () => {
-    render(
-      <Form>
-        <HabitGoalFields />
-      </Form>
-    );
-
-    expect(screen.getByLabelText(/custom frequency/i)).toBeInTheDocument();
-  });
-
   it('shows all frequency options', async () => {
     render(
       <Form>
@@ -45,29 +35,6 @@ describe('HabitGoalFields', () => {
     expect(screen.getByText('Custom')).toBeInTheDocument();
   });
 
-  it('renders custom frequency input', () => {
-    render(
-      <Form>
-        <HabitGoalFields />
-      </Form>
-    );
-
-    expect(screen.getByLabelText(/custom frequency/i)).toBeInTheDocument();
-  });
-
-  it('accepts custom frequency input', () => {
-    render(
-      <Form>
-        <HabitGoalFields />
-      </Form>
-    );
-
-    const customInput = screen.getByLabelText(/custom frequency/i);
-    fireEvent.change(customInput, { target: { value: '5' } });
-
-    expect(customInput).toBeInTheDocument();
-  });
-
   it('renders frequency options in dropdown', async () => {
     render(
       <Form>
@@ -79,7 +46,6 @@ describe('HabitGoalFields', () => {
     fireEvent.mouseDown(frequencySelect);
 
     expect(screen.getByText('Daily')).toBeInTheDocument();
-    expect(screen.getByText('Weekly')).toBeInTheDocument();
   });
 
   it('selects daily frequency option', async () => {

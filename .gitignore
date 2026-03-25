@@ -73,3 +73,5 @@ storybook-static
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
 
+# AI
+.opencode/

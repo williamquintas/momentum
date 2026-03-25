@@ -1,7 +1,7 @@
 {
   "name": "momentum",
-  "version": "0.1.0-rc.1",
-  "description": "aaaMomentum - A comprehensive goals tracking management system built with React, TypeScript, and Ant Design",
+  "version": "0.1.0-rc.2",
+  "description": "Momentum - A comprehensive goals tracking management system built with React, TypeScript, and Ant Design",
   "type": "module",
   "license": "MIT",
   "repository": {
