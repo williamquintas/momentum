@@ -14,6 +14,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation structure
 - Development guidelines and coding standards
 
+## [0.1.0-rc.1] - 2026-03-25
+
+### Added
+
+- **Goal Features**: Favorites, archiving, and related goals display
+- **Goal Completion**: Complete goal dialog with celebration animations (confetti), manual and automatic completion detection
+- **Progress Tracking**: Duplicate detection for progress updates, milestone dependency validation, over-achievement support for quantitative goals
+- **Filtering & Search**: Filter by status, type, priority, category; search functionality
+- **View Goal Details**: Enhanced goal detail page with full information display
+- **Goal Status Management**: Status management capabilities
+
+### Changed
+
+- Updated progress calculation to support over-achievement
+- Enhanced validation for milestone dependencies
+
+### Fixed
+
+- Progress update duplicate detection
+
+### Testing
+
+- Unit tests for calculateProgress and progressHistory
+- Integration tests for update workflow
+- Component tests for UpdateProgressModal
+- Test coverage with @vitest/coverage-v8
+
+### Dependencies
+
+- Added @vitest/coverage-v8 for test coverage
+
 ## [0.1.0] - 2024-01-XX
 
 ### Added
