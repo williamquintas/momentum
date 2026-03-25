@@ -246,9 +246,14 @@ export function validateRecurringUpdate(
 export function detectDuplicateUpdate(
   goalId: string,
   newUpdate: { value: number; timestamp: number },
-  history: ProgressEntry[],
+  history: ProgressEntry[] | undefined | null,
   timeWindow: number = DEFAULT_DUPLICATE_WINDOW_MS
 ): DuplicateDetectionResult {
+  // Handle undefined/null history (first-time update scenario)
+  if (!history || !Array.isArray(history)) {
+    return { isDuplicate: false };
+  }
+
   const recentUpdates = history.filter((entry) => {
     const timeDiff = Math.abs(newUpdate.timestamp - entry.date.getTime());
     return timeDiff <= timeWindow;
