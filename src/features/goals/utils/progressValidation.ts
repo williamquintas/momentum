@@ -255,6 +255,7 @@ export function detectDuplicateUpdate(
   }
 
   const recentUpdates = history.filter((entry) => {
+    if (entry.id.startsWith('temp-')) return false;
     const timeDiff = Math.abs(newUpdate.timestamp - entry.date.getTime());
     return timeDiff <= timeWindow;
   });

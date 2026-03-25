@@ -55,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added @vitest/coverage-v8 for test coverage
 
-## [0.1.0] - 2024-01-XX
+## [0.1.0] - 2026-01-15
 
 ### Added
 
