@@ -6,13 +6,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
-import type {
-  Goal,
-  CreateGoalInput,
-  UpdateGoalInput,
-  GoalFilters,
-  ProgressEntry,
-} from '../../../specs/bkp/types/goal.types';
+import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters, ProgressEntry } from '@/types/goal.types';
 
 /**
  * Generate a UUID v4
@@ -42,6 +36,8 @@ import {
   type GoalsByStatus,
   type GoalsByCategory,
   type GoalsByTag,
+  type SerializedCompletionEvent,
+  type CompletionsData,
 } from './storageTypes';
 
 /**
@@ -662,6 +658,11 @@ export const queryGoals = (filters: GoalFilters = {}): Goal[] => {
         return false;
       }
 
+      // Filter by IDs
+      if (filters.ids && filters.ids.length > 0 && !filters.ids.includes(goal.id)) {
+        return false;
+      }
+
       // Filter by assignee
       if (filters.assignee && goal.assignee !== filters.assignee) {
         return false;
@@ -700,4 +701,64 @@ export const queryGoals = (filters: GoalFilters = {}): Goal[] => {
     });
 
   return goals;
+};
+
+/**
+ * Load completions from storage
+ */
+export const loadCompletions = (): CompletionsData => {
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.COMPLETIONS);
+    if (!data) {
+      return {};
+    }
+    return JSON.parse(data) as CompletionsData;
+  } catch {
+    return {};
+  }
+};
+
+/**
+ * Save completions to storage
+ */
+const saveCompletions = (completions: CompletionsData): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.COMPLETIONS, JSON.stringify(completions));
+  } catch (error) {
+    throw new StorageError(StorageErrorType.UNKNOWN, 'Failed to save completions to storage', error as Error);
+  }
+};
+
+/**
+ * Save a completion event for a goal
+ */
+export const saveCompletion = (completion: SerializedCompletionEvent): void => {
+  const completions = loadCompletions();
+  completions[completion.goalId] = completion;
+  saveCompletions(completions);
+};
+
+/**
+ * Get a completion for a specific goal
+ */
+export const getCompletion = (goalId: string): SerializedCompletionEvent | null => {
+  const completions = loadCompletions();
+  return completions[goalId] || null;
+};
+
+/**
+ * Get all completions
+ */
+export const getAllCompletions = (): SerializedCompletionEvent[] => {
+  const completions = loadCompletions();
+  return Object.values(completions);
+};
+
+/**
+ * Delete a completion (when goal is deleted)
+ */
+export const deleteCompletion = (goalId: string): void => {
+  const completions = loadCompletions();
+  delete completions[goalId];
+  saveCompletions(completions);
 };

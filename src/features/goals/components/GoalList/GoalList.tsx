@@ -37,6 +37,11 @@ export interface GoalListProps {
   onGoalClick?: (goal: Goal) => void;
 
   /**
+   * Callback when favorite is toggled
+   */
+  onToggleFavorite?: (goalId: string) => void;
+
+  /**
    * Additional CSS class name
    */
   className?: string;
@@ -54,6 +59,7 @@ export const GoalList: React.FC<GoalListProps> = ({
   goals,
   loading = false,
   onGoalClick,
+  onToggleFavorite,
   className,
   viewMode = 'table',
 }) => {
@@ -201,7 +207,7 @@ export const GoalList: React.FC<GoalListProps> = ({
       split={false}
       renderItem={(goal) => (
         <List.Item key={goal.id} style={{ padding: 0 }}>
-          <GoalCard goal={goal} onClick={onGoalClick} />
+          <GoalCard goal={goal} onClick={onGoalClick} onToggleFavorite={onToggleFavorite} />
         </List.Item>
       )}
     />

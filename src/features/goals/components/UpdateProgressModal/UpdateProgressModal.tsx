@@ -6,6 +6,9 @@
  * - Quantitative: Update currentValue
  * - Binary: Check/uncheck items or update currentCount
  * - Qualitative: Update status
+ * - Milestone: Complete individual milestones
+ * - Recurring: Mark occurrences as completed/missed
+ * - Habit: Mark daily entries as completed
  *
  * Architecture:
  * - Uses Ant Design Modal and Form
@@ -16,17 +19,24 @@
 
 import React, { useEffect } from 'react';
 
-import { Modal, Form, InputNumber, Select, Input, Button, Space, Checkbox, message } from 'antd';
+import { Modal, Form, InputNumber, Select, Input, Button, Space, Checkbox, DatePicker, Radio, message } from 'antd';
 
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 import {
   type Goal,
+  type MilestoneGoal,
+  type RecurringGoal,
+  type HabitGoal,
   isQuantitativeGoal,
   isBinaryGoal,
   isQualitativeGoal,
+  isMilestoneGoal,
+  isRecurringGoal,
+  isHabitGoal,
   QualitativeStatus,
 } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
+import { canCompleteMilestone, getUnmetDependencies } from '@/features/goals/utils/progressValidation';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -74,6 +84,12 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
     qualitativeStatus?: QualitativeStatus;
     checkedItems?: string[];
     note?: string;
+    milestoneId?: string;
+    milestoneCompleted?: boolean;
+    occurrenceId?: string;
+    occurrenceStatus?: 'pending' | 'completed' | 'missed';
+    habitDate?: Date;
+    habitCompleted?: boolean;
   }>();
 
   // Reset form when modal opens or goal changes
@@ -93,6 +109,24 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
       } else if (isQualitativeGoal(goal)) {
         form.setFieldsValue({
           qualitativeStatus: goal.qualitativeStatus,
+          note: '',
+        });
+      } else if (isMilestoneGoal(goal)) {
+        form.setFieldsValue({
+          milestoneId: undefined,
+          milestoneCompleted: false,
+          note: '',
+        });
+      } else if (isRecurringGoal(goal)) {
+        form.setFieldsValue({
+          occurrenceId: undefined,
+          occurrenceStatus: 'completed',
+          note: '',
+        });
+      } else if (isHabitGoal(goal)) {
+        form.setFieldsValue({
+          habitDate: new Date(),
+          habitCompleted: true,
           note: '',
         });
       }
@@ -120,7 +154,6 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
             currentCount: values.currentCount,
           };
         } else if (values.checkedItems !== undefined && goal.items) {
-          // Update currentCount based on checked items
           typeSpecificUpdates = {
             currentCount: values.checkedItems.length,
           };
@@ -133,6 +166,60 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         typeSpecificUpdates = {
           qualitativeStatus: values.qualitativeStatus,
         };
+      } else if (isMilestoneGoal(goal)) {
+        if (values.milestoneId === undefined) {
+          void message.error('Please select a milestone');
+          return;
+        }
+
+        if (values.milestoneCompleted) {
+          const canComplete = canCompleteMilestone(
+            values.milestoneId,
+            goal.milestones,
+            goal.requireSequentialCompletion
+          );
+          if (!canComplete.canComplete) {
+            void message.error(canComplete.reason || 'Cannot complete milestone');
+            return;
+          }
+        }
+
+        typeSpecificUpdates = {
+          milestones: goal.milestones.map((m) =>
+            m.id === values.milestoneId
+              ? {
+                  ...m,
+                  status: values.milestoneCompleted ? 'completed' : 'in_progress',
+                  completedDate: values.milestoneCompleted ? new Date() : undefined,
+                }
+              : m
+          ),
+        } as Partial<MilestoneGoal>;
+      } else if (isRecurringGoal(goal)) {
+        if (values.occurrenceId === undefined) {
+          void message.error('Please select an occurrence');
+          return;
+        }
+        typeSpecificUpdates = {
+          occurrences: goal.occurrences.map((o) =>
+            o.id === values.occurrenceId ? { ...o, completed: values.occurrenceStatus === 'completed' } : o
+          ),
+        } as Partial<RecurringGoal>;
+      } else if (isHabitGoal(goal)) {
+        if (!values.habitDate) {
+          void message.error('Please select a date');
+          return;
+        }
+        typeSpecificUpdates = {
+          entries: [
+            ...goal.entries,
+            {
+              id: `temp-${Date.now()}`,
+              date: values.habitDate,
+              completed: values.habitCompleted ?? true,
+            },
+          ],
+        } as Partial<HabitGoal>;
       }
 
       // Calculate progress with updated values
@@ -271,6 +358,139 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                 </div>
               </Form.Item>
             )}
+          </>
+        )}
+
+        {/* Milestone Goal Form */}
+        {isMilestoneGoal(goal) && (
+          <>
+            <Form.Item
+              label="Select Milestone"
+              name="milestoneId"
+              rules={[{ required: true, message: 'Please select a milestone' }]}
+            >
+              <Select
+                placeholder="Choose a milestone to update"
+                onChange={() => {
+                  form.setFieldsValue({ milestoneCompleted: false });
+                }}
+              >
+                {goal.milestones
+                  .filter((m) => m.status !== 'completed' && m.status !== 'skipped')
+                  .map((milestone) => {
+                    const canComplete = canCompleteMilestone(
+                      milestone.id,
+                      goal.milestones,
+                      goal.requireSequentialCompletion
+                    );
+                    const statusText = canComplete.canComplete
+                      ? milestone.status
+                      : `Blocked: ${canComplete.reason?.split(':')[0] || 'Dependencies not met'}`;
+                    return (
+                      <Option key={milestone.id} value={milestone.id}>
+                        {milestone.title} ({statusText})
+                      </Option>
+                    );
+                  })}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              noStyle
+              shouldUpdate={(prev: { milestoneId?: string }, curr: { milestoneId?: string }) =>
+                prev.milestoneId !== curr.milestoneId
+              }
+            >
+              {({ getFieldValue }) => {
+                const selectedId = getFieldValue('milestoneId') as string | undefined;
+                if (!selectedId) return null;
+
+                const selectedMilestone = goal.milestones.find((m) => m.id === selectedId);
+                if (!selectedMilestone) return null;
+
+                const unmetDeps = getUnmetDependencies(selectedMilestone, goal.milestones);
+                if (unmetDeps.length > 0) {
+                  const depTitles = unmetDeps
+                    .map((id) => goal.milestones.find((m) => m.id === id)?.title || id)
+                    .join(', ');
+                  return (
+                    <Form.Item label="Dependencies">
+                      <div style={{ color: '#ff4d4f' }}>
+                        Cannot complete: Complete these milestones first: {depTitles}
+                      </div>
+                    </Form.Item>
+                  );
+                }
+                return null;
+              }}
+            </Form.Item>
+            <Form.Item label="Mark as Completed" name="milestoneCompleted" valuePropName="checked">
+              <Checkbox>Complete this milestone</Checkbox>
+            </Form.Item>
+            <Form.Item label="Progress">
+              <div>
+                {goal.milestones.filter((m) => m.status === 'completed').length} / {goal.milestones.length} milestones
+                completed
+              </div>
+            </Form.Item>
+          </>
+        )}
+
+        {/* Recurring Goal Form */}
+        {isRecurringGoal(goal) && (
+          <>
+            <Form.Item
+              label="Select Occurrence"
+              name="occurrenceId"
+              rules={[{ required: true, message: 'Please select an occurrence' }]}
+            >
+              <Select placeholder="Choose an occurrence to update">
+                {goal.occurrences
+                  .filter((o) => {
+                    const now = new Date();
+                    return new Date(o.date) <= now;
+                  })
+                  .slice(-10)
+                  .map((occurrence) => (
+                    <Option key={occurrence.id} value={occurrence.id}>
+                      {new Date(occurrence.date).toLocaleDateString()} -{' '}
+                      {occurrence.completed ? 'Completed' : 'Pending'}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Status"
+              name="occurrenceStatus"
+              rules={[{ required: true, message: 'Status is required' }]}
+            >
+              <Radio.Group>
+                <Radio value="completed">Completed</Radio>
+                <Radio value="missed">Missed</Radio>
+                <Radio value="pending">Pending</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item label="Current Progress">
+              <div>Completion Rate: {Math.round(goal.completionStats.completionRate)}%</div>
+            </Form.Item>
+          </>
+        )}
+
+        {/* Habit Goal Form */}
+        {isHabitGoal(goal) && (
+          <>
+            <Form.Item label="Date" name="habitDate" rules={[{ required: true, message: 'Please select a date' }]}>
+              <DatePicker style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item label="Completion Status" name="habitCompleted" valuePropName="checked">
+              <Checkbox>Mark as completed</Checkbox>
+            </Form.Item>
+            <Form.Item label="Current Streak">
+              <div>Current streak: {goal.completionStats.streak.current} days</div>
+              <div>Longest streak: {goal.completionStats.streak.longest} days</div>
+            </Form.Item>
+            <Form.Item label="Completion Rate">
+              <div>{Math.round(goal.completionStats.completionRate)}%</div>
+            </Form.Item>
           </>
         )}
 

@@ -16,6 +16,9 @@ import {
   FileTextOutlined,
   PaperClipOutlined,
   RiseOutlined,
+  StarOutlined,
+  StarFilled,
+  InboxOutlined,
 } from '@ant-design/icons';
 import {
   Card,
@@ -84,6 +87,21 @@ export interface GoalDetailProps {
   onUpdateProgress?: (input: UpdateProgressInput) => void | Promise<void>;
 
   /**
+   * Callback when favorite is toggled
+   */
+  onToggleFavorite?: (goalId: string) => void | Promise<void>;
+
+  /**
+   * Callback when archive is toggled
+   */
+  onToggleArchive?: (goalId: string) => void | Promise<void>;
+
+  /**
+   * Related goals to display
+   */
+  relatedGoals?: Goal[];
+
+  /**
    * Loading state for delete operation
    */
   deleting?: boolean;
@@ -125,6 +143,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
   onEdit,
   onDelete,
   onUpdateProgress,
+  onToggleFavorite,
+  onToggleArchive,
+  relatedGoals,
   deleting = false,
   updatingProgress = false,
 }) => {
@@ -135,6 +156,18 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
   const handleDelete = () => {
     if (onDelete) {
       onDelete(goal.id);
+    }
+  };
+
+  const handleToggleFavorite = () => {
+    if (onToggleFavorite) {
+      void onToggleFavorite(goal.id);
+    }
+  };
+
+  const handleToggleArchive = () => {
+    if (onToggleArchive) {
+      void onToggleArchive(goal.id);
     }
   };
 
@@ -160,9 +193,26 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
           <Col xs={24} md={16}>
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div>
-                <Title level={2} style={{ margin: 0 }}>
-                  {goal.title}
-                </Title>
+                <Space align="start">
+                  <Title level={2} style={{ margin: 0 }}>
+                    {goal.title}
+                  </Title>
+                  {onToggleFavorite && (
+                    <span
+                      onClick={handleToggleFavorite}
+                      style={{ cursor: 'pointer', fontSize: '20px', marginTop: '8px' }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          handleToggleFavorite();
+                        }
+                      }}
+                    >
+                      {goal.favorite ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
+                    </span>
+                  )}
+                </Space>
                 {goal.description && (
                   <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>
                 )}
@@ -205,6 +255,11 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
                 {onEdit && (
                   <Button icon={<EditOutlined />} onClick={() => onEdit(goal)}>
                     Edit Goal
+                  </Button>
+                )}
+                {onToggleArchive && (
+                  <Button icon={<InboxOutlined />} onClick={handleToggleArchive}>
+                    {goal.archived ? 'Unarchive' : 'Archive'}
                   </Button>
                 )}
                 {onDelete && (
@@ -548,14 +603,17 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       )}
 
       {/* Related Goals */}
-      {goal.relatedGoals && goal.relatedGoals.length > 0 && (
+      {goal.relatedGoals && goal.relatedGoals.length > 0 && relatedGoals && relatedGoals.length > 0 && (
         <Card title="Related Goals" style={{ marginBottom: 24 }}>
           <List
-            dataSource={goal.relatedGoals}
-            renderItem={(relatedGoalId) => (
+            dataSource={relatedGoals}
+            renderItem={(relatedGoal) => (
               <List.Item>
-                <Text type="secondary">Goal ID: {relatedGoalId}</Text>
-                {/* TODO: Fetch and display related goal details */}
+                <Space>
+                  <Text strong>{relatedGoal.title}</Text>
+                  <Tag color={getStatusColor(relatedGoal.status)}>{relatedGoal.status}</Tag>
+                  <Text type="secondary">Progress: {calculateProgress(relatedGoal)}%</Text>
+                </Space>
               </List.Item>
             )}
           />
