@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation structure
 - Development guidelines and coding standards
 
+## [0.1.0-rc.2] - 2026-03-25
+
+### Fixed
+
+- Progress update duplicate detection now handles undefined history gracefully
+
+### Testing
+
+- Fixed HabitGoalFields tests to match actual component behavior
+
 ## [0.1.0-rc.1] - 2026-03-25
 
 ### Added
