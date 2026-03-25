@@ -1,9 +1,9 @@
 <!--
 Sync Impact Report
-- Version change: N/A → 1.0.0
-- Modified principles: none (new constitution content inserted)
-- Added sections: Core Principles, Architecture Rules, Workflow Standards
-- Removed sections: placeholder template lines
+- Version change: 1.0.0 → 1.1.0
+- Modified principles: I. Quality-First Engineering, II. User Experience and Performance, III. Clean Architecture and Componentization, IV. Observability/DevOps/Infrastructure, V. Documentation and Governance
+- Added sections: Supplemental Engineering Policies
+- Removed sections: none
 - Templates requiring updates: ✅ .specify/templates/plan-template.md, ✅ .specify/templates/spec-template.md, ✅ .specify/templates/tasks-template.md, ✅ .specify/templates/commands/*.md
 - Follow-up TODOs: none
 -->
@@ -63,6 +63,18 @@ Sync Impact Report
 - Pull requests must include tests and evidence of local verification. Code review checklist includes quality, performance, accessibility, and security.
 - Deployment pipeline: automated build → test → staging deploy → manual/automated approval → production deploy. Rollbacks are documented and rehearsed.
 
+## Supplemental Engineering Policies
+
+- Accessibility: WCAG 2.1 AA, keyboard navigation, ARIA roles, labels, semantic HTML, contrast and screen-reader compatibility are mandatory (mirrors `.ai-assistant/accessibility.md`).
+- API Data Handling: API contracts, request/response validation, retry/backoff behavior, error categorization, and offline/fallback modes are documented and enforced (aligned to `.ai-assistant/api-data-handling.md`).
+- Dependencies: External dependencies are evaluated for security, licensing, and maintenance. Use shrinkwrap/lockfiles; minimal dependency principle; dependency updates pass dependency-scanning checks (`.ai-assistant/dependencies.md`).
+- Environment Configuration: All environment variables are centrally documented. Secrets are managed via vaults/managed identity; config values are environment-specific and type-validated (`.ai-assistant/environment-config.md`).
+- Error Handling: Failures are categorized (user error, transient, systemic), responses are safe and user-friendly, stack traces not exposed in production, and resiliency patterns (circuit breaker, fallback) are in place (`.ai-assistant/error-handling.md`).
+- File Organization: Source tree structure is enforced, module granularity is consistent, and path aliasing is standard (`.ai-assistant/file-organization.md`).
+- PWA: If applicable, service workers, offline caching, manifest, and installability audits are in place (`.ai-assistant/pwa.md`).
+- State Management: Prefer local state and derived state, with global stores for cross-cutting concerns only. State transitions are explicit and side-effect isolated (`.ai-assistant/state-management.md`).
+- UI Component Guidelines: Components are accessible, responsive, theme-able, and designed for reuse with a shared design system (`.ai-assistant/ui-component-guidelines.md`).
+
 ## Governance
 
 - This constitution is the authoritative policy for engineering decisions in the Momentum repository. Exceptions require documented approval from tech leads and a remediation plan.
@@ -70,4 +82,4 @@ Sync Impact Report
 - Versioning of the constitution follows semantic versioning. MAJOR for breaking governance changes, MINOR for added principles or sections, PATCH for wording clarifications.
 - Compliance review is required quarterly and after each major architecture change; success criteria include test coverage, performance budgets, and security posture.
 
-**Version**: 1.0.0 | **Ratified**: 2026-03-22 | **Last Amended**: 2026-03-22
+**Version**: 1.1.0 | **Ratified**: 2026-03-22 | **Last Amended**: 2026-03-23

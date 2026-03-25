@@ -280,7 +280,7 @@ describe('UpdateProgressModal', () => {
       expect(screen.getByLabelText(/note/i)).toBeInTheDocument();
     });
 
-    it.skip('renders cancel and submit buttons', () => {
+    it('renders cancel and submit buttons', () => {
       const goal = createMockGoal(GoalType.QUANTITATIVE);
 
       render(<UpdateProgressModal open={true} goal={goal} onCancel={mockOnCancel} onSubmit={mockOnSubmit} />);

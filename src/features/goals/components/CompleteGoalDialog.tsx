@@ -9,7 +9,6 @@ import { useState } from 'react';
 
 import { CheckCircleOutlined, TrophyOutlined, FireOutlined } from '@ant-design/icons';
 import { Modal, Button, Space, Divider, Alert, Progress, Typography } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import { useCompletionDetection } from '@/features/goals/hooks/useCompletionDetection';
 import type { CompletionOptions, CelebrationData } from '@/features/goals/types/completion';
@@ -26,7 +25,6 @@ export interface CompleteGoalDialogProps {
 }
 
 export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading = false }: CompleteGoalDialogProps) {
-  const { t } = useTranslation();
   const { isEligible, canComplete, criteria, summary, isPartial, isFullCompletion } = useCompletionDetection(goal);
 
   const [showOverride, setShowOverride] = useState(false);
@@ -52,8 +50,8 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
     if (criteria.met) {
       return (
         <Alert
-          message={t('completeDialog.readyToComplete')}
-          description={t('completeDialog.allCriteriaMet')}
+          message="Ready to Complete"
+          description="All completion criteria have been met."
           type="success"
           showIcon
           icon={<CheckCircleOutlined />}
@@ -65,17 +63,17 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
       return (
         <>
           <Alert
-            message={t('completeDialog.overrideRequired')}
-            description={t('completeDialog.criteriaNotMet')}
+            message="Override Required"
+            description="The goal does not meet all completion criteria. You can still complete it with an override."
             type="warning"
             showIcon
           />
           <div style={{ marginTop: 16 }}>
-            <Text>{t('completeDialog.overrideReasonLabel')}</Text>
+            <Text>Reason for override (optional):</Text>
             <textarea
               value={overrideReason}
               onChange={(e) => setOverrideReason(e.target.value)}
-              placeholder={t('completeDialog.overrideReasonPlaceholder')}
+              placeholder="Explain why this goal is being marked complete..."
               style={{
                 width: '100%',
                 marginTop: 8,
@@ -92,10 +90,10 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
 
     return (
       <>
-        <Alert message={t('completeDialog.criteriaNotMetTitle')} description={summary} type="error" showIcon />
+        <Alert message="Criteria Not Met" description={summary} type="error" showIcon />
         <div style={{ marginTop: 16 }}>
           <Button type="link" onClick={() => setShowOverride(true)}>
-            {t('completeDialog.overrideAndComplete')}
+            Override and complete anyway
           </Button>
         </div>
       </>
@@ -108,11 +106,7 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
         return (
           <div style={{ marginTop: 16 }}>
             <Text type="secondary">
-              {t('completeDialog.currentProgress', {
-                current: goal.currentValue,
-                target: goal.targetValue,
-                unit: goal.unit,
-              })}
+              Current: {goal.currentValue} / {goal.targetValue} {goal.unit}
             </Text>
             <Progress
               percent={Math.round(goal.progress)}
@@ -128,7 +122,7 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
           return (
             <div style={{ marginTop: 16 }}>
               <Text type="secondary">
-                {t('completeDialog.milestonesProgress', { completed, total: goal.milestones.length })}
+                Milestones: {completed} / {goal.milestones.length} completed
               </Text>
               <Progress
                 percent={Math.round((completed / goal.milestones.length) * 100)}
@@ -145,11 +139,11 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
         return (
           <div style={{ marginTop: 16 }}>
             <Alert
-              message={isPartial ? t('completeDialog.partialCompletion') : t('completeDialog.completion')}
+              message={isPartial ? 'Partial Completion' : 'Completion'}
               description={
                 isPartial
-                  ? t('completeDialog.partialCompletionDesc', { type: goal.type })
-                  : t('completeDialog.fullCompletionDesc')
+                  ? `This ${goal.type} goal will remain active after marking this completion. The goal tracks ongoing progress.`
+                  : 'This will mark the goal as fully completed.'
               }
               type="info"
               showIcon
@@ -164,28 +158,28 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
 
   const renderCelebrationSelector = () => (
     <div style={{ marginTop: 16 }}>
-      <Text strong>{t('completeDialog.celebrationStyle')}</Text>
+      <Text strong>Celebration Style:</Text>
       <Space style={{ marginTop: 8 }}>
         <Button
           type={selectedCelebration === 'subtle' ? 'primary' : 'default'}
           onClick={() => setSelectedCelebration('subtle')}
           size="small"
         >
-          {t('completeDialog.subtle')}
+          Subtle
         </Button>
         <Button
           type={selectedCelebration === 'moderate' ? 'primary' : 'default'}
           onClick={() => setSelectedCelebration('moderate')}
           size="small"
         >
-          <TrophyOutlined /> {t('completeDialog.moderate')}
+          <TrophyOutlined /> Moderate
         </Button>
         <Button
           type={selectedCelebration === 'enthusiastic' ? 'primary' : 'default'}
           onClick={() => setSelectedCelebration('enthusiastic')}
           size="small"
         >
-          <FireOutlined /> {t('completeDialog.enthusiastic')}
+          <FireOutlined /> Enthusiastic
         </Button>
       </Space>
     </div>
@@ -193,9 +187,9 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
 
   const getCompletionTitle = () => {
     if (isPartial) {
-      return t('completeDialog.markTypeComplete', { type: goal.type });
+      return `Mark ${goal.type} Complete`;
     }
-    return t('completeDialog.completeGoal');
+    return 'Complete Goal';
   };
 
   return (
@@ -206,10 +200,10 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
       width={500}
       footer={[
         <Button key="cancel" onClick={onClose} disabled={isLoading}>
-          {t('completeDialog.cancel')}
+          Cancel
         </Button>,
         <Button key="complete" type="primary" onClick={handleComplete} loading={isLoading} disabled={!canComplete}>
-          {isPartial ? t('completeDialog.markCompleteBtn') : t('completeDialog.completeGoal')}
+          {isPartial ? 'Mark Complete' : 'Complete Goal'}
         </Button>,
       ]}
     >
@@ -218,9 +212,7 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
           <Title level={5} style={{ marginBottom: 8 }}>
             {goal.title}
           </Title>
-          <Text type="secondary">
-            {isPartial ? t('completeDialog.markActivePartial') : t('completeDialog.markCompleted')}
-          </Text>
+          <Text type="secondary">Goal will be marked as {isPartial ? "'active' (partial)" : "'completed'"}</Text>
         </div>
 
         <Divider style={{ margin: '12px 0' }} />
@@ -233,8 +225,8 @@ export function CompleteGoalDialog({ goal, open, onClose, onComplete, isLoading 
 
         {isEligible && (
           <Alert
-            message={t('completeDialog.readyTitle')}
-            description={t('completeDialog.readyDesc')}
+            message="Ready!"
+            description="This goal is ready to be completed. Click the button below to finish."
             type="success"
             showIcon
           />

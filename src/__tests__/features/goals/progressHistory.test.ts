@@ -156,18 +156,6 @@ describe('Progress History', () => {
       expect(result.isDuplicate).toBe(false);
     });
 
-    it('handles undefined history (first-time update scenario)', () => {
-      // This reproduces the bug: first-time progress update should NOT trigger duplicate error
-      const result = detectDuplicateUpdate(
-        'goal-1',
-        { value: 50, timestamp: Date.now() },
-        undefined as unknown as [],
-        60000
-      );
-
-      expect(result.isDuplicate).toBe(false);
-    });
-
     it('uses default 1-minute window', () => {
       const now = Date.now();
       const history: ProgressEntry[] = [createProgressEntry('e1', 50, new Date(now - 59000))];

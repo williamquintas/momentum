@@ -23,7 +23,7 @@ vi.mock('@/services/storage/goalStorageService', () => ({
 
 const mockCreateGoal = vi.mocked(createGoal);
 
-describe.skip('Create Goal Integration', () => {
+describe('Create Goal Integration', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {

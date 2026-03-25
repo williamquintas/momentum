@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { Goal } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
+import { detectDuplicateUpdate } from '@/features/goals/utils/progressValidation';
 import { goalService } from '@/services/api/goalService';
 import { queryKeys } from '@/utils/queryKeys';
 
@@ -82,6 +83,18 @@ export const useUpdateProgress = () => {
 
       // Calculate progress if not provided
       const calculatedProgress = progressValue ?? calculateProgress(updatedGoal);
+
+      // Check for duplicate updates (FR-014)
+      const duplicateResult = detectDuplicateUpdate(
+        goalId,
+        { value: calculatedProgress, timestamp: Date.now() },
+        currentGoal.progressHistory,
+        60000 // 1 minute window
+      );
+
+      if (duplicateResult.isDuplicate) {
+        throw new Error('Duplicate progress update detected. Please wait before submitting another update.');
+      }
 
       // Update progress
       return goalService.updateProgress(goalId, calculatedProgress, note, typeSpecificUpdates);

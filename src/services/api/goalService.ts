@@ -11,7 +11,7 @@
  * - All goal operations go through this service
  */
 
-import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '@specs/bkp/types/goal.types';
+import type { Goal, CreateGoalInput, UpdateGoalInput, GoalFilters } from '@/types/goal.types';
 
 import {
   createGoal,

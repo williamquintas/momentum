@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 
 import { CheckCircleFilled, TrophyOutlined, StarFilled, FireOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import type { CompletionEvent, CelebrationData } from '@/features/goals/types/completion';
 import type { Goal } from '@/types/goal.types';
@@ -27,8 +26,7 @@ export function CompletionSuccess({
   onClose,
   onViewGoal,
   showConfetti = true,
-}: CompletionSuccessProps): React.ReactElement {
-  const { t } = useTranslation();
+}: CompletionSuccessProps): JSX.Element {
   const [isVisible, setIsVisible] = useState(false);
   const celebration = completion.celebration;
 
@@ -96,15 +94,13 @@ export function CompletionSuccess({
           icon={getIcon()}
           title={
             <span id="completion-title" style={{ fontSize: '1.5rem' }}>
-              {celebration.message || t('completionSuccess.goalCompleted')}
+              {celebration.message || 'Goal Completed!'}
             </span>
           }
           subTitle={
             <div style={{ textAlign: 'center' }}>
               <p style={{ marginBottom: 8, fontSize: '1.1rem' }}>{goal.title}</p>
-              <p style={{ color: '#888', margin: 0 }}>
-                {t('completionSuccess.completedIn', { duration: formatDuration(completion.metrics.totalTime) })}
-              </p>
+              <p style={{ color: '#888', margin: 0 }}>Completed in {formatDuration(completion.metrics.totalTime)}</p>
               {celebration.badge && (
                 <div
                   style={{
@@ -128,12 +124,12 @@ export function CompletionSuccess({
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
               {onViewGoal && (
                 <Button type="primary" size="large" onClick={onViewGoal}>
-                  {t('completionSuccess.viewGoal')}
+                  View Goal
                 </Button>
               )}
               {onClose && (
                 <Button size="large" onClick={onClose}>
-                  {t('completionSuccess.close')}
+                  Close
                 </Button>
               )}
             </div>
@@ -162,7 +158,7 @@ interface ConfettiAnimationProps {
   type: CelebrationData['type'];
 }
 
-function ConfettiAnimation({ type }: ConfettiAnimationProps): React.ReactElement {
+function ConfettiAnimation({ type }: ConfettiAnimationProps): JSX.Element {
   const [particles] = useState(() =>
     Array.from({ length: type === 'enthusiastic' ? 100 : 50 }, (_, i) => ({
       id: i,
@@ -171,7 +167,6 @@ function ConfettiAnimation({ type }: ConfettiAnimationProps): React.ReactElement
       duration: 2 + Math.random() * 2,
       color: ['#ff4d4f', '#faad14', '#52c41a', '#1890ff', '#722ed1'][Math.floor(Math.random() * 5)],
       size: 8 + Math.random() * 8,
-      isCircle: Math.random() > 0.5,
     }))
   );
 
@@ -202,7 +197,7 @@ function ConfettiAnimation({ type }: ConfettiAnimationProps): React.ReactElement
             width: particle.size,
             height: particle.size,
             backgroundColor: particle.color,
-            borderRadius: particle.isCircle ? '50%' : '2px',
+            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
             animation: `confetti-fall ${particle.duration}s linear ${particle.delay}s forwards`,
           }}
         />

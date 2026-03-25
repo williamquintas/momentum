@@ -56,7 +56,7 @@ export const MilestoneSchema = z.object({
   completedDate: dateSchema.optional(),
   order: z.number().int().nonnegative(),
   dependencies: z.array(z.string().uuid()).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional(),
 });
 
 export const ProgressEntrySchema = z.object({
@@ -64,7 +64,7 @@ export const ProgressEntrySchema = z.object({
   date: dateSchema,
   value: z.number().min(0).max(100),
   note: z.string().max(500).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional(),
 });
 
 export const NoteSchema = z.object({
@@ -91,7 +91,7 @@ export const SelfAssessmentSchema = z.object({
   date: dateSchema,
   rating: z.number().min(1).max(10),
   comment: z.string().max(1000).optional(),
-  criteria: z.record(z.string(), z.number().min(1).max(10)).optional(),
+  criteria: z.record(z.number().min(1).max(10)).optional(),
 });
 
 export const HabitEntrySchema = z.object({
@@ -100,7 +100,7 @@ export const HabitEntrySchema = z.object({
   completed: z.boolean(),
   value: z.number().optional(),
   note: z.string().max(500).optional(),
-  metadata: z.record(z.string(), z.unknown()).optional(),
+  metadata: z.record(z.unknown()).optional(),
 });
 
 export const StreakSchema = z.object({

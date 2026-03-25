@@ -39,7 +39,7 @@ describe('MilestoneGoalFields', () => {
     expect(screen.getByLabelText(/require sequential completion/i)).toBeInTheDocument();
   });
 
-  it.skip('renders add milestone button', () => {
+  it('renders add milestone button', () => {
     render(
       <Form>
         <MilestoneGoalFields />
@@ -49,7 +49,7 @@ describe('MilestoneGoalFields', () => {
     expect(screen.getByRole('button', { name: /add milestone/i })).toBeInTheDocument();
   });
 
-  it.skip('adds new milestone when add button is clicked', async () => {
+  it('adds new milestone when add button is clicked', async () => {
     render(
       <Form>
         <MilestoneGoalFields />

@@ -1,51 +1,47 @@
 import React from 'react';
 
 import { Form, Select, InputNumber } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 const { Option } = Select;
 
-export const HabitGoalFields: React.FC = () => {
-  const { t } = useTranslation();
-  return (
-    <>
-      <Form.Item
-        name="targetFrequency"
-        label={t('habitFields.targetFrequency')}
-        rules={[{ required: true, message: t('habitFields.targetFrequencyRequired') }]}
-      >
-        <Select placeholder={t('habitFields.selectFrequency')}>
-          <Option value="daily">{t('habitFields.daily')}</Option>
-          <Option value="every_other_day">{t('habitFields.everyOtherDay')}</Option>
-          <Option value="weekly">{t('habitFields.weekly')}</Option>
-          <Option value="custom">{t('habitFields.custom')}</Option>
-        </Select>
-      </Form.Item>
+export const HabitGoalFields: React.FC = () => (
+  <>
+    <Form.Item
+      name="targetFrequency"
+      label="Target Frequency"
+      rules={[{ required: true, message: 'Target frequency is required' }]}
+    >
+      <Select placeholder="Select frequency">
+        <Option value="daily">Daily</Option>
+        <Option value="every_other_day">Every Other Day</Option>
+        <Option value="weekly">Weekly</Option>
+        <Option value="custom">Custom</Option>
+      </Select>
+    </Form.Item>
 
-      <Form.Item
-        noStyle
-        shouldUpdate={(prev, curr) => {
-          const prevFreq = (prev as Record<string, unknown>)?.targetFrequency as string | undefined;
-          const currFreq = (curr as Record<string, unknown>)?.targetFrequency as string | undefined;
-          return prevFreq !== currFreq;
-        }}
-      >
-        {({ getFieldValue }) => {
-          const targetFrequency = (getFieldValue('targetFrequency') as string) ?? '';
-          if (targetFrequency === 'custom') {
-            return (
-              <Form.Item
-                name="customFrequency"
-                label={t('habitFields.customDays')}
-                rules={[{ required: true, message: t('habitFields.customRequired') }]}
-              >
-                <InputNumber style={{ width: '100%' }} min={1} placeholder={t('habitFields.customPlaceholder')} />
-              </Form.Item>
-            );
-          }
-          return null;
-        }}
-      </Form.Item>
-    </>
-  );
-};
+    <Form.Item
+      noStyle
+      shouldUpdate={(prev, curr) => {
+        const prevFreq = (prev as Record<string, unknown>)?.targetFrequency as string | undefined;
+        const currFreq = (curr as Record<string, unknown>)?.targetFrequency as string | undefined;
+        return prevFreq !== currFreq;
+      }}
+    >
+      {({ getFieldValue }) => {
+        const targetFrequency = (getFieldValue('targetFrequency') as string) ?? '';
+        if (targetFrequency === 'custom') {
+          return (
+            <Form.Item
+              name="customFrequency"
+              label="Custom Days Between"
+              rules={[{ required: true, message: 'Custom frequency is required' }]}
+            >
+              <InputNumber style={{ width: '100%' }} min={1} placeholder="Number of days" />
+            </Form.Item>
+          );
+        }
+        return null;
+      }}
+    </Form.Item>
+  </>
+);
