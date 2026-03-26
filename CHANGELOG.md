@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Milestone goal creation now submits correctly
+- Recurring and Habit goal types can now be created
+- Form resets after successful goal creation
+- Habit progress updates handle date objects correctly
+
 ### Added
 
 - Initial project setup

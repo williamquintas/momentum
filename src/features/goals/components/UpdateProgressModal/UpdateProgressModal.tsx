@@ -20,6 +20,7 @@
 import React, { useEffect } from 'react';
 
 import { Modal, Form, InputNumber, Select, Input, Button, Space, Checkbox, DatePicker, Radio, message } from 'antd';
+import dayjs from 'dayjs';
 
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 import {
@@ -125,7 +126,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         });
       } else if (isHabitGoal(goal)) {
         form.setFieldsValue({
-          habitDate: new Date(),
+          habitDate: dayjs(),
           habitCompleted: true,
           note: '',
         });
@@ -206,16 +207,18 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
           ),
         } as Partial<RecurringGoal>;
       } else if (isHabitGoal(goal)) {
-        if (!values.habitDate) {
+        const habitDateValue = values.habitDate;
+        if (!habitDateValue) {
           void message.error('Please select a date');
           return;
         }
+        const date = (habitDateValue as unknown as { toDate?: () => Date })?.toDate?.() ?? habitDateValue;
         typeSpecificUpdates = {
           entries: [
             ...goal.entries,
             {
               id: `temp-${Date.now()}`,
-              date: values.habitDate,
+              date: date,
               completed: values.habitCompleted ?? true,
             },
           ],

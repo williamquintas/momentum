@@ -17,7 +17,7 @@ Before asking for help, please check our documentation:
 
 For questions, ideas, and general discussion:
 
-- **[GitHub Discussions](https://github.com/williamquintas/goals-tracking/discussions)** - Ask questions and share ideas
+- **[GitHub Discussions](https://github.com/williamquintas/momentum/discussions)** - Ask questions and share ideas
 - Use the **Q&A** category for questions
 - Use the **Ideas** category for feature suggestions
 - Use the **General** category for other discussions
@@ -26,7 +26,7 @@ For questions, ideas, and general discussion:
 
 Found a bug? Please report it using our bug report template:
 
-1. Go to [Issues](https://github.com/williamquintas/goals-tracking/issues)
+1. Go to [Issues](https://github.com/williamquintas/momentum/issues)
 2. Click "New Issue"
 3. Select "Bug Report"
 4. Fill out the template with as much detail as possible
@@ -42,7 +42,7 @@ Found a bug? Please report it using our bug report template:
 
 Have an idea for a new feature? We'd love to hear it!
 
-1. Go to [Issues](https://github.com/williamquintas/goals-tracking/issues)
+1. Go to [Issues](https://github.com/williamquintas/momentum/issues)
 2. Click "New Issue"
 3. Select "Feature Request"
 4. Describe your idea and use cases
@@ -82,15 +82,15 @@ When seeking support, please:
 
 ## Additional Resources
 
-- **[GitHub Issues](https://github.com/williamquintas/goals-tracking/issues)** - Bug reports and feature requests
-- **[GitHub Discussions](https://github.com/williamquintas/goals-tracking/discussions)** - Questions and discussions
-- **[GitHub Wiki](https://github.com/williamquintas/goals-tracking/wiki)** - Community-maintained documentation (if enabled)
+- **[GitHub Issues](https://github.com/williamquintas/momentum/issues)** - Bug reports and feature requests
+- **[GitHub Discussions](https://github.com/williamquintas/momentum/discussions)** - Questions and discussions
+- **[GitHub Wiki](https://github.com/williamquintas/momentum/wiki)** - Community-maintained documentation (if enabled)
 
 ## Still Need Help?
 
 If you've checked the documentation and existing issues but still need help:
 
-1. Open a [GitHub Discussion](https://github.com/williamquintas/goals-tracking/discussions) with the "Q&A" category
+1. Open a [GitHub Discussion](https://github.com/williamquintas/momentum/discussions) with the "Q&A" category
 2. Provide as much context as possible
 3. Include code examples or screenshots if relevant
 4. Be patient - we'll get back to you!

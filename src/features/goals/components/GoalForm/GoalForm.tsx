@@ -16,6 +16,8 @@ import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/go
 import { CreateGoalInputSchema, applyZodErrorsToForm } from '@/features/goals/utils/validation';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
+import { MilestoneGoalFields, RecurringGoalFields, HabitGoalFields } from './index';
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -80,6 +82,8 @@ export const GoalForm: React.FC<GoalFormProps> = ({
         relatedGoals: [],
         archived: false,
         favorite: false,
+        category: '',
+        milestones: [{ title: '', status: 'pending', order: 0, dependencies: [] }],
       });
     }
   }, [form, initialValues]);
@@ -133,6 +137,64 @@ export const GoalForm: React.FC<GoalFormProps> = ({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         selfAssessments: (values.selfAssessments as unknown[] | undefined) ?? [],
       }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      ...(values.type === GoalType.MILESTONE && {
+        milestones: ((values.milestones as unknown[] | undefined) ?? []).map((m: unknown, idx: number) => ({
+          ...(m as Record<string, unknown>),
+          id: ((m as Record<string, unknown>)?.id as string) || crypto.randomUUID(),
+          status: ((m as Record<string, unknown>)?.status as string) || 'pending',
+          order: ((m as Record<string, unknown>)?.order as number) ?? idx,
+          dependencies: ((m as Record<string, unknown>)?.dependencies as string[] | undefined) ?? [],
+        })),
+        allowMilestoneReordering: (values.allowMilestoneReordering as boolean | undefined) ?? false,
+        requireSequentialCompletion: (values.requireSequentialCompletion as boolean | undefined) ?? false,
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      ...(values.type === GoalType.RECURRING && {
+        recurrence: (values.recurrence as Record<string, unknown> | undefined) ?? {
+          frequency: 'daily',
+          interval: 1,
+        },
+        completionStats: {
+          totalOccurrences:
+            ((values.completionStats as Record<string, unknown>)?.totalOccurrences as number | undefined) ?? 0,
+          completedOccurrences:
+            ((values.completionStats as Record<string, unknown>)?.completedOccurrences as number | undefined) ?? 0,
+          completionRate:
+            ((values.completionStats as Record<string, unknown>)?.completionRate as number | undefined) ?? 0,
+          streak: {
+            current:
+              ((values.completionStats as Record<string, unknown>)?.streak as Record<string, number> | undefined)
+                ?.current ?? 0,
+            longest:
+              ((values.completionStats as Record<string, unknown>)?.streak as Record<string, number> | undefined)
+                ?.longest ?? 0,
+          },
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      ...(values.type === GoalType.HABIT && {
+        targetFrequency: (values.targetFrequency as string | undefined) ?? 'daily',
+        customFrequency: values.customFrequency as number | undefined,
+        completionStats: {
+          totalOccurrences:
+            ((values.completionStats as Record<string, unknown>)?.totalOccurrences as number | undefined) ?? 0,
+          completedOccurrences:
+            ((values.completionStats as Record<string, unknown>)?.completedOccurrences as number | undefined) ?? 0,
+          completionRate:
+            ((values.completionStats as Record<string, unknown>)?.completionRate as number | undefined) ?? 0,
+          streak: {
+            current:
+              ((values.completionStats as Record<string, unknown>)?.streak as Record<string, number> | undefined)
+                ?.current ?? 0,
+            longest:
+              ((values.completionStats as Record<string, unknown>)?.streak as Record<string, number> | undefined)
+                ?.longest ?? 0,
+          },
+        },
+        entries: [],
+        habitStrength: 50,
+      }),
     } as CreateGoalInput;
 
     return formData;
@@ -151,7 +213,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
       await onSubmit(validated as CreateGoalInput);
     } catch (error) {
       // Handle Zod validation errors
-      if (error && typeof error === 'object' && 'errors' in error && 'issues' in error) {
+      if (error && typeof error === 'object' && 'issues' in error) {
         // Type guard for ZodError
         applyZodErrorsToForm(form, error as Parameters<typeof applyZodErrorsToForm>[1]);
         return; // Don't re-throw validation errors
@@ -374,6 +436,12 @@ export const GoalForm: React.FC<GoalFormProps> = ({
           </Form.Item>
         </>
       )}
+
+      {goalType === GoalType.MILESTONE && <MilestoneGoalFields />}
+
+      {goalType === GoalType.RECURRING && <RecurringGoalFields />}
+
+      {goalType === GoalType.HABIT && <HabitGoalFields />}
 
       {/* Hidden fields with defaults */}
       <Form.Item name="progress" hidden>
