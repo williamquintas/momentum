@@ -1,17 +1,17 @@
 {
   "name": "momentum",
   "version": "0.1.0",
-  "description": "aaaMomentum - A comprehensive goals tracking management system built with React, TypeScript, and Ant Design",
+  "description": "Momentum - A comprehensive goals tracking management system built with React, TypeScript, and Ant Design",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/williamquintas/goals-tracking.git"
+    "url": "https://github.com/williamquintas/momentum.git"
   },
   "bugs": {
-    "url": "https://github.com/williamquintas/goals-tracking/issues"
+    "url": "https://github.com/williamquintas/momentum/issues"
   },
-  "homepage": "https://github.com/williamquintas/goals-tracking#readme",
+  "homepage": "https://github.com/williamquintas/momentum#readme",
   "keywords": [
     "goals",
     "tracking",

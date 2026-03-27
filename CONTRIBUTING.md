@@ -23,12 +23,12 @@ This project adheres to a Code of Conduct that all contributors are expected to 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/williamquintas/goals-tracking.git
-   cd goals-tracking
+   git clone https://github.com/williamquintas/momentum.git
+   cd momentum
    ```
 3. **Add the upstream remote**:
    ```bash
-   git remote add upstream https://github.com/ORIGINAL_OWNER/goals-tracking.git
+   git remote add upstream https://github.com/ORIGINAL_OWNER/momentum.git
    ```
 4. **Create a branch** for your contribution:
    ```bash

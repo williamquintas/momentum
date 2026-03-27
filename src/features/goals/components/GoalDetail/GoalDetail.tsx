@@ -60,6 +60,7 @@ import {
   getDaysUntilDeadline,
 } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
+import { isFeatureEnabled } from '@/utils/featureFlags';
 
 import { UpdateProgressModal } from '../UpdateProgressModal';
 
@@ -517,68 +518,72 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       )}
 
       {/* Notes Section */}
-      <Card
-        title={
-          <Space>
-            <FileTextOutlined />
-            <span>Notes</span>
-            {goal.notes.length > 0 && <Tag>{goal.notes.length}</Tag>}
-          </Space>
-        }
-        style={{ marginBottom: 24 }}
-      >
-        {goal.notes && goal.notes.length > 0 ? (
-          <Timeline
-            items={goal.notes.map((note) => ({
-              children: (
-                <div>
-                  <Paragraph>{note.content}</Paragraph>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    {formatDate(note.createdAt)}
-                    {note.createdBy && ` by ${note.createdBy}`}
-                  </Text>
-                </div>
-              ),
-            }))}
-          />
-        ) : (
-          <Empty description="No notes yet" />
-        )}
-      </Card>
+      {isFeatureEnabled('notes') && (
+        <Card
+          title={
+            <Space>
+              <FileTextOutlined />
+              <span>Notes</span>
+              {goal.notes.length > 0 && <Tag>{goal.notes.length}</Tag>}
+            </Space>
+          }
+          style={{ marginBottom: 24 }}
+        >
+          {goal.notes && goal.notes.length > 0 ? (
+            <Timeline
+              items={goal.notes.map((note) => ({
+                children: (
+                  <div>
+                    <Paragraph>{note.content}</Paragraph>
+                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                      {formatDate(note.createdAt)}
+                      {note.createdBy && ` by ${note.createdBy}`}
+                    </Text>
+                  </div>
+                ),
+              }))}
+            />
+          ) : (
+            <Empty description="No notes yet" />
+          )}
+        </Card>
+      )}
 
       {/* Attachments Section */}
-      <Card
-        title={
-          <Space>
-            <PaperClipOutlined />
-            <span>Attachments</span>
-            {goal.attachments.length > 0 && <Tag>{goal.attachments.length}</Tag>}
-          </Space>
-        }
-        style={{ marginBottom: 24 }}
-      >
-        {goal.attachments && goal.attachments.length > 0 ? (
-          <List
-            dataSource={goal.attachments}
-            renderItem={(attachment) => (
-              <List.Item>
-                <Space>
-                  <PaperClipOutlined />
-                  <Text>{attachment.filename}</Text>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    {formatDate(attachment.uploadedAt)}
-                  </Text>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    ({(attachment.size / 1024).toFixed(2)} KB)
-                  </Text>
-                </Space>
-              </List.Item>
-            )}
-          />
-        ) : (
-          <Empty description="No attachments yet" />
-        )}
-      </Card>
+      {isFeatureEnabled('attachments') && (
+        <Card
+          title={
+            <Space>
+              <PaperClipOutlined />
+              <span>Attachments</span>
+              {goal.attachments.length > 0 && <Tag>{goal.attachments.length}</Tag>}
+            </Space>
+          }
+          style={{ marginBottom: 24 }}
+        >
+          {goal.attachments && goal.attachments.length > 0 ? (
+            <List
+              dataSource={goal.attachments}
+              renderItem={(attachment) => (
+                <List.Item>
+                  <Space>
+                    <PaperClipOutlined />
+                    <Text>{attachment.filename}</Text>
+                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                      {formatDate(attachment.uploadedAt)}
+                    </Text>
+                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                      ({(attachment.size / 1024).toFixed(2)} KB)
+                    </Text>
+                  </Space>
+                </List.Item>
+              )}
+            />
+          ) : (
+            <Empty description="No attachments yet" />
+          )}
+        </Card>
+      )}
 
       {/* Progress History */}
       {goal.progressHistory && goal.progressHistory.length > 0 && (
