@@ -5,14 +5,16 @@
  * Uses Ant Design Form with Zod validation.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Form, Input, Select, DatePicker, InputNumber, Switch, Button, Space, Row, Col } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Form, Input, Select, DatePicker, InputNumber, Switch, Button, Space, Row, Col, Tooltip, Modal } from 'antd';
 import type { FormInstance } from 'antd';
 import dayjs from 'dayjs';
 
 import type { CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/goals/types';
+import { goalTypeTooltips } from '@/features/goals/utils/goalTypeTooltips';
 import { CreateGoalInputSchema, applyZodErrorsToForm } from '@/features/goals/utils/validation';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
@@ -60,6 +62,7 @@ export const GoalForm: React.FC<GoalFormProps> = ({
 }) => {
   const [form] = Form.useForm<CreateGoalInput>(externalForm);
   const goalType = Form.useWatch('type', form);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
 
   // Get available goal types based on feature flags
   const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
@@ -264,18 +267,79 @@ export const GoalForm: React.FC<GoalFormProps> = ({
 
       <Row gutter={16}>
         <Col xs={24} sm={12}>
-          <Form.Item name="type" label="Goal Type" rules={[{ required: true, message: 'Goal type is required' }]}>
+          <Form.Item
+            name="type"
+            label={
+              <span>
+                Goal Type{' '}
+                <Tooltip title="Click for help choosing the right goal type" trigger="click">
+                  <InfoCircleOutlined
+                    style={{ cursor: 'pointer', color: '#8c8c8c' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHelpModalOpen(true);
+                    }}
+                  />
+                </Tooltip>
+              </span>
+            }
+            rules={[{ required: true, message: 'Goal type is required' }]}
+          >
             <Select placeholder="Select goal type">
               {availableGoalTypes.includes(GoalType.QUANTITATIVE) && (
-                <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
+                <Option value={GoalType.QUANTITATIVE}>
+                  <Tooltip
+                    title={`${goalTypeTooltips[GoalType.QUANTITATIVE].description} ${goalTypeTooltips[GoalType.QUANTITATIVE].example}`}
+                  >
+                    Quantitative
+                  </Tooltip>
+                </Option>
               )}
               {availableGoalTypes.includes(GoalType.QUALITATIVE) && (
-                <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
+                <Option value={GoalType.QUALITATIVE}>
+                  <Tooltip
+                    title={`${goalTypeTooltips[GoalType.QUALITATIVE].description} ${goalTypeTooltips[GoalType.QUALITATIVE].example}`}
+                  >
+                    Qualitative
+                  </Tooltip>
+                </Option>
               )}
-              {availableGoalTypes.includes(GoalType.BINARY) && <Option value={GoalType.BINARY}>Binary</Option>}
-              {availableGoalTypes.includes(GoalType.MILESTONE) && <Option value={GoalType.MILESTONE}>Milestone</Option>}
-              {availableGoalTypes.includes(GoalType.RECURRING) && <Option value={GoalType.RECURRING}>Recurring</Option>}
-              {availableGoalTypes.includes(GoalType.HABIT) && <Option value={GoalType.HABIT}>Habit</Option>}
+              {availableGoalTypes.includes(GoalType.BINARY) && (
+                <Option value={GoalType.BINARY}>
+                  <Tooltip
+                    title={`${goalTypeTooltips[GoalType.BINARY].description} ${goalTypeTooltips[GoalType.BINARY].example}`}
+                  >
+                    Binary
+                  </Tooltip>
+                </Option>
+              )}
+              {availableGoalTypes.includes(GoalType.MILESTONE) && (
+                <Option value={GoalType.MILESTONE}>
+                  <Tooltip
+                    title={`${goalTypeTooltips[GoalType.MILESTONE].description} ${goalTypeTooltips[GoalType.MILESTONE].example}`}
+                  >
+                    Milestone
+                  </Tooltip>
+                </Option>
+              )}
+              {availableGoalTypes.includes(GoalType.RECURRING) && (
+                <Option value={GoalType.RECURRING}>
+                  <Tooltip
+                    title={`${goalTypeTooltips[GoalType.RECURRING].description} ${goalTypeTooltips[GoalType.RECURRING].example}`}
+                  >
+                    Recurring
+                  </Tooltip>
+                </Option>
+              )}
+              {availableGoalTypes.includes(GoalType.HABIT) && (
+                <Option value={GoalType.HABIT}>
+                  <Tooltip
+                    title={`${goalTypeTooltips[GoalType.HABIT].description} ${goalTypeTooltips[GoalType.HABIT].example}`}
+                  >
+                    Habit
+                  </Tooltip>
+                </Option>
+              )}
             </Select>
           </Form.Item>
         </Col>
@@ -477,6 +541,40 @@ export const GoalForm: React.FC<GoalFormProps> = ({
           )}
         </Space>
       </Form.Item>
+
+      {/* Goal Type Help Modal */}
+      <Modal
+        title="Goal Types Explained"
+        open={helpModalOpen}
+        onCancel={() => setHelpModalOpen(false)}
+        footer={null}
+        width={600}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {Object.values(GoalType).map((type) => {
+            const data = goalTypeTooltips[type];
+            if (!data || !availableGoalTypes.includes(type)) return null;
+            return (
+              <div
+                key={type}
+                style={{
+                  padding: 12,
+                  borderRadius: 8,
+                  border: '1px solid',
+                  borderColor: 'var(--ant-color-border)',
+                  background: 'var(--ant-color-fill-quaternary)',
+                }}
+              >
+                <strong style={{ color: 'var(--ant-color-text)' }}>{data.label}</strong>
+                <p style={{ margin: '4px 0 0', color: 'var(--ant-color-text-secondary)' }}>{data.description}</p>
+                <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--ant-color-text-tertiary)' }}>
+                  {data.example}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
     </Form>
   );
 };
