@@ -754,7 +754,7 @@ datadogRum.init({
   applicationId: process.env.REACT_APP_DATADOG_APP_ID,
   clientToken: process.env.REACT_APP_DATADOG_CLIENT_TOKEN,
   site: 'datadoghq.com',
-  service: 'goals-tracking-app',
+  service: 'momentum-app',
   env: process.env.NODE_ENV,
   version: process.env.REACT_APP_VERSION,
   sampleRate: 100,

@@ -155,3 +155,16 @@ Detailed guidelines available in:
 - `.ai-assistant/rules/` - Comprehensive development guidelines
 - `specs/` - Business rules, data flows, feature specs, and test specs
 - `GOALS_TRACKING_SYSTEM_PLAN.md` - System architecture overview
+
+## Active Technologies
+
+- TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9, Zod 3.22.4 (019-goal-type-tooltips)
+
+- TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9 (018-fix-milestone-goal-creation)
+
+- TypeScript 5.3.3, React 18.2.0 + React Query 5.17.9, Zustand 4.4.7, Ant Design 5.12.8 (017-fix-duplicate-progress-error)
+- IndexedDB (via storage service layer) (017-fix-duplicate-progress-error)
+
+## Recent Changes
+
+- 017-fix-duplicate-progress-error: Added TypeScript 5.3.3, React 18.2.0 + React Query 5.17.9, Zustand 4.4.7, Ant Design 5.12.8
