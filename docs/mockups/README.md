@@ -1,10 +1,11 @@
 # Mockups Directory
 
-This directory contains UI mockups and design references for the Goals Tracking Management System.
+This directory contains UI mockups and design references for Momentum.
 
 ## Purpose
 
 Mockups in this directory serve as:
+
 - Visual references for developers implementing UI components
 - Design specifications for the user interface
 - Documentation for agents working on the project
@@ -13,6 +14,7 @@ Mockups in this directory serve as:
 ## Current Mockups
 
 ### Dashboard Mockup
+
 - **File**: `dashboard-mockup.md` (description)
 - **Image**: `dashboard-mockup.png` (to be added)
 - **Description**: Comprehensive multi-panel dashboard showing Goals Tracking, Goals List, Goal Detail, and Reports & Analytics views
@@ -38,7 +40,7 @@ When adding new mockups:
 ## Image Formats
 
 Preferred formats:
+
 - PNG (for screenshots, UI mockups)
 - JPG (for photos, if needed)
 - SVG (for vector graphics, if applicable)
-

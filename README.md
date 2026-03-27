@@ -1,10 +1,17 @@
-# Goals Tracking Management System
+# Momentum
 
-A comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
+[![CI](https://github.com/williamquintas/momentum/workflows/CI/badge.svg)](https://github.com/williamquintas/momentum/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
+
+Momentum is a comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
 
 ## 🎯 Features
 
 ### Multiple Goal Types
+
 - **Quantitative Goals**: Track numeric targets with progress bars and percentage completion
 - **Qualitative Goals**: Monitor descriptive achievements with milestone checkpoints
 - **Binary/Checkbox Goals**: Simple done/not-done tracking with count-based progress
@@ -14,6 +21,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 - **Time-Bound Goals**: Goals with specific deadlines and countdown timers
 
 ### Key Capabilities
+
 - 📊 **Dashboard Overview**: Immediate insight into overall goal performance
 - 📋 **Goal List View**: Comprehensive list with filtering, sorting, and search
 - 📈 **Progress Tracking**: Visual progress indicators and completion metrics
@@ -29,7 +37,7 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 - **State Management**: Redux Toolkit or Zustand
 - **Data Fetching**: React Query (TanStack Query)
 - **Styling**: Ant Design theme customization, CSS-in-JS if needed
-- **Build Tool**: Next.js (or Vite/Webpack based on configuration)
+- **Build Tool**: Vite
 
 ## 🚀 Getting Started
 
@@ -42,12 +50,14 @@ A comprehensive goals tracking management system built with React, TypeScript, a
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
-cd goals-tracking
+cd momentum
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 # or
@@ -55,19 +65,23 @@ yarn install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env.local
 # Edit .env.local with your configuration
 ```
 
 4. Start the development server:
+
 ```bash
 npm run dev
 # or
 yarn dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:5173](http://localhost:5173) in your browser (Vite default port)
+
+> **Note**: The default port for Vite is 5173, not 3000. Check your terminal output for the actual port.
 
 ## 📁 Project Structure
 
@@ -96,18 +110,22 @@ src/
 
 ### Development Guidelines
 
-This project includes comprehensive development guidelines organized in the `.cursor/rules/` directory:
+This project includes comprehensive development guidelines organized in the `.ai-assistant/rules/` directory:
 
-- **[Code Standards](./.cursor/rules/code-standards.md)** - TypeScript, React patterns, naming conventions
-- **[Architecture](./.cursor/rules/architecture.md)** - System and component architecture
-- **[UI Component Guidelines](./.cursor/rules/ui-component-guidelines.md)** - Component development and Ant Design usage
-- **[State Management](./.cursor/rules/state-management.md)** - State management patterns
-- **[API & Data Handling](./.cursor/rules/api-data-handling.md)** - API service patterns
-- **[Error Handling](./.cursor/rules/error-handling.md)** - Error handling strategies
-- **[Testing](./.cursor/rules/testing.md)** - Testing guidelines
-- **[Performance Optimization](./.cursor/rules/performance-optimization.md)** - Performance best practices
-- **[Accessibility](./.cursor/rules/accessibility.md)** - Accessibility guidelines
-- **[Security](./.cursor/rules/security.md)** - Security best practices
+- **[Code Standards](./.ai-assistant/rules/code-standards.md)** - TypeScript, React patterns, naming conventions
+- **[Architecture](./.ai-assistant/rules/architecture.md)** - System and component architecture
+- **[UI Component Guidelines](./.ai-assistant/rules/ui-component-guidelines.md)** - Component development and Ant Design usage
+- **[State Management](./.ai-assistant/rules/state-management.md)** - State management patterns
+- **[API & Data Handling](./.ai-assistant/rules/api-data-handling.md)** - API service patterns
+- **[Error Handling](./.ai-assistant/rules/error-handling.md)** - Error handling strategies
+- **[Testing](./.ai-assistant/rules/testing.md)** - Testing guidelines
+- **[Performance Optimization](./.ai-assistant/rules/performance-optimization.md)** - Performance best practices
+- **[Accessibility](./.ai-assistant/rules/accessibility.md)** - Accessibility guidelines
+- **[Security](./.ai-assistant/rules/security.md)** - Security best practices
+
+### AI Assistant Agnostic Guidance
+
+This documentation is designed for any AI coding assistant real-world workflow (GitHub Copilot, Claude Code, Cursor, Gemini, etc.). Use “AI assistant” terminology in prompts and templates instead of hardcoded brand names.
 
 For a complete list of all development guidelines, see [AGENTS.md](./AGENTS.md).
 
@@ -118,6 +136,7 @@ For detailed system requirements and planning, see [GOALS_TRACKING_SYSTEM_PLAN.m
 ### UI Mockups
 
 UI mockups and design references are available in the [docs/mockups](./docs/mockups/) directory:
+
 - **[Dashboard Mockup](./docs/mockups/dashboard-mockup.md)** - Comprehensive dashboard interface mockup with four panel views
 
 ## 🧪 Development
@@ -151,23 +170,78 @@ npm run type-check   # Run TypeScript type checking
 
 ## 🤝 Contributing
 
-1. Follow the [Git Workflow](./.cursor/rules/git-workflow.md) guidelines
-2. Adhere to [Code Standards](./.cursor/rules/code-standards.md)
-3. Write tests for new features
-4. Ensure accessibility compliance
-5. Update documentation as needed
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details on:
+
+- How to set up your development environment
+- Code style and standards
+- How to submit pull requests
+- Testing requirements
+- Commit message conventions
+
+Before contributing, please read our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests and linting (`npm run validate`)
+5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for more details.
+
+## 👥 Contributors
+
+Thank you to all the wonderful people who have contributed to this project!
+
+See [CONTRIBUTORS.md](./CONTRIBUTORS.md) for the full list of contributors.
+
+## 💬 Support
+
+Need help? Here are some ways to get support:
+
+- 📚 **Documentation**: Check our [README](./README.md) and [Contributing Guide](./CONTRIBUTING.md)
+- 💬 **Discussions**: Ask questions in [GitHub Discussions](https://github.com/williamquintas/momentum/discussions)
+- 🐛 **Bug Reports**: Report bugs using the [bug report template](https://github.com/williamquintas/momentum/issues/new?template=bug_report.md)
+- ✨ **Feature Requests**: Suggest features using the [feature request template](https://github.com/williamquintas/momentum/issues/new?template=feature_request.md)
+- 📖 **Support Guide**: See [.github/SUPPORT.md](.github/SUPPORT.md) for more information
 
 ## 📝 License
 
-[Add your license here]
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## 📦 Demo
+
+<!-- Add live demo link when available -->
+
+🚀 **Live Demo**: Coming soon!
+
+<!-- Add screenshots/GIFs when available -->
+
+### Screenshots
+
+<!-- Add screenshots here -->
+
+- Dashboard view
+- Goal list view
+- Goal detail view
 
 ## 🔗 Links
 
 - [System Planning Document](./GOALS_TRACKING_SYSTEM_PLAN.md)
 - [Development Guidelines Index](./AGENTS.md)
+- [Version Management Guide](./docs/VERSION_MANAGEMENT.md)
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Changelog](./CHANGELOG.md)
 - [Ant Design Documentation](https://ant.design/)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ---
 
-Built with ❤️ using React, TypeScript, and Ant Design
-
+Built with ❤️ and ☕️ using React, TypeScript, and Ant Design
