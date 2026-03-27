@@ -193,7 +193,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.new_version || steps.version_from_tag.new_version }}
           name: Release v${{ steps.version.new_version || steps.version_from_tag.new_version }}
