@@ -5,68 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-
-- Goal type tooltips in goal creation form to help users understand each goal type
-
-### Fixed
-
-- Milestone goal creation now submits correctly
-- Recurring and Habit goal types can now be created
-- Form resets after successful goal creation
-- Habit progress updates handle date objects correctly
-
-### Added
-
-- Initial project setup
-- GitHub Actions CI/CD workflow
-- Comprehensive documentation structure
-- Development guidelines and coding standards
-
-## [0.1.0-rc.2] - 2026-03-25
-
-### Fixed
-
-- Progress update duplicate detection now handles undefined history gracefully
-
-### Testing
-
-- Fixed HabitGoalFields tests to match actual component behavior
-
-## [0.1.0-rc.1] - 2026-03-25
-
-### Added
-
-- **Goal Features**: Favorites, archiving, and related goals display
-- **Goal Completion**: Complete goal dialog with celebration animations (confetti), manual and automatic completion detection
-- **Progress Tracking**: Duplicate detection for progress updates, milestone dependency validation, over-achievement support for quantitative goals
-- **Filtering & Search**: Filter by status, type, priority, category; search functionality
-- **View Goal Details**: Enhanced goal detail page with full information display
-- **Goal Status Management**: Status management capabilities
-
-### Changed
-
-- Updated progress calculation to support over-achievement
-- Enhanced validation for milestone dependencies
-
-### Fixed
-
-- Progress update duplicate detection
-
-### Testing
-
-- Unit tests for calculateProgress and progressHistory
-- Integration tests for update workflow
-- Component tests for UpdateProgressModal
-- Test coverage with @vitest/coverage-v8
-
-### Dependencies
-
-- Added @vitest/coverage-v8 for test coverage
-
-## [0.1.0] - 2026-01-15
+## [0.1.0] - 2026-03-27
 
 ### Added
 
@@ -75,20 +14,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Progress tracking and visualization
 - Dashboard overview
 - Goal list view with filtering and search
+- Goal type tooltips in goal creation form to help users understand each goal type
+- Runtime feature flags to disable goal types and features (milestone, recurring, habit, attachments, notes)
+- Feature flags controlled via environment variables (VITE*ENABLE*\*)
+- **Goal Features**: Favorites, archiving, and related goals display
+- **Goal Completion**: Complete goal dialog with celebration animations (confetti), manual and automatic completion detection
+- **Progress Tracking**: Duplicate detection for progress updates, milestone dependency validation, over-achievement support for quantitative goals
+- **Filtering & Search**: Filter by status, type, priority, category; search functionality
+- **View Goal Details**: Enhanced goal detail page with full information display
+- **Goal Status Management**: Status management capabilities
 - Responsive design for mobile, tablet, and desktop
 - Accessibility features
 - Local storage persistence
 - TypeScript type definitions
 - Comprehensive test coverage
+- GitHub Actions CI/CD workflow
 - Development documentation
 
 ### Changed
 
-- Initial release
+- Updated progress calculation to support over-achievement
+- Enhanced validation for milestone dependencies
 
 ### Fixed
 
-- N/A (initial release)
+- Milestone goal creation now submits correctly
+- Recurring and Habit goal types can now be created
+- Form resets after successful goal creation
+- Habit progress updates handle date objects correctly
+- Progress update duplicate detection now handles undefined history gracefully
+
+### Testing
+
+- Unit tests for calculateProgress and progressHistory
+- Integration tests for update workflow
+- Component tests for UpdateProgressModal
+- Fixed HabitGoalFields tests to match actual component behavior
+- Test coverage with @vitest/coverage-v8
+
+### Dependencies
+
+- Added @vitest/coverage-v8 for test coverage
 
 ### Security
 
