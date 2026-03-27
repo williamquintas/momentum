@@ -15,7 +15,7 @@ describe('GoalForm', () => {
     mockOnSubmit.mockClear();
   });
 
-  it.skip('renders the form with all common fields', () => {
+  it('renders the form with all common fields', () => {
     render(<GoalForm onSubmit={mockOnSubmit} />);
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
@@ -54,7 +54,7 @@ describe('GoalForm', () => {
     });
   });
 
-  it.skip('renders Milestone goal fields when type is selected', async () => {
+  it('renders Milestone goal fields when type is selected', async () => {
     const user = userEvent.setup();
     render(<GoalForm onSubmit={mockOnSubmit} />);
 
