@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Goal type tooltips in goal creation form to help users understand each goal type
+
 ### Fixed
 
 - Milestone goal creation now submits correctly
