@@ -21,7 +21,7 @@ export default defineConfig({
       devOptions: {
         enabled: true, // Enable PWA in development mode for testing
       },
-      includeAssets: ['favicon.ico', 'icons/icon-192.svg', 'icons/icon-512.svg'],
+      includeAssets: ['favicon.ico', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'],
       manifest: {
         name: 'Momentum',
         short_name: 'Momentum',
@@ -31,16 +31,43 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/',
         orientation: 'portrait-primary',
-        icons: [
+        screenshots: [
           {
-            src: 'icons/icon-192.svg',
-            sizes: '192x192',
-            type: 'image/svg+xml',
+            src: 'screenshots/screenshot-desktop.png',
+            sizes: '1920x1080',
+            type: 'image/png',
+            form_factor: 'wide',
           },
           {
-            src: 'icons/icon-512.svg',
+            src: 'screenshots/screenshot-mobile.png',
+            sizes: '720x1280',
+            type: 'image/png',
+          },
+        ],
+        icons: [
+          {
+            src: 'icons/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+          {
+            src: 'icons/icon-512.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+          {
+            src: 'icons/icon-1024.png',
+            sizes: '1024x1024',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+          {
+            src: 'icons/apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+            purpose: 'any',
           },
         ],
       },
