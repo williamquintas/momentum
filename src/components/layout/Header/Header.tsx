@@ -1,6 +1,7 @@
 import { Layout, Space, Typography, theme } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
+import { PwaInstallButton } from '@/components/common/PwaInstallButton';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { APP_NAME } from '@/utils/constants';
 
@@ -68,6 +69,7 @@ export const Header = () => {
       </div>
 
       <Space>
+        <PwaInstallButton />
         <ThemeToggle />
       </Space>
     </AntHeader>

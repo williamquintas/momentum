@@ -1,5 +1,6 @@
 import { BrowserRouter } from 'react-router-dom';
 
+import { UpdateToast } from '@/components/common/UpdateToast';
 import { AppRoutes } from '@/routes';
 
 /**
@@ -11,6 +12,7 @@ import { AppRoutes } from '@/routes';
 function App() {
   return (
     <BrowserRouter>
+      <UpdateToast />
       <AppRoutes />
     </BrowserRouter>
   );

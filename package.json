@@ -91,6 +91,7 @@
     "standard-version": "^9.5.0",
     "typescript": "5.3.3",
     "vite": "^6.1.6",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.1.2"
   },
   "lint-staged": {
