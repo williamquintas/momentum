@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- White background -->
+  <rect width="200" height="200" fill="#ffffff" />
+
+  <!-- Curved line from bottom-left (cut off) to upper-right -->
+  <!-- Line starts off-screen on the left, creating a horizontal cut-off effect -->
+  <path
+    d="M -10 170 Q 70 90, 150 35"
+    stroke="#1a1a1a"
+    stroke-width="18"
+    stroke-linecap="butt"
+    fill="none"
+  />
+  <!-- Circle at the end of the curve -->
+  <circle
+    cx="150"
+    cy="35"
+    r="11"
+    fill="#1a1a1a"
+  />
+</svg>
