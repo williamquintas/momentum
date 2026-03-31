@@ -31,14 +31,14 @@ export interface PwaInstallButtonProps {
  * (beforeinstallprompt event has not fired).
  */
 export const PwaInstallButton: React.FC<PwaInstallButtonProps> = ({ className }) => {
-  const { isInstallable, handleInstall } = usePwaInstall();
+  const { canInstall, promptInstall } = usePwaInstall();
 
   return (
     <Button
       type="default"
       icon={<DownloadOutlined />}
-      onClick={() => void handleInstall()}
-      disabled={!isInstallable}
+      onClick={() => void promptInstall()}
+      disabled={!canInstall}
       className={className}
       aria-label="Install App"
     >

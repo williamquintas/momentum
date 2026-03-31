@@ -1,21 +1,32 @@
 /**
  * usePwaInstall Hook Tests
- *
- * Tests for the usePwaInstall React hook for PWA installation
  */
 
 import { renderHook, act } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock the beforeinstallprompt event interface
 interface MockBeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   userChoice: Promise<{ outcome: string; platform: string }>;
   prompt(): Promise<void>;
 }
 
+// Helper to mock a mobile user agent
+const setMobileUserAgent = () => {
+  Object.defineProperty(navigator, 'userAgent', {
+    value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
+    configurable: true,
+  });
+};
+
+const setDesktopUserAgent = () => {
+  Object.defineProperty(navigator, 'userAgent', {
+    value: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+    configurable: true,
+  });
+};
+
 describe('usePwaInstall', () => {
-  // Store original window properties
   let originalAddEventListener: typeof window.addEventListener;
   let originalRemoveEventListener: typeof window.removeEventListener;
   let mockPromptEvent: MockBeforeInstallPromptEvent | null = null;
@@ -24,7 +35,8 @@ describe('usePwaInstall', () => {
     originalAddEventListener = window.addEventListener;
     originalRemoveEventListener = window.removeEventListener;
 
-    // Create mock prompt event with preventDefault
+    setMobileUserAgent();
+
     mockPromptEvent = {
       platforms: ['web', 'android'],
       userChoice: Promise.resolve({ outcome: 'accepted', platform: 'web' }),
@@ -32,10 +44,8 @@ describe('usePwaInstall', () => {
       preventDefault: vi.fn(),
     } as unknown as MockBeforeInstallPromptEvent;
 
-    // Mock event listener to directly trigger the handler
     window.addEventListener = vi.fn((event: string, handler: EventListenerOrEventListenerObject) => {
       if (event === 'beforeinstallprompt' && mockPromptEvent) {
-        // Immediately call the handler with the mock event
         setTimeout(() => {
           if (typeof handler === 'function') {
             handler(mockPromptEvent as Event);
@@ -44,6 +54,14 @@ describe('usePwaInstall', () => {
       }
     });
     window.removeEventListener = vi.fn();
+
+    // Mock localStorage for cookie consent
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key: string) => {
+      if (key === 'cookie-consent')
+        return JSON.stringify({ status: 'accepted', expiryDate: new Date(Date.now() + 86400000).toISOString() });
+      return null;
+    });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -53,40 +71,8 @@ describe('usePwaInstall', () => {
     mockPromptEvent = null;
   });
 
-  describe('isInstallable', () => {
+  describe('canInstall', () => {
     it('returns false when beforeinstallprompt event has not fired', async () => {
-      // Temporarily override to not fire the event
-      window.addEventListener = vi.fn();
-
-      const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
-
-      // Wait for hook to initialize
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 10));
-      });
-
-      // Initially, before the event fires, isInstallable should be false
-      expect(result.current.isInstallable).toBe(false);
-    });
-
-    it('returns true when beforeinstallprompt event has fired with a valid prompt', async () => {
-      const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
-
-      // Wait for the async event handler to fire
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 50));
-      });
-
-      // After the event fires, isInstallable should be true
-      expect(result.current.isInstallable).toBe(true);
-    });
-  });
-
-  describe('deferredPrompt', () => {
-    it('is null initially', async () => {
-      // Temporarily override to not fire the event
       window.addEventListener = vi.fn();
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
@@ -96,28 +82,38 @@ describe('usePwaInstall', () => {
         await new Promise((resolve) => setTimeout(resolve, 10));
       });
 
-      expect(result.current.deferredPrompt).toBe(null);
+      expect(result.current.canInstall).toBe(false);
     });
 
-    it('contains the event after beforeinstallprompt fires', async () => {
+    it('returns true when beforeinstallprompt event has fired on mobile', async () => {
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
       const { result } = renderHook(() => usePwaInstall());
 
-      // Wait for the async event handler to fire
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
-      // After the event fires, deferredPrompt should contain the event
-      expect(result.current.deferredPrompt).not.toBe(null);
+      expect(result.current.canInstall).toBe(true);
+    });
+
+    it('returns false on desktop even when event fires', async () => {
+      setDesktopUserAgent();
+
+      const { usePwaInstall } = await import('@/hooks/usePwaInstall');
+      const { result } = renderHook(() => usePwaInstall());
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      });
+
+      expect(result.current.canInstall).toBe(false);
     });
   });
 
-  describe('handleInstall', () => {
-    it('calls prompt() on deferredPrompt when available', async () => {
+  describe('promptInstall', () => {
+    it('calls prompt() on the install event when available', async () => {
       const mockPromptFn = vi.fn().mockResolvedValue(undefined);
 
-      // Re-create mock with spy
       mockPromptEvent = {
         platforms: ['web', 'android'],
         userChoice: Promise.resolve({ outcome: 'accepted', platform: 'web' }),
@@ -138,22 +134,18 @@ describe('usePwaInstall', () => {
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
       const { result } = renderHook(() => usePwaInstall());
 
-      // Wait for the event to fire
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
       });
 
-      // Now call handleInstall
       await act(async () => {
-        await result.current.handleInstall();
+        await result.current.promptInstall();
       });
 
-      // prompt() should have been called
       expect(mockPromptFn).toHaveBeenCalledTimes(1);
     });
 
-    it('does nothing when deferredPrompt is null', async () => {
-      // Prevent event from firing
+    it('does nothing when canInstall is false', async () => {
       window.addEventListener = vi.fn();
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
@@ -163,13 +155,28 @@ describe('usePwaInstall', () => {
         await new Promise((resolve) => setTimeout(resolve, 10));
       });
 
-      // Call handleInstall when deferredPrompt is null - should not throw
       await act(async () => {
-        await result.current.handleInstall();
+        await result.current.promptInstall();
       });
 
-      // Should complete without errors
       expect(true).toBe(true);
+    });
+  });
+
+  describe('dismiss', () => {
+    it('sets dismissed to true', async () => {
+      window.addEventListener = vi.fn();
+
+      const { usePwaInstall } = await import('@/hooks/usePwaInstall');
+      const { result } = renderHook(() => usePwaInstall());
+
+      expect(result.current.dismissed).toBe(false);
+
+      act(() => {
+        result.current.dismiss();
+      });
+
+      expect(result.current.dismissed).toBe(true);
     });
   });
 });

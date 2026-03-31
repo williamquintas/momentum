@@ -14,77 +14,51 @@ vi.mock('@/hooks/usePwaInstall', () => ({
 // Import the mock function after vi.mock
 import { usePwaInstall } from '@/hooks/usePwaInstall';
 
+const mockBase = {
+  dismissed: false,
+  dismiss: vi.fn(),
+  resetDismiss: vi.fn(),
+};
+
 describe('PwaInstallButton', () => {
-  const mockHandleInstall = vi.fn().mockResolvedValue(undefined);
+  const mockPromptInstall = vi.fn().mockResolvedValue(undefined);
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders button with correct text "Install App"', () => {
-    // Arrange: Mock hook to return isInstallable = true
-    vi.mocked(usePwaInstall).mockReturnValue({
-      isInstallable: true,
-      deferredPrompt: null,
-      handleInstall: mockHandleInstall,
-    });
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: true, promptInstall: mockPromptInstall });
 
-    // Act
     render(<PwaInstallButton />);
 
-    // Assert
     expect(screen.getByRole('button', { name: /install app/i })).toBeInTheDocument();
   });
 
-  it('button is disabled when isInstallable is false', () => {
-    // Arrange: Mock hook to return isInstallable = false
-    vi.mocked(usePwaInstall).mockReturnValue({
-      isInstallable: false,
-      deferredPrompt: null,
-      handleInstall: mockHandleInstall,
-    });
+  it('button is disabled when canInstall is false', () => {
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: false, promptInstall: mockPromptInstall });
 
-    // Act
     render(<PwaInstallButton />);
 
-    // Assert
-    const button = screen.getByRole('button', { name: /install app/i });
-    expect(button).toBeDisabled();
+    expect(screen.getByRole('button', { name: /install app/i })).toBeDisabled();
   });
 
-  it('button is enabled when isInstallable is true', () => {
-    // Arrange: Mock hook to return isInstallable = true
-    vi.mocked(usePwaInstall).mockReturnValue({
-      isInstallable: true,
-      deferredPrompt: null,
-      handleInstall: mockHandleInstall,
-    });
+  it('button is enabled when canInstall is true', () => {
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: true, promptInstall: mockPromptInstall });
 
-    // Act
     render(<PwaInstallButton />);
 
-    // Assert
-    const button = screen.getByRole('button', { name: /install app/i });
-    expect(button).toBeEnabled();
+    expect(screen.getByRole('button', { name: /install app/i })).toBeEnabled();
   });
 
-  it('handleInstall is called when button is clicked (when enabled)', async () => {
-    // Arrange: Mock hook to return isInstallable = true
-    vi.mocked(usePwaInstall).mockReturnValue({
-      isInstallable: true,
-      deferredPrompt: null,
-      handleInstall: mockHandleInstall,
-    });
+  it('promptInstall is called when button is clicked', async () => {
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: true, promptInstall: mockPromptInstall });
 
-    // Act
     render(<PwaInstallButton />);
-    const button = screen.getByRole('button', { name: /install app/i });
-    fireEvent.click(button);
+    fireEvent.click(screen.getByRole('button', { name: /install app/i }));
 
-    // Wait for async handleInstall
     await new Promise((r) => setTimeout(r, 100));
 
-    // Assert
-    expect(mockHandleInstall).toHaveBeenCalledTimes(1);
+    expect(mockPromptInstall).toHaveBeenCalledTimes(1);
   });
 });
