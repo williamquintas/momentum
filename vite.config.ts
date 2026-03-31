@@ -26,7 +26,7 @@ export default defineConfig({
         name: 'Momentum',
         short_name: 'Momentum',
         description: 'Comprehensive goals tracking management system',
-        theme_color: '#1890ff',
+        theme_color: '#22C55E',
         background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
