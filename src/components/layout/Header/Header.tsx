@@ -1,7 +1,9 @@
-import { Layout, Space, Typography, theme } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Button, Layout, Space, Tooltip, Typography, theme } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 import { ThemeToggle } from '@/components/common/ThemeToggle';
+import { usePwaInstall } from '@/hooks/usePwaInstall';
 import { APP_NAME } from '@/utils/constants';
 
 import './Header.css';
@@ -22,6 +24,7 @@ const { Text } = Typography;
 export const Header = () => {
   const { token } = theme.useToken();
   const navigate = useNavigate();
+  const { canInstall, dismissed, promptInstall } = usePwaInstall();
 
   const handleLogoClick = () => {
     navigate('/');
@@ -68,6 +71,16 @@ export const Header = () => {
       </div>
 
       <Space>
+        {canInstall && dismissed && (
+          <Tooltip title="Install app">
+            <Button
+              icon={<DownloadOutlined />}
+              onClick={() => void promptInstall()}
+              type="text"
+              aria-label="Install Momentum app"
+            />
+          </Tooltip>
+        )}
         <ThemeToggle />
       </Space>
     </AntHeader>

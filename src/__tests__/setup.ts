@@ -22,3 +22,12 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+// Mock window.getComputedStyle for Ant Design jsdom compatibility
+Object.defineProperty(window, 'getComputedStyle', {
+  writable: true,
+  value: vi.fn().mockImplementation(() => ({
+    display: 'none',
+    length: 0,
+  })),
+});
