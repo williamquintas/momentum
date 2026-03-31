@@ -10,7 +10,6 @@ import React from 'react';
 
 import { DownloadOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import { useTranslation } from 'react-i18next';
 
 import { usePwaInstall } from '@/hooks/usePwaInstall';
 
@@ -33,7 +32,6 @@ export interface PwaInstallButtonProps {
  */
 export const PwaInstallButton: React.FC<PwaInstallButtonProps> = ({ className }) => {
   const { canInstall, promptInstall } = usePwaInstall();
-  const { t } = useTranslation();
 
   return (
     <Button
@@ -42,9 +40,9 @@ export const PwaInstallButton: React.FC<PwaInstallButtonProps> = ({ className })
       onClick={() => void promptInstall()}
       disabled={!canInstall}
       className={className}
-      aria-label={t('pwa.installButton.ariaLabel')}
+      aria-label="Install App"
     >
-      {t('pwa.install.installButton')}
+      Install App
     </Button>
   );
 };

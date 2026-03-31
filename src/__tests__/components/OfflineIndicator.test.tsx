@@ -82,7 +82,7 @@ describe('OfflineIndicator', () => {
       const { container } = render(<OfflineIndicator />);
 
       // Should have a close button
-      const closeButton = container.querySelector('.ant-alert-close-icon');
+      const closeButton = container.querySelector('.ant-alert-close');
       expect(closeButton).toBeInTheDocument();
     });
 

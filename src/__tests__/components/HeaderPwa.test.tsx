@@ -3,46 +3,67 @@
  * Tests User Story 4 - Accessible Install Button
  */
 
-import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Header } from '@/components/layout/Header';
-import { ThemeContextProvider } from '@/contexts/ThemeContext';
 
-describe.skip('Header PWA Install Integration', () => {
-  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-    <BrowserRouter>
-      <ThemeContextProvider>{children}</ThemeContextProvider>
-    </BrowserRouter>
-  );
+// Mock the usePwaInstall hook
+vi.mock('@/hooks/usePwaInstall', () => ({
+  usePwaInstall: vi.fn(),
+}));
+
+// Import the mock function after vi.mock
+import { usePwaInstall } from '@/hooks/usePwaInstall';
+
+const mockBase = {
+  dismissed: false,
+  promptInstall: vi.fn().mockResolvedValue(undefined),
+  dismiss: vi.fn(),
+  resetDismiss: vi.fn(),
+};
+
+describe('Header PWA Install Integration', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it('renders install icon in header when canInstall and dismissed', () => {
-    render(
-      <TestWrapper>
-        <Header />
-      </TestWrapper>
-    );
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: true, dismissed: true });
 
-    expect(screen.getByRole('button', { name: 'Install App' })).toBeInTheDocument();
+    render(<Header />);
+
+    expect(screen.getByRole('button', { name: /install momentum app/i })).toBeInTheDocument();
   });
 
   it('does not render install icon when canInstall is false', () => {
-    render(
-      <TestWrapper>
-        <Header />
-      </TestWrapper>
-    );
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: false, dismissed: true });
 
-    expect(screen.queryByRole('button', { name: /install/i })).not.toBeInTheDocument();
+    render(<Header />);
+
+    expect(screen.queryByRole('button', { name: /install momentum app/i })).not.toBeInTheDocument();
+  });
+
+  it('does not render install icon when banner is showing (dismissed = false)', () => {
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: true, dismissed: false });
+
+    render(<Header />);
+
+    expect(screen.queryByRole('button', { name: /install momentum app/i })).not.toBeInTheDocument();
+  });
+
+  it('renders ThemeToggle alongside install icon', () => {
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: true, dismissed: true });
+
+    render(<Header />);
+
+    expect(screen.getByRole('button', { name: /install momentum app/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /switch theme/i })).toBeInTheDocument();
   });
 
   it('displays app logo and title', () => {
-    render(
-      <TestWrapper>
-        <Header />
-      </TestWrapper>
-    );
+    vi.mocked(usePwaInstall).mockReturnValue({ ...mockBase, canInstall: false, dismissed: false });
+
+    render(<Header />);
 
     expect(screen.getByText('Momentum')).toBeInTheDocument();
     expect(screen.getByAltText(/momentum logo/i)).toBeInTheDocument();
