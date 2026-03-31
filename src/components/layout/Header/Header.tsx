@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { NotificationBell } from '@/components/common/NotificationBell';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
 import { APP_NAME } from '@/utils/constants';
@@ -93,6 +94,7 @@ export const Header = () => {
             aria-label={t('header.goToSettings')}
           />
         </Tooltip>
+        <NotificationBell />
         <ThemeToggle />
       </Space>
     </AntHeader>
