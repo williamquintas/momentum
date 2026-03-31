@@ -5,6 +5,10 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
+[![Test Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen.svg)](#)
+[![Vitest](https://img.shields.io/badge/Vitest-4.1-blue.svg)](https://vitest.dev/)
+[![ESLint](https://img.shields.io/badge/ESLint-8.56-blue.svg)](https://eslint.org)
+[![Prettier](https://img.shields.io/badge/Prettier-3.1-blue.svg)](https://prettier.io)
 
 Momentum is a comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
 
@@ -32,18 +36,56 @@ Momentum is a comprehensive goals tracking management system built with React, T
 
 ## 🛠️ Technology Stack
 
-- **Frontend Framework**: React with TypeScript
-- **UI Library**: Ant Design (antd)
-- **State Management**: Redux Toolkit or Zustand
-- **Data Fetching**: React Query (TanStack Query)
-- **Styling**: Ant Design theme customization, CSS-in-JS if needed
-- **Build Tool**: Vite
+- **Frontend Framework**: React 18.2.0 with TypeScript 5.3.3
+- **UI Library**: Ant Design 5.12.8
+- **State Management**: Zustand 4.4.7
+- **Data Fetching**: React Query (TanStack Query) 5.17.9
+- **Validation**: Zod 3.22.4
+- **Build Tool**: Vite 6.1.6
+- **Testing**: Vitest 4.1.2
 
-## 🚀 Getting Started
+## 🚀 Quick Start
+
+Get up and running in under 2 minutes:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/williamquintas/momentum.git
+cd momentum
+
+# 2. Install dependencies
+npm install
+
+# 3. Start development server
+npm run dev
+
+# 4. Open http://localhost:5173
+```
+
+That's it! The app is now running with hot reload.
+
+### Run Tests
+
+```bash
+npm test           # Run tests
+npm run test:watch # Watch mode
+npm run test:coverage # With coverage
+```
+
+### Build for Production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## 📋 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher recommended)
+- Node.js (v24.0.0 or higher, see `.nvmrc`)
 - npm or yarn package manager
 - Git
 
@@ -125,7 +167,7 @@ This project includes comprehensive development guidelines organized in the `.ai
 
 ### AI Assistant Agnostic Guidance
 
-This documentation is designed for any AI coding assistant real-world workflow (GitHub Copilot, Claude Code, Cursor, Gemini, etc.). Use “AI assistant” terminology in prompts and templates instead of hardcoded brand names.
+This documentation is designed for any AI coding assistant real-world workflow (GitHub Copilot, Claude Code, Cursor, Gemini, etc.). Use "AI assistant" terminology in prompts and templates instead of hardcoded brand names.
 
 For a complete list of all development guidelines, see [AGENTS.md](./AGENTS.md).
 
