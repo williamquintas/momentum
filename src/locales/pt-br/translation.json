@@ -18,6 +18,7 @@
     "previous": "Anterior",
     "yes": "Sim",
     "no": "Não",
+    "optional": "Opcional",
     "ok": "OK"
   },
   "nav": {
@@ -243,6 +244,7 @@
       "category": "Categoria",
       "startDate": "Data de Início",
       "deadline": "Prazo",
+      "deadlineAfterStart": "O prazo deve ser posterior à data de início",
       "placeholders": {
         "title": "Digite o título da meta",
         "description": "Digite a descrição da meta (opcional)",
@@ -281,6 +283,7 @@
   "settings": {
     "title": "Configurações",
     "language": "Idioma",
+    "selectLanguage": "Selecione seu idioma:",
     "theme": "Tema",
     "darkMode": "Modo Escuro",
     "lightMode": "Modo Claro",

@@ -4,7 +4,6 @@ import { CookieConsent } from '@/components/common/CookieConsent';
 import { InstallPrompt } from '@/components/common/InstallPrompt';
 import { UpdateToast } from '@/components/common/UpdateToast';
 import { PwaInstallProvider } from '@/contexts/PwaInstallContext';
-import '@/i18n';
 import { AppRoutes } from '@/routes';
 
 /**

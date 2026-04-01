@@ -15,7 +15,7 @@ import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/i18n';
 
 // Map language codes to country codes for flags
 const LANGUAGE_COUNTRY_CODES: Record<SupportedLanguage, string> = {
-  'pt-br': 'BR',
+  'pt-BR': 'BR',
   en: 'US',
   es: 'ES',
 };

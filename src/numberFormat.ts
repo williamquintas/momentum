@@ -4,13 +4,14 @@
  * Provides locale-aware number, currency, and percentage formatting.
  */
 
+import i18n from './i18n';
+
 /**
  * Gets the Intl locale code based on i18n language
  * @returns The Intl locale string
  */
 const getIntlLocale = (): string => {
-  // Default fallback - can be enhanced to read from i18n when available
-  const lang = 'en';
+  const lang = i18n.language || 'en';
   const localeMap: Record<string, string> = {
     en: 'en-US',
     es: 'es-ES',

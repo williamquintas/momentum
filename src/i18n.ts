@@ -19,7 +19,7 @@ import ptBR from './locales/pt-br/translation.json';
 export const SUPPORTED_LANGUAGES = {
   en: { code: 'en', name: 'English', nativeName: 'English' },
   es: { code: 'es', name: 'Spanish', nativeName: 'Español' },
-  'pt-br': { code: 'pt', name: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)' },
+  'pt-BR': { code: 'pt-BR', name: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)' },
 } as const;
 
 /**
@@ -39,9 +39,11 @@ const i18nOptions = {
   resources: {
     en: { translation: en },
     es: { translation: es },
-    'pt-br': { translation: ptBR },
+    'pt-BR': { translation: ptBR },
   },
+  supportedLngs: ['en', 'es', 'pt-BR'],
   fallbackLng: DEFAULT_LANGUAGE,
+  load: 'currentOnly' as const,
   debug: import.meta.env.DEV,
 
   // Language detection options
