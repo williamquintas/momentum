@@ -147,3 +147,10 @@ export const getReleaseType = (version: string): 'major' | 'minor' | 'patch' => 
   if (majorNum === 1 && minorNum > 0) return 'minor';
   return 'patch';
 };
+
+/**
+ * Checks if a version string is a pre-release (RC, beta, alpha)
+ */
+export const isPrerelease = (version: string): boolean => {
+  return /-rc\.|rc-/.test(version) || /-beta\./.test(version) || /-alpha\./.test(version);
+};

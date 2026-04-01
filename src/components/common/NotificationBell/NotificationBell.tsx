@@ -13,7 +13,7 @@ import { WhatsNewModal } from '@/components/common/WhatsNewModal';
 import { useReleaseNotifications } from '@/features/releases/hooks/useReleaseNotifications';
 import { getReleasesPageUrl } from '@/features/releases/services/githubApi';
 import type { GitHubRelease, ReleaseNotification } from '@/features/releases/types';
-import { formatReleaseDate, getReleaseType } from '@/features/releases/utils/parseReleaseNotes';
+import { formatReleaseDate, getReleaseType, isPrerelease } from '@/features/releases/utils/parseReleaseNotes';
 
 import './NotificationBell.css';
 
@@ -106,7 +106,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ showWhatsNew
         </div>
         <List
           className="notification-list"
-          dataSource={notifications.slice(0, 10)}
+          dataSource={notifications.filter((n) => !isPrerelease(n.release.tag_name)).slice(0, 10)}
           renderItem={(item) => {
             const releaseType = getReleaseType(item.release.tag_name);
             const categoryColors: Record<string, string> = {
@@ -175,7 +175,12 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ showWhatsNew
           </Popover>
         </Badge>
       </Tooltip>
-      <WhatsNewModal release={selectedRelease} open={whatsNewOpen} onClose={handleWhatsNewClose} />
+      <WhatsNewModal
+        releases={notifications.filter((n) => !isPrerelease(n.release.tag_name)).map((n) => n.release)}
+        open={whatsNewOpen}
+        onClose={handleWhatsNewClose}
+        initialRelease={selectedRelease}
+      />
     </>
   );
 };

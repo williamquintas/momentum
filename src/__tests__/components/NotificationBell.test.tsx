@@ -21,6 +21,7 @@ vi.mock('@/features/releases/utils/parseReleaseNotes', () => ({
     if (version.startsWith('v1.1')) return 'minor';
     return 'patch';
   }),
+  isPrerelease: vi.fn((version: string) => version.includes('-rc.') || version.includes('rc-')),
 }));
 
 vi.mock('@/features/releases/services/githubApi', () => ({
@@ -129,7 +130,7 @@ describe('NotificationBell', () => {
       markAsRead: vi.fn(),
       markAllAsRead: vi.fn(),
       dismissNotification: vi.fn(),
-      latestRelease: mockNotifications[0].release,
+      latestRelease: mockNotifications[0]!.release,
     });
 
     const TestWrapper = createTestWrapper();
@@ -188,7 +189,7 @@ describe('NotificationBell', () => {
       markAsRead: markAsReadFn,
       markAllAsRead: markAllAsReadFn,
       dismissNotification: vi.fn(),
-      latestRelease: mockNotifications[0].release,
+      latestRelease: mockNotifications[0]!.release,
     });
 
     const TestWrapper = createTestWrapper();
@@ -223,7 +224,7 @@ describe('NotificationBell', () => {
       markAsRead: markAsReadFn,
       markAllAsRead: vi.fn(),
       dismissNotification: vi.fn(),
-      latestRelease: mockNotifications[0].release,
+      latestRelease: mockNotifications[0]!.release,
     });
 
     const TestWrapper = createTestWrapper();
@@ -264,7 +265,7 @@ describe('NotificationBell', () => {
       markAsRead: vi.fn(),
       markAllAsRead: markAllAsReadFn,
       dismissNotification: vi.fn(),
-      latestRelease: mockNotifications[0].release,
+      latestRelease: mockNotifications[0]!.release,
     });
 
     const TestWrapper = createTestWrapper();

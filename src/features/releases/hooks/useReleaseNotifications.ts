@@ -134,31 +134,34 @@ export const useReleaseNotifications = ({
     return releases[0];
   }, [releases]);
 
-  // Mark notification as read
+  // Mark notification as read - get fresh notifications from cache to avoid stale closure
   const markAsRead = useCallback(
     (id: string) => {
-      const updatedNotifications = markAsReadStorage(notifications, id);
+      const currentNotifications = queryClient.getQueryData<ReleaseNotification[]>(['notifications']) || [];
+      const updatedNotifications = markAsReadStorage(currentNotifications, id);
       saveNotifications(updatedNotifications);
       queryClient.setQueryData(['notifications'], updatedNotifications);
     },
-    [notifications, queryClient]
+    [queryClient]
   );
 
-  // Mark all as read
+  // Mark all as read - get fresh notifications from cache to avoid stale closure
   const markAllAsRead = useCallback(() => {
-    const updatedNotifications = markAllAsReadStorage(notifications);
+    const currentNotifications = queryClient.getQueryData<ReleaseNotification[]>(['notifications']) || [];
+    const updatedNotifications = markAllAsReadStorage(currentNotifications);
     saveNotifications(updatedNotifications);
     queryClient.setQueryData(['notifications'], updatedNotifications);
-  }, [notifications, queryClient]);
+  }, [queryClient]);
 
-  // Dismiss a notification (remove it)
+  // Dismiss a notification (remove it) - get fresh notifications from cache
   const dismissNotification = useCallback(
     (id: string) => {
-      const updatedNotifications = notifications.filter((n) => n.id !== id);
+      const currentNotifications = queryClient.getQueryData<ReleaseNotification[]>(['notifications']) || [];
+      const updatedNotifications = currentNotifications.filter((n) => n.id !== id);
       saveNotifications(updatedNotifications);
       queryClient.setQueryData(['notifications'], updatedNotifications);
     },
-    [notifications, queryClient]
+    [queryClient]
   );
 
   return {
