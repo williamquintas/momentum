@@ -10,7 +10,6 @@ Before asking for help, please check our documentation:
 
 - **[README.md](../README.md)** - Quick start and overview
 - **[Contributing Guide](../CONTRIBUTING.md)** - Development setup and guidelines
-- **[System Plan](../GOALS_TRACKING_SYSTEM_PLAN.md)** - Detailed system documentation
 - **[Development Guidelines](../.ai-assistant/rules/)** - Comprehensive development guidelines
 
 ### 💬 Discussions

@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom';
  * for Momentum.
  *
  * Future enhancement: This could be replaced with a dashboard showing
- * overview metrics, recent goals, and quick actions (see dashboard-mockup.md).
+ * overview metrics, recent goals, and quick actions.
  */
 export const HomePage = () => {
   return <Navigate to="/goals" replace />;

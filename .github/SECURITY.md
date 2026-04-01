@@ -19,8 +19,8 @@ We take the security of the Goals Tracking System seriously. If you believe you 
 
 Instead, please report them via one of the following methods:
 
-1. **Email**: Send an email to [YOUR_EMAIL] with the subject line "Security Vulnerability Report"
-2. **Private Security Advisory**: Create a private security advisory in this repository (if you have access)
+1. **GitHub Security Advisories**: [Report a vulnerability](https://github.com/williamquintas/momentum/security/advisories/new) (preferred)
+2. **Email**: Contact via GitHub for urgent security issues
 
 ### What to Include
 
