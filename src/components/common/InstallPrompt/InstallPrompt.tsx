@@ -1,10 +1,12 @@
 import { DownloadOutlined } from '@ant-design/icons';
 import { Alert, Button, Space } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import { usePwaInstall } from '@/hooks/usePwaInstall';
 
 export const InstallPrompt = () => {
   const { canInstall, dismissed, promptInstall, dismiss } = usePwaInstall();
+  const { t } = useTranslation();
 
   if (!canInstall || dismissed) {
     return null;
@@ -12,15 +14,15 @@ export const InstallPrompt = () => {
 
   return (
     <Alert
-      message="Install Momentum"
+      message={t('pwa.install.title')}
       description={
         <div>
-          <p style={{ marginBottom: 12 }}>Add Momentum to your home screen for quick access and offline support.</p>
+          <p style={{ marginBottom: 12 }}>{t('pwa.install.description')}</p>
           <Space>
             <Button type="primary" icon={<DownloadOutlined />} onClick={() => void promptInstall()}>
-              Install App
+              {t('pwa.install.installButton')}
             </Button>
-            <Button onClick={dismiss}>Not now</Button>
+            <Button onClick={dismiss}>{t('pwa.install.dismiss')}</Button>
           </Space>
         </div>
       }

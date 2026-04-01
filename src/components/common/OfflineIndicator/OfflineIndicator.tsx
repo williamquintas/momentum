@@ -8,6 +8,7 @@
 import React, { useState } from 'react';
 
 import { Alert } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
@@ -35,6 +36,7 @@ export interface OfflineIndicatorProps {
  * ```
  */
 export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({ dismissible = true }) => {
+  const { t } = useTranslation();
   const { isOffline } = useNetworkStatus();
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -49,7 +51,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({ dismissible 
 
   return (
     <Alert
-      message="You are currently offline. Some features may be unavailable."
+      message={t('offline.message')}
       type="warning"
       showIcon
       closable={dismissible}

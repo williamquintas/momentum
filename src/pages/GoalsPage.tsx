@@ -17,6 +17,7 @@ import React, { useState, useMemo } from 'react';
 
 import { PlusOutlined, SearchOutlined, FilterOutlined } from '@ant-design/icons';
 import { Card, Space, Input, Select, Button, Row, Col, Typography, message, Collapse } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { CreateGoalModal } from '@/features/goals/components/CreateGoalModal';
@@ -39,13 +40,14 @@ const { Option } = Select;
  * GoalsPage Component
  */
 export const GoalsPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { viewMode, setViewMode } = useViewMode();
 
   // Set page title and meta tags
-  usePageTitle('Goals');
+  usePageTitle(t('goals.title'));
   useMetaTags({
-    title: 'Goals',
+    title: t('goals.title'),
     description:
       'Manage and track your goals. Create, update, and monitor your progress towards achieving your objectives.',
     url: '/goals',
@@ -104,9 +106,9 @@ export const GoalsPage: React.FC = () => {
     if (goal) {
       try {
         await updateGoal.mutateAsync({ id: goalId, updates: { favorite: !goal.favorite, updatedAt: new Date() } });
-        void message.success(goal.favorite ? 'Removed from favorites' : 'Added to favorites');
+        void message.success(goal.favorite ? t('goals.removedFromFavorites') : t('goals.addedToFavorites'));
       } catch {
-        void message.error('Failed to update favorite status');
+        void message.error(t('goals.failedToUpdateFavorite'));
       }
     }
   };
@@ -115,13 +117,13 @@ export const GoalsPage: React.FC = () => {
   const handleCreateGoal = async (values: CreateGoalInput) => {
     try {
       const createdGoal = await createGoal.mutateAsync(values);
-      void message.success('Goal created successfully!');
+      void message.success(t('goals.goalCreatedSuccessfully'));
       setIsCreateModalOpen(false);
       // Navigate to goal detail page after successful creation
       navigate(`/goals/${createdGoal.id}`);
     } catch (error) {
       // Error handling is done by the mutation hook, but we show a user-friendly message
-      void message.error('Failed to create goal. Please try again.');
+      void message.error(t('goals.failedToCreateGoal'));
       console.error('Error creating goal:', error);
     }
   };
@@ -168,14 +170,14 @@ export const GoalsPage: React.FC = () => {
         <Row justify="space-between" align="middle" gutter={[0, { xs: 16, sm: 0 }]}>
           <Col xs={24} sm={12}>
             <Title level={2} style={{ margin: 0 }}>
-              Goals List
+              {t('goals.goalsList')}
             </Title>
           </Col>
           <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Space className="goals-page-actions">
               <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
-                Create Goal
+                {t('goals.createGoal')}
               </Button>
             </Space>
           </Col>
@@ -194,15 +196,15 @@ export const GoalsPage: React.FC = () => {
                 label: (
                   <Space>
                     <FilterOutlined />
-                    <span>Filters</span>
-                    {hasActiveFilters && <span style={{ color: '#1890ff' }}>(Active)</span>}
+                    <span>{t('goals.filters')}</span>
+                    {hasActiveFilters && <span style={{ color: '#1890ff' }}>{t('goals.filtersActive')}</span>}
                   </Space>
                 ),
                 children: (
                   <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12} md={8} lg={6}>
                       <Input
-                        placeholder="Search goals..."
+                        placeholder={t('goals.searchPlaceholder')}
                         prefix={<SearchOutlined />}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -211,22 +213,22 @@ export const GoalsPage: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>
                       <Select
-                        placeholder="Filter by Status"
+                        placeholder={t('goals.filterByStatus')}
                         style={{ width: '100%' }}
                         mode="multiple"
                         allowClear
                         value={statusFilter}
                         onChange={setStatusFilter}
                       >
-                        <Option value={GoalStatus.ACTIVE}>Active</Option>
-                        <Option value={GoalStatus.COMPLETED}>Completed</Option>
-                        <Option value={GoalStatus.PAUSED}>Paused</Option>
-                        <Option value={GoalStatus.CANCELLED}>Cancelled</Option>
+                        <Option value={GoalStatus.ACTIVE}>{t('goals.status.active')}</Option>
+                        <Option value={GoalStatus.COMPLETED}>{t('goals.status.completed')}</Option>
+                        <Option value={GoalStatus.PAUSED}>{t('goals.status.paused')}</Option>
+                        <Option value={GoalStatus.CANCELLED}>{t('goals.status.cancelled')}</Option>
                       </Select>
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>
                       <Select
-                        placeholder="Filter by Type"
+                        placeholder={t('goals.filterByType')}
                         style={{ width: '100%' }}
                         mode="multiple"
                         allowClear
@@ -234,41 +236,43 @@ export const GoalsPage: React.FC = () => {
                         onChange={setTypeFilter}
                       >
                         {availableGoalTypes.includes(GoalType.QUANTITATIVE) && (
-                          <Option value={GoalType.QUANTITATIVE}>Quantitative</Option>
+                          <Option value={GoalType.QUANTITATIVE}>{t('goals.types.quantitative')}</Option>
                         )}
                         {availableGoalTypes.includes(GoalType.QUALITATIVE) && (
-                          <Option value={GoalType.QUALITATIVE}>Qualitative</Option>
+                          <Option value={GoalType.QUALITATIVE}>{t('goals.types.qualitative')}</Option>
                         )}
                         {availableGoalTypes.includes(GoalType.BINARY) && (
-                          <Option value={GoalType.BINARY}>Binary</Option>
+                          <Option value={GoalType.BINARY}>{t('goals.types.binary')}</Option>
                         )}
                         {availableGoalTypes.includes(GoalType.MILESTONE) && (
-                          <Option value={GoalType.MILESTONE}>Milestone</Option>
+                          <Option value={GoalType.MILESTONE}>{t('goals.types.milestone')}</Option>
                         )}
                         {availableGoalTypes.includes(GoalType.RECURRING) && (
-                          <Option value={GoalType.RECURRING}>Recurring</Option>
+                          <Option value={GoalType.RECURRING}>{t('goals.types.recurring')}</Option>
                         )}
-                        {availableGoalTypes.includes(GoalType.HABIT) && <Option value={GoalType.HABIT}>Habit</Option>}
+                        {availableGoalTypes.includes(GoalType.HABIT) && (
+                          <Option value={GoalType.HABIT}>{t('goals.types.habit')}</Option>
+                        )}
                       </Select>
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>
                       <Select
-                        placeholder="Filter by Priority"
+                        placeholder={t('goals.filterByPriority')}
                         style={{ width: '100%' }}
                         mode="multiple"
                         allowClear
                         value={priorityFilter}
                         onChange={setPriorityFilter}
                       >
-                        <Option value={Priority.HIGH}>High</Option>
-                        <Option value={Priority.MEDIUM}>Medium</Option>
-                        <Option value={Priority.LOW}>Low</Option>
+                        <Option value={Priority.HIGH}>{t('goals.priorities.high')}</Option>
+                        <Option value={Priority.MEDIUM}>{t('goals.priorities.medium')}</Option>
+                        <Option value={Priority.LOW}>{t('goals.priorities.low')}</Option>
                       </Select>
                     </Col>
                     {availableCategories.length > 0 && (
                       <Col xs={24} sm={12} md={8} lg={6}>
                         <Select
-                          placeholder="Filter by Category"
+                          placeholder={t('goals.filterByCategory')}
                           style={{ width: '100%' }}
                           mode="multiple"
                           allowClear
@@ -285,31 +289,31 @@ export const GoalsPage: React.FC = () => {
                     )}
                     <Col xs={24} sm={12} md={8} lg={6}>
                       <Select
-                        placeholder="Filter by Favorites"
+                        placeholder={t('goals.filterByFavorites')}
                         style={{ width: '100%' }}
                         allowClear
                         value={favoriteFilter}
                         onChange={setFavoriteFilter}
                       >
-                        <Option value={true}>Favorites Only</Option>
-                        <Option value={false}>Non-Favorites</Option>
+                        <Option value={true}>{t('goals.favoritesOnly')}</Option>
+                        <Option value={false}>{t('goals.nonFavorites')}</Option>
                       </Select>
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>
                       <Select
-                        placeholder="Filter by Archive Status"
+                        placeholder={t('goals.filterByArchiveStatus')}
                         style={{ width: '100%' }}
                         allowClear
                         value={archivedFilter}
                         onChange={setArchivedFilter}
                       >
-                        <Option value={true}>Archived Only</Option>
-                        <Option value={false}>Non-Archived</Option>
+                        <Option value={true}>{t('goals.archivedOnly')}</Option>
+                        <Option value={false}>{t('goals.nonArchived')}</Option>
                       </Select>
                     </Col>
                     {hasActiveFilters && (
                       <Col xs={24} sm={12} md={8} lg={6}>
-                        <Button onClick={handleClearFilters}>Clear Filters</Button>
+                        <Button onClick={handleClearFilters}>{t('goals.clearFilters')}</Button>
                       </Col>
                     )}
                   </Row>

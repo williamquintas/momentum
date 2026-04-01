@@ -48,6 +48,6 @@
       "@specs/*": ["specs/*"]
     }
   },
-  "include": ["src", "specs"],
+  "include": ["src", "specs", "src/main.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

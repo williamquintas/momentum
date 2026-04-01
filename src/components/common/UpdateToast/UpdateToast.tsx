@@ -8,6 +8,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Modal } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import { usePwaUpdate } from '@/hooks/usePwaUpdate';
 
@@ -34,6 +35,7 @@ export interface UpdateToastProps {
 export const UpdateToast: React.FC<UpdateToastProps> = ({ testMode = false }) => {
   const { updateAvailable, updatedApp } = usePwaUpdate();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { t } = useTranslation();
 
   // Show modal when update is available
   useEffect(() => {
@@ -61,20 +63,18 @@ export const UpdateToast: React.FC<UpdateToastProps> = ({ testMode = false }) =>
 
   return (
     <Modal
-      title="Update Available"
+      title={t('pwa.update.title')}
       open={isModalVisible}
       onOk={handleUpdateNow}
       onCancel={handleLater}
-      okText="Update Now"
-      cancelText="Later"
+      okText={t('pwa.update.updateNow')}
+      cancelText={t('pwa.update.later')}
       closable={false}
       maskClosable={false}
       centered
     >
-      <p>A new version of the app is available. Would you like to update now?</p>
-      <p style={{ color: '#666', fontSize: '14px' }}>
-        Updating will refresh the page and load the latest features and fixes.
-      </p>
+      <p>{t('pwa.update.description')}</p>
+      <p style={{ color: '#666', fontSize: '14px' }}>{t('pwa.update.refreshInfo')}</p>
     </Modal>
   );
 };

@@ -13,4 +13,5 @@ pnpm-lock.yaml
 out
 .vscode
 .idea
+dev-dist
 

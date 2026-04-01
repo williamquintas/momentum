@@ -1,7 +1,9 @@
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, Layout, Space, Tooltip, Typography, theme } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
 import { APP_NAME } from '@/utils/constants';
@@ -22,6 +24,7 @@ const { Text } = Typography;
  * - Responsive design
  */
 export const Header = () => {
+  const { t } = useTranslation();
   const { token } = theme.useToken();
   const navigate = useNavigate();
   const { canInstall, dismissed, promptInstall } = usePwaInstall();
@@ -53,7 +56,7 @@ export const Header = () => {
         }}
         tabIndex={0}
         role="button"
-        aria-label="Navigate to home"
+        aria-label={t('header.navigateToHome')}
       >
         {/* Logo with curved square container */}
         <div
@@ -71,16 +74,25 @@ export const Header = () => {
       </div>
 
       <Space>
+        <LanguageSwitcher />
         {canInstall && dismissed && (
-          <Tooltip title="Install app">
+          <Tooltip title={t('header.installApp')}>
             <Button
               icon={<DownloadOutlined />}
               onClick={() => void promptInstall()}
               type="text"
-              aria-label="Install Momentum app"
+              aria-label={t('header.installMomentumApp')}
             />
           </Tooltip>
         )}
+        <Tooltip title={t('header.settings')}>
+          <Button
+            icon={<SettingOutlined />}
+            onClick={() => navigate('/settings')}
+            type="text"
+            aria-label={t('header.goToSettings')}
+          />
+        </Tooltip>
         <ThemeToggle />
       </Space>
     </AntHeader>
