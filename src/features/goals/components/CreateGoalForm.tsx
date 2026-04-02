@@ -9,6 +9,7 @@ import React from 'react';
 
 import { Form, Input, Select, Button, Space, Row, Col, DatePicker, FormInstance } from 'antd';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 import type { CreateGoalInput } from '@/features/goals/types';
 import {
@@ -61,6 +62,7 @@ export const CreateGoalForm: React.FC<CreateGoalFormProps> = ({
   form: externalForm,
 }) => {
   const [form] = Form.useForm<CreateGoalInput>(externalForm);
+  const { t } = useTranslation();
   const goalType = Form.useWatch('type', form);
 
   const handleSubmit = async (values: CreateGoalInput) => {
@@ -96,34 +98,38 @@ export const CreateGoalForm: React.FC<CreateGoalFormProps> = ({
       {/* Common Fields */}
       <Form.Item
         name="title"
-        label="Title"
+        label={t('goals.form.title')}
         rules={[
-          { required: true, message: 'Title is required' },
-          { min: 1, message: 'Title cannot be empty' },
-          { max: 200, message: 'Title must be 200 characters or less' },
+          { required: true, message: t('validation.required') },
+          { min: 1, message: t('validation.minLength', { min: 1 }) },
+          { max: 200, message: t('validation.maxLength', { max: 200 }) },
         ]}
       >
-        <Input placeholder="Enter goal title" />
+        <Input placeholder={t('goals.form.placeholders.title')} />
       </Form.Item>
 
       <Form.Item
         name="description"
-        label="Description"
-        rules={[{ max: 5000, message: 'Description must be 5000 characters or less' }]}
+        label={t('goals.form.description')}
+        rules={[{ max: 5000, message: t('validation.maxLength', { max: 5000 }) }]}
       >
-        <TextArea rows={3} placeholder="Enter goal description (optional)" />
+        <TextArea rows={3} placeholder={t('goals.form.placeholders.description')} />
       </Form.Item>
 
       <Row gutter={16}>
         <Col xs={24} sm={12}>
-          <Form.Item name="type" label="Goal Type" rules={[{ required: true, message: 'Goal type is required' }]}>
-            <Select placeholder="Select goal type">
-              <Option value={GoalTypeEnum.QUANTITATIVE}>Quantitative</Option>
-              <Option value={GoalTypeEnum.QUALITATIVE}>Qualitative</Option>
-              <Option value={GoalTypeEnum.BINARY}>Binary</Option>
-              <Option value={GoalTypeEnum.MILESTONE}>Milestone</Option>
-              <Option value={GoalTypeEnum.RECURRING}>Recurring</Option>
-              <Option value={GoalTypeEnum.HABIT}>Habit</Option>
+          <Form.Item
+            name="type"
+            label={t('goals.form.goalType')}
+            rules={[{ required: true, message: t('validation.required') }]}
+          >
+            <Select placeholder={t('goals.form.placeholders.goalType')}>
+              <Option value={GoalTypeEnum.QUANTITATIVE}>{t('goals.types.quantitative')}</Option>
+              <Option value={GoalTypeEnum.QUALITATIVE}>{t('goals.types.qualitative')}</Option>
+              <Option value={GoalTypeEnum.BINARY}>{t('goals.types.binary')}</Option>
+              <Option value={GoalTypeEnum.MILESTONE}>{t('goals.types.milestone')}</Option>
+              <Option value={GoalTypeEnum.RECURRING}>{t('goals.types.recurring')}</Option>
+              <Option value={GoalTypeEnum.HABIT}>{t('goals.types.habit')}</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -131,34 +137,42 @@ export const CreateGoalForm: React.FC<CreateGoalFormProps> = ({
         <Col xs={24} sm={12}>
           <Form.Item
             name="category"
-            label="Category"
+            label={t('goals.form.category')}
             rules={[
-              { required: true, message: 'Category is required' },
-              { min: 1, message: 'Category cannot be empty' },
-              { max: 100, message: 'Category must be 100 characters or less' },
+              { required: true, message: t('validation.required') },
+              { min: 1, message: t('validation.minLength', { min: 1 }) },
+              { max: 100, message: t('validation.maxLength', { max: 100 }) },
             ]}
           >
-            <Input placeholder="Enter category" />
+            <Input placeholder={t('goals.form.placeholders.category')} />
           </Form.Item>
         </Col>
       </Row>
 
       <Row gutter={16}>
         <Col xs={24} sm={12}>
-          <Form.Item name="priority" label="Priority" rules={[{ required: true, message: 'Priority is required' }]}>
-            <Select placeholder="Select priority">
-              <Option value={PriorityEnum.HIGH}>High</Option>
-              <Option value={PriorityEnum.MEDIUM}>Medium</Option>
-              <Option value={PriorityEnum.LOW}>Low</Option>
+          <Form.Item
+            name="priority"
+            label={t('goals.form.priority')}
+            rules={[{ required: true, message: t('validation.required') }]}
+          >
+            <Select placeholder={t('goals.form.placeholders.priority')}>
+              <Option value={PriorityEnum.HIGH}>{t('goals.priorities.high')}</Option>
+              <Option value={PriorityEnum.MEDIUM}>{t('goals.priorities.medium')}</Option>
+              <Option value={PriorityEnum.LOW}>{t('goals.priorities.low')}</Option>
             </Select>
           </Form.Item>
         </Col>
 
         <Col xs={24} sm={12}>
-          <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Status is required' }]}>
-            <Select placeholder="Select status">
-              <Option value={GoalStatusEnum.ACTIVE}>Active</Option>
-              <Option value={GoalStatusEnum.PAUSED}>Paused</Option>
+          <Form.Item
+            name="status"
+            label={t('goals.form.status')}
+            rules={[{ required: true, message: t('validation.required') }]}
+          >
+            <Select placeholder={t('goals.form.placeholders.status')}>
+              <Option value={GoalStatusEnum.ACTIVE}>{t('goals.status.active')}</Option>
+              <Option value={GoalStatusEnum.PAUSED}>{t('goals.status.paused')}</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -166,7 +180,7 @@ export const CreateGoalForm: React.FC<CreateGoalFormProps> = ({
 
       <Row gutter={16}>
         <Col xs={24} sm={12}>
-          <Form.Item name="startDate" label="Start Date (optional)">
+          <Form.Item name="startDate" label={`${t('goals.form.startDate')} (${t('common.optional')})`}>
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
         </Col>
@@ -174,13 +188,13 @@ export const CreateGoalForm: React.FC<CreateGoalFormProps> = ({
         <Col xs={24} sm={12}>
           <Form.Item
             name="deadline"
-            label="Deadline (optional)"
+            label={`${t('goals.form.deadline')} (${t('common.optional')})`}
             rules={[
               ({ getFieldValue }) => ({
                 validator(_, value: dayjs.Dayjs | string | Date | null | undefined) {
                   const startDate = getFieldValue('startDate') as dayjs.Dayjs | undefined;
                   if (startDate && value && dayjs(value).isBefore(dayjs(startDate))) {
-                    return Promise.reject(new Error('Deadline must be after start date'));
+                    return Promise.reject(new Error(t('goals.form.deadlineAfterStart')));
                   }
                   return Promise.resolve();
                 },
@@ -204,9 +218,9 @@ export const CreateGoalForm: React.FC<CreateGoalFormProps> = ({
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit" loading={loading}>
-            Create Goal
+            {t('goals.form.buttons.createGoal')}
           </Button>
-          {onCancel && <Button onClick={onCancel}>Cancel</Button>}
+          {onCancel && <Button onClick={onCancel}>{t('common.cancel')}</Button>}
         </Space>
       </Form.Item>
     </Form>

@@ -8,6 +8,7 @@
 import React from 'react';
 
 import { Button, Space } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import type { ViewMode } from '@/features/goals/hooks/useViewMode';
 
@@ -32,22 +33,23 @@ export interface ViewModeToggleProps {
  * ViewModeToggle Component
  */
 export const ViewModeToggle: React.FC<ViewModeToggleProps> = ({ viewMode, onViewModeChange, className }) => {
+  const { t } = useTranslation();
   return (
     <Space className={className}>
       <Button.Group>
         <Button
           type={viewMode === 'table' ? 'primary' : 'default'}
           onClick={() => onViewModeChange('table')}
-          aria-label="Table view"
+          aria-label={t('viewMode.tableView')}
         >
-          Table
+          {t('viewMode.table')}
         </Button>
         <Button
           type={viewMode === 'list' ? 'primary' : 'default'}
           onClick={() => onViewModeChange('list')}
-          aria-label="List view"
+          aria-label={t('viewMode.listView')}
         >
-          List
+          {t('viewMode.list')}
         </Button>
       </Button.Group>
     </Space>

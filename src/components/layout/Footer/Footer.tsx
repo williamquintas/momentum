@@ -1,5 +1,6 @@
 import { GithubOutlined, FileTextOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Layout, Row, Col, Typography, Space, theme } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import {
   APP_NAME,
@@ -30,6 +31,7 @@ const { Text, Link } = Typography;
  * - Responsive layout
  */
 export const Footer = () => {
+  const { t } = useTranslation();
   const { token } = theme.useToken();
   const currentYear = new Date().getFullYear();
   const displayYear = currentYear > COPYRIGHT_YEAR ? `${COPYRIGHT_YEAR}-${currentYear}` : COPYRIGHT_YEAR.toString();
@@ -46,16 +48,16 @@ export const Footer = () => {
         {/* Links Section */}
         <Col xs={24} sm={12} md={8}>
           <Space direction="vertical" size="small">
-            <Text strong>Resources</Text>
+            <Text strong>{t('footer.resources')}</Text>
             <Space direction="vertical" size="small">
               <Link href={GITHUB_REPO_URL} target="_blank" rel="noopener noreferrer">
-                <GithubOutlined /> GitHub Repository
+                <GithubOutlined /> {t('footer.githubRepository')}
               </Link>
               <Link href={GITHUB_DISCUSSIONS_URL} target="_blank" rel="noopener noreferrer">
-                <QuestionCircleOutlined /> Support & Discussions
+                <QuestionCircleOutlined /> {t('footer.supportAndDiscussions')}
               </Link>
               <Link href={GITHUB_ISSUES_URL} target="_blank" rel="noopener noreferrer">
-                <FileTextOutlined /> Report Issues
+                <FileTextOutlined /> {t('footer.reportIssues')}
               </Link>
             </Space>
           </Space>
@@ -64,7 +66,7 @@ export const Footer = () => {
         {/* Legal Section */}
         <Col xs={24} sm={12} md={8}>
           <Space direction="vertical" size="small">
-            <Text strong>Legal</Text>
+            <Text strong>{t('footer.legal')}</Text>
             <Space direction="vertical" size="small">
               <Link href={LICENSE_URL} target="_blank" rel="noopener noreferrer">
                 {LICENSE_TYPE}
@@ -79,7 +81,7 @@ export const Footer = () => {
         {/* About Section */}
         <Col xs={24} sm={24} md={8}>
           <Space direction="vertical" size="small">
-            <Text strong>About</Text>
+            <Text strong>{t('footer.about')}</Text>
             <Space direction="vertical" size="small">
               <Text type="secondary" style={{ fontSize: '12px' }}>
                 {APP_NAME} - A comprehensive goals tracking management system
