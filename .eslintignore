@@ -10,4 +10,5 @@ out
 .vscode
 .idea
 *.d.ts
+scripts
 
