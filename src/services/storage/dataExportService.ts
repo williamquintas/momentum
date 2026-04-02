@@ -6,7 +6,6 @@
  */
 
 import type { Goal } from '@/types/goal.types';
-import { APP_VERSION } from '@/utils/constants';
 
 import { getAllGoals } from './goalStorageService';
 import type {
@@ -20,7 +19,11 @@ import type {
  * Current schema version for export format
  */
 export const EXPORT_SCHEMA_VERSION = '1.0';
-export { APP_VERSION };
+
+/**
+ * App version for export metadata
+ */
+export const APP_VERSION = '0.1.0';
 
 /**
  * Export data structure with schema versioning

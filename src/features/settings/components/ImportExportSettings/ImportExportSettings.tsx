@@ -172,7 +172,7 @@ export const ImportExportSettings = (): React.ReactElement => {
 
   return (
     <>
-      <Card style={{ marginBottom: 16 }}>
+      <Card>
         <Title level={4}>{t('settings.importExport.title')}</Title>
         <Text type="secondary">{t('settings.importExport.description')}</Text>
 

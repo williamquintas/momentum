@@ -1,12 +1,13 @@
 /**
  * Settings Page
  *
- * Page for app settings including language preferences.
+ * Page for app settings including language preferences and data import/export functionality.
  */
 
 import { Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { ImportExportSettings } from '@/features/settings/components/ImportExportSettings';
 import { LanguageSettings } from '@/features/settings/components/LanguageSettings';
 
 const { Title } = Typography;
@@ -14,7 +15,7 @@ const { Title } = Typography;
 /**
  * SettingsPage Component
  *
- * Renders the settings page with language preferences.
+ * Renders the settings page with language preferences and import/export functionality.
  */
 export const SettingsPage = (): React.ReactElement => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ export const SettingsPage = (): React.ReactElement => {
     <div>
       <Title level={2}>{t('settings.title')}</Title>
       <LanguageSettings />
+      <ImportExportSettings />
     </div>
   );
 };

@@ -16,7 +16,7 @@ import { getAllGoals, createGoal, updateGoal } from './goalStorageService';
  */
 export class ImportValidationError extends Error {
   constructor(
-    public errors: z.ZodError['issues'],
+    public errors: z.ZodError['errors'],
     message: string
   ) {
     super(message);
@@ -69,7 +69,7 @@ const serializedGoalSchema = z.object({
       date: z.string(),
       value: z.number(),
       note: z.string().optional(),
-      metadata: z.record(z.string(), z.unknown()).optional(),
+      metadata: z.record(z.unknown()).optional(),
     })
   ),
   createdAt: z.string(),
@@ -127,7 +127,7 @@ const serializedGoalSchema = z.object({
         date: z.string(),
         rating: z.number(),
         comment: z.string().optional(),
-        criteria: z.record(z.string(), z.number()).optional(),
+        criteria: z.record(z.number()).optional(),
       })
     )
     .optional(),
@@ -152,7 +152,7 @@ const serializedGoalSchema = z.object({
         completedDate: z.string().optional(),
         order: z.number(),
         dependencies: z.array(z.string()).optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
+        metadata: z.record(z.unknown()).optional(),
       })
     )
     .optional(),
@@ -178,7 +178,7 @@ const serializedGoalSchema = z.object({
         completed: z.boolean(),
         value: z.number().optional(),
         note: z.string().optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
+        metadata: z.record(z.unknown()).optional(),
       })
     )
     .optional(),
@@ -194,7 +194,7 @@ const serializedGoalSchema = z.object({
         completed: z.boolean(),
         value: z.number().optional(),
         note: z.string().optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
+        metadata: z.record(z.unknown()).optional(),
       })
     )
     .optional(),
@@ -229,7 +229,7 @@ export const validateImportData = (data: ParsedImportData): z.infer<typeof impor
 
   if (!result.success) {
     throw new ImportValidationError(
-      result.error.issues,
+      result.error.errors,
       'Validation failed. The imported data does not match the expected format.'
     );
   }
