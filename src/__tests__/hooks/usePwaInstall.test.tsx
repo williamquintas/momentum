@@ -2,8 +2,10 @@
  * usePwaInstall Hook Tests
  */
 
+import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { PwaInstallProvider } from '@/contexts/PwaInstallContext';
 
 interface MockBeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -71,12 +73,16 @@ describe('usePwaInstall', () => {
     mockPromptEvent = null;
   });
 
+  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+    <PwaInstallProvider>{children}</PwaInstallProvider>
+  );
+
   describe('canInstall', () => {
     it('returns false when beforeinstallprompt event has not fired', async () => {
       window.addEventListener = vi.fn();
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
+      const { result } = renderHook(() => usePwaInstall(), { wrapper: TestWrapper });
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 10));
@@ -87,7 +93,7 @@ describe('usePwaInstall', () => {
 
     it('returns true when beforeinstallprompt event has fired on mobile', async () => {
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
+      const { result } = renderHook(() => usePwaInstall(), { wrapper: TestWrapper });
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -100,7 +106,7 @@ describe('usePwaInstall', () => {
       setDesktopUserAgent();
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
+      const { result } = renderHook(() => usePwaInstall(), { wrapper: TestWrapper });
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -132,7 +138,7 @@ describe('usePwaInstall', () => {
       });
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
+      const { result } = renderHook(() => usePwaInstall(), { wrapper: TestWrapper });
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -149,7 +155,7 @@ describe('usePwaInstall', () => {
       window.addEventListener = vi.fn();
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
+      const { result } = renderHook(() => usePwaInstall(), { wrapper: TestWrapper });
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 10));
@@ -168,7 +174,7 @@ describe('usePwaInstall', () => {
       window.addEventListener = vi.fn();
 
       const { usePwaInstall } = await import('@/hooks/usePwaInstall');
-      const { result } = renderHook(() => usePwaInstall());
+      const { result } = renderHook(() => usePwaInstall(), { wrapper: TestWrapper });
 
       expect(result.current.dismissed).toBe(false);
 

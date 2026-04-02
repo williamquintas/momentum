@@ -5,6 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -49,5 +50,6 @@
     }
   },
   "include": ["src", "specs", "src/main.tsx"],
+  "exclude": ["node_modules", "dist", "specs/bkp"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

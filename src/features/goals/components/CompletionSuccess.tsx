@@ -27,7 +27,7 @@ export function CompletionSuccess({
   onClose,
   onViewGoal,
   showConfetti = true,
-}: CompletionSuccessProps): JSX.Element {
+}: CompletionSuccessProps): React.ReactElement {
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const celebration = completion.celebration;
@@ -162,7 +162,7 @@ interface ConfettiAnimationProps {
   type: CelebrationData['type'];
 }
 
-function ConfettiAnimation({ type }: ConfettiAnimationProps): JSX.Element {
+function ConfettiAnimation({ type }: ConfettiAnimationProps): React.ReactElement {
   const [particles] = useState(() =>
     Array.from({ length: type === 'enthusiastic' ? 100 : 50 }, (_, i) => ({
       id: i,
@@ -171,6 +171,7 @@ function ConfettiAnimation({ type }: ConfettiAnimationProps): JSX.Element {
       duration: 2 + Math.random() * 2,
       color: ['#ff4d4f', '#faad14', '#52c41a', '#1890ff', '#722ed1'][Math.floor(Math.random() * 5)],
       size: 8 + Math.random() * 8,
+      isCircle: Math.random() > 0.5,
     }))
   );
 
@@ -201,7 +202,7 @@ function ConfettiAnimation({ type }: ConfettiAnimationProps): JSX.Element {
             width: particle.size,
             height: particle.size,
             backgroundColor: particle.color,
-            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+            borderRadius: particle.isCircle ? '50%' : '2px',
             animation: `confetti-fall ${particle.duration}s linear ${particle.delay}s forwards`,
           }}
         />

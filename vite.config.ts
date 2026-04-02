@@ -164,12 +164,25 @@ export default defineConfig({
     cssCodeSplit: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          antd: ['antd'],
-          query: ['@tanstack/react-query'],
-          state: ['zustand'],
-          utils: ['zod', 'date-fns', 'axios'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'vendor';
+            }
+            if (id.includes('antd')) {
+              return 'antd';
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'query';
+            }
+            if (id.includes('zustand')) {
+              return 'state';
+            }
+            if (id.includes('zod') || id.includes('date-fns') || id.includes('axios')) {
+              return 'utils';
+            }
+          }
+          return undefined;
         },
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
