@@ -15,7 +15,7 @@
 
 import React, { useState, useMemo } from 'react';
 
-import { PlusOutlined, SearchOutlined, FilterOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, FilterOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Card, Space, Input, Select, Button, Row, Col, Typography, message, Collapse } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +31,7 @@ import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types'
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
 import { useMetaTags } from '@/hooks/useMetaTags';
 import { usePageTitle } from '@/hooks/usePageTitle';
+import { exportGoals, downloadExport } from '@/services/storage/dataExportService';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
 const { Title } = Typography;
@@ -94,6 +95,17 @@ export const GoalsPage: React.FC = () => {
 
   // Update goal mutation (for favorite toggle)
   const updateGoal = useUpdateGoal();
+
+  // Handle export
+  const handleExport = () => {
+    const result = exportGoals();
+    if (result.success && result.data) {
+      downloadExport(result.data);
+      message.success(t('goals.exportSuccess', { count: result.data.goals.length }));
+    } else {
+      message.error(t('goals.exportError'));
+    }
+  };
 
   // Handle goal click - navigate to detail page
   const handleGoalClick = (goal: Goal) => {
@@ -176,6 +188,9 @@ export const GoalsPage: React.FC = () => {
           <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Space className="goals-page-actions">
               <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
+              <Button icon={<DownloadOutlined />} onClick={handleExport}>
+                {t('goals.export')}
+              </Button>
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
                 {t('goals.createGoal')}
               </Button>
