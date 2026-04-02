@@ -101,9 +101,9 @@ export const GoalsPage: React.FC = () => {
     const result = exportGoals();
     if (result.success && result.data) {
       downloadExport(result.data);
-      message.success(`Exported ${result.data.goals.length} goals`);
+      message.success(t('goals.exportSuccess', { count: result.data.goals.length }));
     } else {
-      message.error(result.error || 'Failed to export goals');
+      message.error(t('goals.exportError'));
     }
   };
 
@@ -189,7 +189,7 @@ export const GoalsPage: React.FC = () => {
             <Space className="goals-page-actions">
               <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button icon={<DownloadOutlined />} onClick={handleExport}>
-                Export
+                {t('goals.export')}
               </Button>
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
                 {t('goals.createGoal')}
