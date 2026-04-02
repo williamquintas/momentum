@@ -8,7 +8,10 @@
 import { useState, useCallback } from 'react';
 
 import { DownloadOutlined, UploadOutlined, WarningOutlined } from '@ant-design/icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Modal, message, Card, Alert, Space, Typography, Divider } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import { exportGoals, downloadExport } from '@/services/storage/dataExportService';
@@ -21,6 +24,7 @@ import {
   importDataSchema,
   type DuplicateStrategy,
 } from '@/services/storage/dataImportService';
+import { queryKeys } from '@/utils/queryKeys';
 
 const { Title, Text } = Typography;
 
@@ -46,6 +50,9 @@ interface ImportPreview {
  * - Importing goals from JSON file with validation and duplicate handling
  */
 export const ImportExportSettings = (): React.ReactElement => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isImportModalVisible, setIsImportModalVisible] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importPreview, setImportPreview] = useState<ImportPreview | null>(null);
@@ -59,39 +66,42 @@ export const ImportExportSettings = (): React.ReactElement => {
 
     if (result.success && result.data) {
       downloadExport(result.data);
-      message.success(`Successfully exported ${result.data.goals.length} goals`);
+      message.success(t('settings.importExport.success', { count: result.data.goals.length }));
     } else {
-      message.error(result.error || 'Failed to export goals');
+      message.error(t('settings.importExport.error'));
     }
-  }, []);
+  }, [t]);
 
   /**
    * Handle file selection for import
    */
-  const handleFileSelect = useCallback(async (file: File): Promise<void> => {
-    try {
-      const jsonString = await file.text();
-      const parsedData = parseImportJson(jsonString);
-      const validatedData = validateImportData(parsedData);
-      const preview = previewImport(validatedData);
+  const handleFileSelect = useCallback(
+    async (file: File): Promise<void> => {
+      try {
+        const jsonString = await file.text();
+        const parsedData = parseImportJson(jsonString);
+        const validatedData = validateImportData(parsedData);
+        const preview = previewImport(validatedData);
 
-      setImportPreview({
-        newGoals: preview.newGoals,
-        duplicates: preview.duplicates,
-        validatedData,
-      });
-    } catch (error) {
-      if (error instanceof ImportValidationError) {
-        const errorMessages = (error.errors as unknown as { path: string[]; message: string }[])
-          .map((e) => `${e.path.join('.')}: ${e.message}`)
-          .join(', ');
-        message.error(`Validation failed: ${errorMessages}`);
-      } else {
-        message.error('Failed to parse import file. Please ensure it is valid JSON.');
+        setImportPreview({
+          newGoals: preview.newGoals,
+          duplicates: preview.duplicates,
+          validatedData,
+        });
+      } catch (error) {
+        if (error instanceof ImportValidationError) {
+          const errorMessages = (error.errors as unknown as { path: string[]; message: string }[])
+            .map((e) => `${e.path.join('.')}: ${e.message}`)
+            .join(', ');
+          message.error(t('settings.importExport.validationError', { errors: errorMessages }));
+        } else {
+          message.error(t('settings.importExport.parseError'));
+        }
+        setImportPreview(null);
       }
-      setImportPreview(null);
-    }
-  }, []);
+    },
+    [t]
+  );
 
   /**
    * Handle import confirmation
@@ -105,21 +115,34 @@ export const ImportExportSettings = (): React.ReactElement => {
 
       if (result.success) {
         message.success(
-          `Import complete: ${result.imported} new goals, ${result.updated} updated, ${result.skipped} skipped`
+          t('settings.importExport.importSuccess', {
+            imported: result.imported,
+            updated: result.updated,
+            skipped: result.skipped,
+          })
         );
+        void queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+        setIsImportModalVisible(false);
+        setImportPreview(null);
+        void navigate('/goals', { state: { imported: true } });
       } else {
         const errorSummary = result.errors.slice(0, 3).join('; ');
-        message.warning(`Import completed with errors: ${errorSummary}${result.errors.length > 3 ? '...' : ''}`);
+        message.warning(
+          t('settings.importExport.importError', {
+            errors: errorSummary + (result.errors.length > 3 ? '...' : ''),
+          })
+        );
+        void queryClient.invalidateQueries({ queryKey: queryKeys.goals.all });
+        setIsImportModalVisible(false);
+        setImportPreview(null);
+        void navigate('/goals', { state: { imported: true } });
       }
-
-      setIsImportModalVisible(false);
-      setImportPreview(null);
     } catch {
-      message.error('Import failed. Please try again.');
+      message.error(t('settings.importExport.importFailed'));
     } finally {
       setIsImporting(false);
     }
-  }, [importPreview, selectedStrategy]);
+  }, [importPreview, selectedStrategy, t, navigate, queryClient]);
 
   /**
    * Handle import modal cancel
@@ -150,34 +173,30 @@ export const ImportExportSettings = (): React.ReactElement => {
   return (
     <>
       <Card>
-        <Title level={4}>Data Import/Export</Title>
-        <Text type="secondary">
-          Export your goals to a JSON file for backup, or import goals from a previously exported file.
-        </Text>
+        <Title level={4}>{t('settings.importExport.title')}</Title>
+        <Text type="secondary">{t('settings.importExport.description')}</Text>
 
         <Divider />
 
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          {/* Export Section */}
           <div>
-            <Title level={5}>Export Goals</Title>
-            <Text>Download all your goals as a JSON file for backup or transfer to another device.</Text>
+            <Title level={5}>{t('settings.importExport.exportTitle')}</Title>
+            <Text>{t('settings.importExport.exportDescription')}</Text>
             <div style={{ marginTop: 16 }}>
               <Button type="primary" icon={<DownloadOutlined />} onClick={handleExport}>
-                Export to JSON
+                {t('settings.importExport.exportButton')}
               </Button>
             </div>
           </div>
 
           <Divider style={{ margin: '12px 0' }} />
 
-          {/* Import Section */}
           <div>
-            <Title level={5}>Import Goals</Title>
-            <Text>Import goals from a previously exported JSON file. Duplicates are handled automatically.</Text>
+            <Title level={5}>{t('settings.importExport.importTitle')}</Title>
+            <Text>{t('settings.importExport.importDescription')}</Text>
             <div style={{ marginTop: 16 }}>
               <Button icon={<UploadOutlined />} onClick={handleImportButtonClick}>
-                Import from JSON
+                {t('settings.importExport.importButton')}
               </Button>
             </div>
           </div>
@@ -186,12 +205,12 @@ export const ImportExportSettings = (): React.ReactElement => {
 
       {/* Import Modal */}
       <Modal
-        title="Import Goals"
+        title={t('settings.importExport.modalTitle')}
         open={isImportModalVisible}
         onCancel={handleImportCancel}
         footer={[
           <Button key="cancel" onClick={handleImportCancel}>
-            Cancel
+            {t('settings.importExport.cancel')}
           </Button>,
           <Button
             key="import"
@@ -200,7 +219,10 @@ export const ImportExportSettings = (): React.ReactElement => {
             disabled={!importPreview}
             onClick={handleImportConfirm}
           >
-            Import {importPreview ? `(${importPreview.newGoals} new, ${importPreview.duplicates} duplicates)` : ''}
+            {t('settings.importExport.import')}{' '}
+            {importPreview
+              ? `(${importPreview.newGoals} ${t('settings.importExport.newGoals')}, ${importPreview.duplicates} ${t('settings.importExport.duplicates')})`
+              : ''}
           </Button>,
         ]}
         width={600}
@@ -208,29 +230,30 @@ export const ImportExportSettings = (): React.ReactElement => {
         {!importPreview ? (
           <>
             <Alert
-              message="Select a JSON file to import"
-              description="The file should be a valid JSON export from Momentum. Goals with the same ID or title+type will be treated as duplicates."
+              message={t('settings.importExport.selectFile')}
+              description={t('settings.importExport.selectFileDescription')}
               type="info"
               showIcon
               style={{ marginBottom: 16 }}
             />
             <div style={{ textAlign: 'center', padding: '40px 0' }}>
               <Button icon={<UploadOutlined />} onClick={handleImportButtonClick} size="large">
-                Click to select JSON file
+                {t('settings.importExport.clickToSelect')}
               </Button>
               <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
-                Only .json files are accepted
+                {t('settings.importExport.onlyJsonAccepted')}
               </Text>
             </div>
           </>
         ) : (
           <>
             <Alert
-              message="Import Preview"
+              message={t('settings.importExport.previewTitle')}
               description={
                 <span>
-                  Found <strong>{importPreview.newGoals}</strong> new goals and{' '}
-                  <strong>{importPreview.duplicates}</strong> duplicates.
+                  {importPreview.newGoals} <strong>{t('settings.importExport.newGoals')}</strong>{' '}
+                  {t('common.and').toLowerCase()} {importPreview.duplicates}{' '}
+                  <strong>{t('settings.importExport.duplicates')}</strong>.
                 </span>
               }
               type="success"
@@ -241,13 +264,13 @@ export const ImportExportSettings = (): React.ReactElement => {
             {importPreview.duplicates > 0 && (
               <>
                 <Alert
-                  message="Duplicate Handling"
+                  message={t('settings.importExport.duplicateHandling')}
                   description={
                     selectedStrategy === 'latest-wins'
-                      ? 'Goals with the same ID or title+type will be compared by their update timestamp. The most recent version will be kept.'
+                      ? t('settings.importExport.latestWinsDescription')
                       : selectedStrategy === 'skip'
-                        ? 'Duplicate goals will be skipped entirely.'
-                        : 'Duplicate goals will be replaced with the imported version.'
+                        ? t('settings.importExport.skipDescription')
+                        : t('settings.importExport.replaceDescription')
                   }
                   type="info"
                   showIcon
@@ -256,27 +279,27 @@ export const ImportExportSettings = (): React.ReactElement => {
                 />
 
                 <Space>
-                  <Text>Duplicate strategy:</Text>
+                  <Text>{t('settings.importExport.duplicateStrategy')}</Text>
                   <Button
                     size="small"
                     type={selectedStrategy === 'latest-wins' ? 'primary' : 'default'}
                     onClick={() => setSelectedStrategy('latest-wins')}
                   >
-                    Latest Wins
+                    {t('settings.importExport.latestWins')}
                   </Button>
                   <Button
                     size="small"
                     type={selectedStrategy === 'skip' ? 'primary' : 'default'}
                     onClick={() => setSelectedStrategy('skip')}
                   >
-                    Skip
+                    {t('settings.importExport.skip')}
                   </Button>
                   <Button
                     size="small"
                     type={selectedStrategy === 'replace' ? 'primary' : 'default'}
                     onClick={() => setSelectedStrategy('replace')}
                   >
-                    Replace
+                    {t('settings.importExport.replace')}
                   </Button>
                 </Space>
               </>
