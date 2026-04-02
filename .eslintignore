@@ -10,5 +10,4 @@ out
 .vscode
 .idea
 *.d.ts
-dev-dist
 
