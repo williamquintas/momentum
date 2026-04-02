@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 
 import { List, Empty, Spin, Table, Tag, Progress, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 
 import type { Goal } from '@/features/goals/types';
 import { GoalStatus, Priority } from '@/features/goals/types';
@@ -63,6 +64,7 @@ export const GoalList: React.FC<GoalListProps> = ({
   className,
   viewMode = 'table',
 }) => {
+  const { t } = useTranslation();
   const [pageSize, setPageSize] = useState(10);
 
   if (loading) {
@@ -74,14 +76,20 @@ export const GoalList: React.FC<GoalListProps> = ({
   }
 
   if (goals.length === 0) {
-    return <Empty description="No goals found" image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ padding: '50px' }} />;
+    return (
+      <Empty
+        description={t('goalList.noGoalsFound')}
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        style={{ padding: '50px' }}
+      />
+    );
   }
 
   // Table view (default)
   if (viewMode === 'table') {
     const columns: ColumnsType<Goal> = [
       {
-        title: 'Goal',
+        title: t('goalList.goal'),
         dataIndex: 'title',
         key: 'title',
         sorter: (a, b) => a.title.localeCompare(b.title),
@@ -103,7 +111,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         ),
       },
       {
-        title: 'Status',
+        title: t('goalList.status'),
         dataIndex: 'status',
         key: 'status',
         sorter: (a, b) => a.status.localeCompare(b.status),
@@ -115,7 +123,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{status}</Tag>,
       },
       {
-        title: 'Priority',
+        title: t('goalList.priority'),
         dataIndex: 'priority',
         key: 'priority',
         sorter: (a, b) => a.priority.localeCompare(b.priority),
@@ -127,7 +135,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         render: (priority: Priority) => <Tag color={getPriorityColor(priority)}>{priority}</Tag>,
       },
       {
-        title: 'Progress',
+        title: t('goalList.progress'),
         key: 'progress',
         sorter: (a, b) => getProgressValue(a) - getProgressValue(b),
         render: (_: unknown, goal: Goal) => {
@@ -140,7 +148,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         },
       },
       {
-        title: 'Deadline',
+        title: t('goalList.deadline'),
         dataIndex: 'deadline',
         key: 'deadline',
         sorter: (a, b) => {
@@ -188,7 +196,7 @@ export const GoalList: React.FC<GoalListProps> = ({
             pageSize,
             showSizeChanger: true,
             pageSizeOptions: ['10', '20', '50', '100'],
-            showTotal: (total) => `Total ${total} goals`,
+            showTotal: (total) => t('goalList.totalGoals', { total }),
             onShowSizeChange: (_, size) => {
               setPageSize(size);
             },

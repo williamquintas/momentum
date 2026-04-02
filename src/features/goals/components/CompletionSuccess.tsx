@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 
 import { CheckCircleFilled, TrophyOutlined, StarFilled, FireOutlined } from '@ant-design/icons';
 import { Result, Button } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import type { CompletionEvent, CelebrationData } from '@/features/goals/types/completion';
 import type { Goal } from '@/types/goal.types';
@@ -27,6 +28,7 @@ export function CompletionSuccess({
   onViewGoal,
   showConfetti = true,
 }: CompletionSuccessProps): JSX.Element {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const celebration = completion.celebration;
 
@@ -94,13 +96,15 @@ export function CompletionSuccess({
           icon={getIcon()}
           title={
             <span id="completion-title" style={{ fontSize: '1.5rem' }}>
-              {celebration.message || 'Goal Completed!'}
+              {celebration.message || t('completionSuccess.goalCompleted')}
             </span>
           }
           subTitle={
             <div style={{ textAlign: 'center' }}>
               <p style={{ marginBottom: 8, fontSize: '1.1rem' }}>{goal.title}</p>
-              <p style={{ color: '#888', margin: 0 }}>Completed in {formatDuration(completion.metrics.totalTime)}</p>
+              <p style={{ color: '#888', margin: 0 }}>
+                {t('completionSuccess.completedIn', { duration: formatDuration(completion.metrics.totalTime) })}
+              </p>
               {celebration.badge && (
                 <div
                   style={{
@@ -124,12 +128,12 @@ export function CompletionSuccess({
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
               {onViewGoal && (
                 <Button type="primary" size="large" onClick={onViewGoal}>
-                  View Goal
+                  {t('completionSuccess.viewGoal')}
                 </Button>
               )}
               {onClose && (
                 <Button size="large" onClick={onClose}>
-                  Close
+                  {t('completionSuccess.close')}
                 </Button>
               )}
             </div>

@@ -9,6 +9,7 @@ import React from 'react';
 
 import { StarFilled, StarOutlined } from '@ant-design/icons';
 import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import type { Goal } from '@/features/goals/types';
 import { GoalType } from '@/features/goals/types';
@@ -66,6 +67,7 @@ const getProgressStatus = (progress: number): 'success' | 'exception' | 'active'
  * GoalCard Component
  */
 export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavorite, className }) => {
+  const { t } = useTranslation();
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
 
@@ -113,7 +115,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
                 <StarOutlined style={{ color: '#d9d9d9' }} />
               )}
             </span>
-            {goal.archived && <Tag color="default">Archived</Tag>}
+            {goal.archived && <Tag color="default">{t('goalList.archived')}</Tag>}
             <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
             <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
           </Space>
@@ -142,7 +144,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
           {goal.deadline && (
             <Space size="small">
               <Text type="secondary" style={{ fontSize: '12px' }}>
-                Deadline: {formatDate(goal.deadline)}
+                {t('goals.dueDate')}: {formatDate(goal.deadline)}
               </Text>
               {isOverdue(goal.deadline) && <Tag color="red">{getDeadlineStatusText(goal.deadline)}</Tag>}
               {isDueSoon(goal.deadline) && !isOverdue(goal.deadline) && (
@@ -169,7 +171,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
           ))}
           {goal.tags.length > 3 && (
             <Text type="secondary" style={{ fontSize: '12px' }}>
-              +{goal.tags.length - 3} more
+              {t('goalList.more', { count: goal.tags.length - 3 })}
             </Text>
           )}
         </Space>
