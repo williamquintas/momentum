@@ -48,5 +48,6 @@ Object.defineProperty(window, 'getComputedStyle', {
   value: vi.fn().mockImplementation(() => ({
     display: 'none',
     length: 0,
+    getPropertyValue: vi.fn().mockReturnValue(''),
   })),
 });
