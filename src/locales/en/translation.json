@@ -19,8 +19,7 @@
     "yes": "Yes",
     "no": "No",
     "optional": "Optional",
-    "ok": "OK",
-    "and": "And"
+    "ok": "OK"
   },
   "nav": {
     "home": "Home",
@@ -52,7 +51,7 @@
     "notStarted": "Not Started",
     "archived": "Archived",
     "favorites": "Favorites",
-    "updateProgressBtn": "Update Progress",
+    "updateProgress": "Update Progress",
     "markComplete": "Mark Complete",
     "tooltips": {
       "goalTypeHelp": "Click for help choosing the right goal type"
@@ -65,9 +64,6 @@
     "filterByFavorites": "Filter by Favorites",
     "filterByArchiveStatus": "Filter by Archive Status",
     "clearFilters": "Clear Filters",
-    "export": "Export",
-    "exportSuccess": "Successfully exported {{count}} goals",
-    "exportError": "Failed to export goals",
     "filters": "Filters",
     "filtersActive": "(Active)",
     "removedFromFavorites": "Removed from favorites",
@@ -291,46 +287,9 @@
     "theme": "Theme",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
-    "chooseTheme": "Choose a theme",
     "importData": "Import Data",
     "exportData": "Export Data",
-    "dataManagement": "Data Management",
-    "importExport": {
-      "title": "Data Import/Export",
-      "description": "Export your goals to a JSON file for backup, or import goals from a previously exported file.",
-      "exportTitle": "Export Goals",
-      "exportDescription": "Download all your goals as a JSON file for backup or transfer to another device.",
-      "exportButton": "Export to JSON",
-      "importTitle": "Import Goals",
-      "importDescription": "Import goals from a previously exported JSON file. Duplicates are handled automatically.",
-      "importButton": "Import from JSON",
-      "modalTitle": "Import Goals",
-      "selectFile": "Select a JSON file to import",
-      "selectFileDescription": "The file should be a valid JSON export from Momentum. Goals with the same ID or title+type will be treated as duplicates.",
-      "clickToSelect": "Click to select JSON file",
-      "onlyJsonAccepted": "Only .json files are accepted",
-      "previewTitle": "Import Preview",
-      "newGoals": "new goals",
-      "duplicates": "duplicates",
-      "duplicateHandling": "Duplicate Handling",
-      "latestWinsDescription": "Goals with the same ID or title+type will be compared by their update timestamp. The most recent version will be kept.",
-      "skipDescription": "Duplicate goals will be skipped entirely.",
-      "replaceDescription": "Duplicate goals will be replaced with the imported version.",
-      "duplicateStrategy": "Duplicate strategy:",
-      "latestWins": "Latest Wins",
-      "skip": "Skip",
-      "replace": "Replace",
-      "cancel": "Cancel",
-      "import": "Import",
-      "success": "Successfully exported {{count}} goals",
-      "error": "Failed to export goals",
-      "validationError": "Validation failed: {{errors}}",
-      "parseError": "Failed to parse import file. Please ensure it is valid JSON.",
-      "importSuccess": "Import complete: {{imported}} new goals, {{updated}} updated, {{skipped}} skipped",
-      "importError": "Import completed with errors: {{errors}}",
-      "importFailed": "Import failed. Please try again.",
-      "redirectToGoals": "Redirecting to goals..."
-    }
+    "dataManagement": "Data Management"
   },
   "validation": {
     "required": "This field is required",
@@ -363,9 +322,7 @@
     "installApp": "Install app",
     "installMomentumApp": "Install Momentum app",
     "settings": "Settings",
-    "goToSettings": "Go to settings",
-    "language": "Language",
-    "toggleTheme": "Toggle theme"
+    "goToSettings": "Go to settings"
   },
   "footer": {
     "resources": "Resources",
@@ -661,41 +618,5 @@
     "necessaryOnly": "Necessary Only",
     "acceptedMessage": "Cookie consent accepted. Your preferences will be saved.",
     "rejectedMessage": "Only necessary cookies enabled. Your preferences and goals will not be saved between sessions. You can change this in settings."
-  },
-  "notifications": {
-    "title": "Notifications",
-    "empty": "No notifications yet",
-    "emptyDescription": "We'll notify you when new releases are available",
-    "markAllRead": "Mark all read",
-    "viewAll": "View all releases",
-    "tooltip": "Notifications",
-    "unread": "{{count}} unread"
-  },
-  "whatsNew": {
-    "title": "What's New",
-    "titleWithVersion": "What's New in {{version}}",
-    "viewChangelog": "View Full Changelog",
-    "viewAllReleases": "View all releases",
-    "gotIt": "Got it!",
-    "released": "Released {{date}}",
-    "previous": "Previous version",
-    "next": "Next version",
-    "changelog": {
-      "feat": "✨ Features",
-      "fix": "🐛 Bug Fixes",
-      "perf": "⚡ Performance",
-      "breaking": "⚠️ Breaking Changes",
-      "refactor": "♻️ Refactoring",
-      "docs": "📝 Documentation",
-      "chore": "🔧 Maintenance"
-    },
-    "categories": {
-      "major": "Major Release",
-      "majorDescription": "This release contains significant new features and may include breaking changes.",
-      "minor": "Minor Release",
-      "minorDescription": "This release introduces new features and improvements.",
-      "patch": "Patch Update",
-      "patchDescription": "This release includes bug fixes and performance improvements."
-    }
   }
 }
