@@ -41,6 +41,8 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "validate": "npm run type-check && npm run lint && npm run format:check",
+    "validate:translations": "node scripts/validateTranslations.js",
+    "generate:translations": "node scripts/generateTranslations.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
@@ -69,6 +71,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
@@ -80,6 +83,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^4.1.2",
     "@vitest/ui": "^4.1.2",
+    "esbuild": "^0.27.7",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -115,5 +119,9 @@
   "engines": {
     "node": ">=24.0.0",
     "npm": ">=10.0.0"
+  },
+  "overrides": {
+    "lodash": "^4.17.21",
+    "serialize-javascript": "^7.0.5"
   }
 }

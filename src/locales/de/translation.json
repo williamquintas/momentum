@@ -52,40 +52,7 @@
     "notStarted": "Nicht begonnen",
     "archived": "Archiviert",
     "favorites": "Favoriten",
-    "updateProgressBtn": "Fortschritt aktualisieren",
-    "updateProgress": {
-      "title": "Fortschritt aktualisieren",
-      "currentValueLabel": "Aktueller Wert",
-      "currentValueRequired": "Aktueller Wert ist erforderlich",
-      "valueRange": "Wert muss zwischen {{min}} und {{max}} liegen",
-      "checkCompletedItems": "Abgeschlossene Elemente überprüfen",
-      "currentCountLabel": "Aktuelle Anzahl",
-      "currentCountRequired": "Aktuelle Anzahl ist erforderlich",
-      "countRange": "Anzahl muss zwischen 0 und {{max}} liegen",
-      "progressLabel": "Fortschritt",
-      "statusLabel": "Status",
-      "statusRequired": "Status ist erforderlich",
-      "selectStatus": "Status auswählen",
-      "previousAssessments": "Vorherige Bewertungen",
-      "selectMilestone": "Meilenstein auswählen",
-      "selectMilestoneRequired": "Bitte wählen Sie einen Meilenstein",
-      "chooseMilestone": "Wählen Sie einen Meilenstein zur Aktualisierung",
-      "dependencies": "Abhängigkeiten",
-      "cannotCompleteDeps": "Kann nicht abgeschlossen werden: Schließen Sie zuerst diese Meilensteine ab: {{titles}}",
-      "markAsCompleted": "Als abgeschlossen markieren",
-      "completeThisMilestone": "Diesen Meilenstein abschließen",
-      "selectOccurrence": "Vorkommen auswählen",
-      "selectOccurrenceRequired": "Bitte wählen Sie ein Vorkommen",
-      "chooseOccurrence": "Wählen Sie ein Vorkommen zur Aktualisierung",
-      "pending": "Ausstehend",
-      "missed": "Verpasst",
-      "dateLabel": "Datum",
-      "dateRequired": "Bitte wählen Sie ein Datum",
-      "completionStatus": "Abschlussstatus",
-      "markAsCompletedLabel": "Als abgeschlossen markieren",
-      "noteOptional": "Notiz (Optional)",
-      "notePlaceholder": "Fügen Sie eine Notiz zu diesem Fortschrittsupdate hinzu..."
-    },
+    "updateProgress": "Fortschritt aktualisieren",
     "markComplete": "Als abgeschlossen markieren",
     "tooltips": {
       "goalTypeHelp": "Klicken Sie für Hilfe bei der Auswahl des richtigen Zieltyps"
@@ -214,6 +181,39 @@
       "readyDesc": "Dieses Ziel ist bereit zum Abschließen. Klicken Sie auf die Schaltfläche unten, um abzuschließen.",
       "markCompleteBtn": "Als abgeschlossen markieren"
     },
+    "updateProgress": {
+      "title": "Fortschritt aktualisieren",
+      "currentValueLabel": "Aktueller Wert",
+      "currentValueRequired": "Aktueller Wert ist erforderlich",
+      "valueRange": "Wert muss zwischen {{min}} und {{max}} liegen",
+      "checkCompletedItems": "Abgeschlossene Elemente überprüfen",
+      "currentCountLabel": "Aktuelle Anzahl",
+      "currentCountRequired": "Aktuelle Anzahl ist erforderlich",
+      "countRange": "Anzahl muss zwischen 0 und {{max}} liegen",
+      "progressLabel": "Fortschritt",
+      "statusLabel": "Status",
+      "statusRequired": "Status ist erforderlich",
+      "selectStatus": "Status auswählen",
+      "previousAssessments": "Vorherige Bewertungen",
+      "selectMilestone": "Meilenstein auswählen",
+      "selectMilestoneRequired": "Bitte wählen Sie einen Meilenstein",
+      "chooseMilestone": "Wählen Sie einen Meilenstein zur Aktualisierung",
+      "dependencies": "Abhängigkeiten",
+      "cannotCompleteDeps": "Kann nicht abgeschlossen werden: Schließen Sie zuerst diese Meilensteine ab: {{titles}}",
+      "markAsCompleted": "Als abgeschlossen markieren",
+      "completeThisMilestone": "Diesen Meilenstein abschließen",
+      "selectOccurrence": "Vorkommen auswählen",
+      "selectOccurrenceRequired": "Bitte wählen Sie ein Vorkommen",
+      "chooseOccurrence": "Wählen Sie ein Vorkommen zur Aktualisierung",
+      "pending": "Ausstehend",
+      "missed": "Verpasst",
+      "dateLabel": "Datum",
+      "dateRequired": "Bitte wählen Sie ein Datum",
+      "completionStatus": "Abschlussstatus",
+      "markAsCompletedLabel": "Als abgeschlossen markieren",
+      "noteOptional": "Notiz (Optional)",
+      "notePlaceholder": "Fügen Sie eine Notiz zu diesem Fortschrittsupdate hinzu..."
+    },
     "completion": {
       "completedIn": "Abgeschlossen in {{duration}}",
       "viewGoal": "Ziel anzeigen"
@@ -291,7 +291,6 @@
     "theme": "Design",
     "darkMode": "Dunkelmodus",
     "lightMode": "Hellmodus",
-    "chooseTheme": "Design auswählen",
     "importData": "Daten importieren",
     "exportData": "Daten exportieren",
     "dataManagement": "Datenverwaltung",
@@ -363,9 +362,7 @@
     "installApp": "App installieren",
     "installMomentumApp": "Momentum-App installieren",
     "settings": "Einstellungen",
-    "goToSettings": "Zu den Einstellungen",
-    "language": "Sprache",
-    "toggleTheme": "Design umschalten"
+    "goToSettings": "Zu den Einstellungen"
   },
   "footer": {
     "resources": "Ressourcen",
@@ -661,41 +658,5 @@
     "necessaryOnly": "Nur notwendig",
     "acceptedMessage": "Cookie-Zustimmung akzeptiert. Ihre Einstellungen werden gespeichert.",
     "rejectedMessage": "Nur notwendige Cookies aktiviert. Ihre Einstellungen und Ziele werden nicht zwischen den Sitzungen gespeichert. Sie können dies in den Einstellungen ändern."
-  },
-  "notifications": {
-    "title": "Benachrichtigungen",
-    "empty": "Noch keine Benachrichtigungen",
-    "emptyDescription": "Wir benachrichtigen Sie, wenn neue Versionen verfügbar sind",
-    "markAllRead": "Alle als gelesen markieren",
-    "viewAll": "Alle Versionen anzeigen",
-    "tooltip": "Benachrichtigungen",
-    "unread": "{{count}} ungelesen"
-  },
-  "whatsNew": {
-    "title": "Neuigkeiten",
-    "titleWithVersion": "Neuigkeiten in Version {{version}}",
-    "viewChangelog": "Vollständiges Änderungsprotokoll anzeigen",
-    "viewAllReleases": "Alle Versionen anzeigen",
-    "gotIt": "Verstanden!",
-    "released": "Veröffentlicht am {{date}}",
-    "previous": "Vorherige Version",
-    "next": "Nächste Version",
-    "changelog": {
-      "feat": "✨ Funktionen",
-      "fix": "🐛 Fehlerbehebungen",
-      "perf": "⚡ Leistung",
-      "breaking": "⚠️ Brechende Änderungen",
-      "refactor": "♻️ Refactoring",
-      "docs": "📝 Dokumentation",
-      "chore": "🔧 Wartung"
-    },
-    "categories": {
-      "major": "Hauptversion",
-      "majorDescription": "Diese Version enthält wichtige neue Funktionen und kann brechende Änderungen enthalten.",
-      "minor": "Nebenversion",
-      "minorDescription": "Diese Version führt neue Funktionen und Verbesserungen ein.",
-      "patch": "Patch-Update",
-      "patchDescription": "Diese Version enthält Fehlerbehebungen und Leistungsverbesserungen."
-    }
   }
 }

@@ -14,7 +14,7 @@ import {
   isThisMonth,
   type Locale,
 } from 'date-fns';
-import { enUS, es, ptBR } from 'date-fns/locale';
+import { de, enUS, es, fr, hi, ja, ko, ptBR, ru, zhCN } from 'date-fns/locale';
 
 import i18n from './i18n';
 
@@ -22,9 +22,18 @@ import i18n from './i18n';
  * Map of i18n language codes to date-fns locales
  */
 const localeMap: Record<string, Locale> = {
+  de,
   en: enUS,
-  es: es,
-  'pt-br': ptBR,
+  es,
+  fr,
+  hi,
+  ja,
+  ko,
+  pt_br: ptBR,
+  pt_BR: ptBR,
+  ru,
+  zh: zhCN,
+  'zh-Hans': zhCN,
 };
 
 /**

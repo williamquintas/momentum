@@ -43,8 +43,8 @@ const flattenObject = (obj, prefix = '') => {
 /**
  * Recursively un-flattens dot-notation keys back to nested object
  */
-const unflattenObject = (flat, existing = {}) => {
-  const result = JSON.parse(JSON.stringify(existing));
+const unflattenObject = (flat) => {
+  const result = {};
 
   for (const key in flat) {
     const parts = key.split('.');
@@ -52,8 +52,6 @@ const unflattenObject = (flat, existing = {}) => {
 
     for (let i = 0; i < parts.length - 1; i++) {
       if (!(parts[i] in current)) {
-        current[parts[i]] = {};
-      } else if (typeof current[parts[i]] === 'string') {
         current[parts[i]] = {};
       }
       current = current[parts[i]];
@@ -152,7 +150,7 @@ const main = () => {
       if (lang === 'en') continue;
 
       if (results[lang].added > 0) {
-        const unflattened = unflattenObject(flatTranslations[lang], translations[lang]);
+        const unflattened = unflattenObject(flatTranslations[lang]);
         saveTranslation(lang, unflattened);
         console.log(`   Saved ${lang}: ${results[lang].added} keys added`);
       }

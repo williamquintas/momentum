@@ -52,40 +52,7 @@
     "notStarted": "Non commencé",
     "archived": "Archivé",
     "favorites": "Favoris",
-    "updateProgressBtn": "Mettre à jour la progression",
-    "updateProgress": {
-      "title": "Mettre à jour la progression",
-      "currentValueLabel": "Valeur actuelle",
-      "currentValueRequired": "La valeur actuelle est requise",
-      "valueRange": "La valeur doit être comprise entre {{min}} et {{max}}",
-      "checkCompletedItems": "Vérifier les éléments complétés",
-      "currentCountLabel": "Nombre actuel",
-      "currentCountRequired": "Le nombre actuel est requis",
-      "countRange": "Le nombre doit être compris entre 0 et {{max}}",
-      "progressLabel": "Progression",
-      "statusLabel": "Statut",
-      "statusRequired": "Le statut est requis",
-      "selectStatus": "Sélectionner un statut",
-      "previousAssessments": "Évaluations précédentes",
-      "selectMilestone": "Sélectionner une étape",
-      "selectMilestoneRequired": "Veuillez sélectionner une étape",
-      "chooseMilestone": "Choisissez une étape à mettre à jour",
-      "dependencies": "Dépendances",
-      "cannotCompleteDeps": "Impossible de terminer : complétez d'abord ces étapes : {{titles}}",
-      "markAsCompleted": "Marquer comme terminé",
-      "completeThisMilestone": "Terminer cette étape",
-      "selectOccurrence": "Sélectionner une occurrence",
-      "selectOccurrenceRequired": "Veuillez sélectionner une occurrence",
-      "chooseOccurrence": "Choisissez une occurrence à mettre à jour",
-      "pending": "En attente",
-      "missed": "Manqué",
-      "dateLabel": "Date",
-      "dateRequired": "Veuillez sélectionner une date",
-      "completionStatus": "Statut de complétion",
-      "markAsCompletedLabel": "Marquer comme terminé",
-      "noteOptional": "Note (optionnel)",
-      "notePlaceholder": "Ajouter une note sur cette mise à jour de progression..."
-    },
+    "updateProgress": "Mettre à jour la progression",
     "markComplete": "Marquer comme terminé",
     "tooltips": {
       "goalTypeHelp": "Cliquez pour obtenir de l'aide sur le choix du type d'objectif"
@@ -214,6 +181,39 @@
       "readyDesc": "Cet objectif est prêt à être terminé. Cliquez sur le bouton ci-dessous pour finaliser.",
       "markCompleteBtn": "Marquer comme terminé"
     },
+    "updateProgress": {
+      "title": "Mettre à jour la progression",
+      "currentValueLabel": "Valeur actuelle",
+      "currentValueRequired": "La valeur actuelle est requise",
+      "valueRange": "La valeur doit être comprise entre {{min}} et {{max}}",
+      "checkCompletedItems": "Vérifier les éléments complétés",
+      "currentCountLabel": "Nombre actuel",
+      "currentCountRequired": "Le nombre actuel est requis",
+      "countRange": "Le nombre doit être compris entre 0 et {{max}}",
+      "progressLabel": "Progression",
+      "statusLabel": "Statut",
+      "statusRequired": "Le statut est requis",
+      "selectStatus": "Sélectionner un statut",
+      "previousAssessments": "Évaluations précédentes",
+      "selectMilestone": "Sélectionner une étape",
+      "selectMilestoneRequired": "Veuillez sélectionner une étape",
+      "chooseMilestone": "Choisissez une étape à mettre à jour",
+      "dependencies": "Dépendances",
+      "cannotCompleteDeps": "Impossible de terminer : complétez d'abord ces étapes : {{titles}}",
+      "markAsCompleted": "Marquer comme terminé",
+      "completeThisMilestone": "Terminer cette étape",
+      "selectOccurrence": "Sélectionner une occurrence",
+      "selectOccurrenceRequired": "Veuillez sélectionner une occurrence",
+      "chooseOccurrence": "Choisissez une occurrence à mettre à jour",
+      "pending": "En attente",
+      "missed": "Manqué",
+      "dateLabel": "Date",
+      "dateRequired": "Veuillez sélectionner une date",
+      "completionStatus": "Statut de complétion",
+      "markAsCompletedLabel": "Marquer comme terminé",
+      "noteOptional": "Note (optionnel)",
+      "notePlaceholder": "Ajouter une note sur cette mise à jour de progression..."
+    },
     "completion": {
       "completedIn": "Terminé en {{duration}}",
       "viewGoal": "Voir l'objectif"
@@ -291,7 +291,6 @@
     "theme": "Thème",
     "darkMode": "Mode sombre",
     "lightMode": "Mode clair",
-    "chooseTheme": "Choisissez un thème",
     "importData": "Importer des données",
     "exportData": "Exporter des données",
     "dataManagement": "Gestion des données",
@@ -363,9 +362,7 @@
     "installApp": "Installer l'application",
     "installMomentumApp": "Installer l'application Momentum",
     "settings": "Paramètres",
-    "goToSettings": "Aller aux paramètres",
-    "language": "Langue",
-    "toggleTheme": "Changer de thème"
+    "goToSettings": "Aller aux paramètres"
   },
   "footer": {
     "resources": "Ressources",
@@ -661,41 +658,5 @@
     "necessaryOnly": "Nécessaires uniquement",
     "acceptedMessage": "Consentement aux cookies accepté. Vos préférences seront enregistrées.",
     "rejectedMessage": "Seuls les cookies nécessaires sont activés. Vos préférences et objectifs ne seront pas sauvegardés entre les sessions. Vous pouvez modifier cela dans les paramètres."
-  },
-  "notifications": {
-    "title": "Notifications",
-    "empty": "Pas encore de notifications",
-    "emptyDescription": "Nous vous préviendrons lorsque de nouvelles versions seront disponibles",
-    "markAllRead": "Tout marquer comme lu",
-    "viewAll": "Voir toutes les versions",
-    "tooltip": "Notifications",
-    "unread": "{{count}} non lu(s)"
-  },
-  "whatsNew": {
-    "title": "Nouveautés",
-    "titleWithVersion": "Nouveautés dans la version {{version}}",
-    "viewChangelog": "Voir le changelog complet",
-    "viewAllReleases": "Voir toutes les versions",
-    "gotIt": "Compris !",
-    "released": "Publié le {{date}}",
-    "previous": "Version précédente",
-    "next": "Version suivante",
-    "changelog": {
-      "feat": "✨ Fonctionnalités",
-      "fix": "🐛 Corrections de bugs",
-      "perf": "⚡ Performance",
-      "breaking": "⚠️ Changements majeurs",
-      "refactor": "♻️ Refactorisation",
-      "docs": "📝 Documentation",
-      "chore": "🔧 Maintenance"
-    },
-    "categories": {
-      "major": "Version majeure",
-      "majorDescription": "Cette version contient des fonctionnalités importantes et peut inclure des changements majeurs.",
-      "minor": "Version mineure",
-      "minorDescription": "Cette version apporte de nouvelles fonctionnalités et améliorations.",
-      "patch": "Mise à jour corrective",
-      "patchDescription": "Cette version contient des corrections de bugs et des améliorations de performance."
-    }
   }
 }

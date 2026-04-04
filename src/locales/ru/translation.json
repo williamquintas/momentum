@@ -52,40 +52,7 @@
     "notStarted": "Не начато",
     "archived": "В архиве",
     "favorites": "Избранное",
-    "updateProgressBtn": "Обновить прогресс",
-    "updateProgress": {
-      "title": "Обновить прогресс",
-      "currentValueLabel": "Текущее значение",
-      "currentValueRequired": "Текущее значение обязательно",
-      "valueRange": "Значение должно быть между {{min}} и {{max}}",
-      "checkCompletedItems": "Отметить выполненные элементы",
-      "currentCountLabel": "Текущий счётчик",
-      "currentCountRequired": "Текущий счётчик обязателен",
-      "countRange": "Счётчик должен быть между 0 и {{max}}",
-      "progressLabel": "Прогресс",
-      "statusLabel": "Статус",
-      "statusRequired": "Статус обязателен",
-      "selectStatus": "Выберите статус",
-      "previousAssessments": "Предыдущие оценки",
-      "selectMilestone": "Выберите веху",
-      "selectMilestoneRequired": "Пожалуйста, выберите веху",
-      "chooseMilestone": "Выберите веху для обновления",
-      "dependencies": "Зависимости",
-      "cannotCompleteDeps": "Невозможно выполнить: сначала завершите эти вехи: {{titles}}",
-      "markAsCompleted": "Отметить как выполненное",
-      "completeThisMilestone": "Завершить эту веху",
-      "selectOccurrence": "Выберите повторение",
-      "selectOccurrenceRequired": "Пожалуйста, выберите повторение",
-      "chooseOccurrence": "Выберите повторение для обновления",
-      "pending": "Ожидает",
-      "missed": "Пропущено",
-      "dateLabel": "Дата",
-      "dateRequired": "Пожалуйста, выберите дату",
-      "completionStatus": "Статус выполнения",
-      "markAsCompletedLabel": "Отметить как выполненное",
-      "noteOptional": "Заметка (необязательно)",
-      "notePlaceholder": "Добавьте заметку об этом обновлении..."
-    },
+    "updateProgress": "Обновить прогресс",
     "markComplete": "Отметить как выполненное",
     "tooltips": {
       "goalTypeHelp": "Нажмите для справки по выбору типа цели"
@@ -214,6 +181,39 @@
       "readyDesc": "Эта цель готова к завершению. Нажмите кнопку ниже, чтобы закончить.",
       "markCompleteBtn": "Завершить"
     },
+    "updateProgress": {
+      "title": "Обновить прогресс",
+      "currentValueLabel": "Текущее значение",
+      "currentValueRequired": "Текущее значение обязательно",
+      "valueRange": "Значение должно быть между {{min}} и {{max}}",
+      "checkCompletedItems": "Отметить выполненные элементы",
+      "currentCountLabel": "Текущий счётчик",
+      "currentCountRequired": "Текущий счётчик обязателен",
+      "countRange": "Счётчик должен быть между 0 и {{max}}",
+      "progressLabel": "Прогресс",
+      "statusLabel": "Статус",
+      "statusRequired": "Статус обязателен",
+      "selectStatus": "Выберите статус",
+      "previousAssessments": "Предыдущие оценки",
+      "selectMilestone": "Выберите веху",
+      "selectMilestoneRequired": "Пожалуйста, выберите веху",
+      "chooseMilestone": "Выберите веху для обновления",
+      "dependencies": "Зависимости",
+      "cannotCompleteDeps": "Невозможно выполнить: сначала завершите эти вехи: {{titles}}",
+      "markAsCompleted": "Отметить как выполненное",
+      "completeThisMilestone": "Завершить эту веху",
+      "selectOccurrence": "Выберите повторение",
+      "selectOccurrenceRequired": "Пожалуйста, выберите повторение",
+      "chooseOccurrence": "Выберите повторение для обновления",
+      "pending": "Ожидает",
+      "missed": "Пропущено",
+      "dateLabel": "Дата",
+      "dateRequired": "Пожалуйста, выберите дату",
+      "completionStatus": "Статус выполнения",
+      "markAsCompletedLabel": "Отметить как выполненное",
+      "noteOptional": "Заметка (необязательно)",
+      "notePlaceholder": "Добавьте заметку об этом обновлении..."
+    },
     "completion": {
       "completedIn": "Выполнено за {{duration}}",
       "viewGoal": "Посмотреть цель"
@@ -291,7 +291,6 @@
     "theme": "Тема",
     "darkMode": "Тёмный режим",
     "lightMode": "Светлый режим",
-    "chooseTheme": "Выберите тему",
     "importData": "Импорт данных",
     "exportData": "Экспорт данных",
     "dataManagement": "Управление данными",
@@ -363,9 +362,7 @@
     "installApp": "Установить приложение",
     "installMomentumApp": "Установить приложение Momentum",
     "settings": "Настройки",
-    "goToSettings": "Перейти к настройкам",
-    "language": "Язык",
-    "toggleTheme": "Переключить тему"
+    "goToSettings": "Перейти к настройкам"
   },
   "footer": {
     "resources": "Ресурсы",
@@ -661,41 +658,5 @@
     "necessaryOnly": "Только необходимые",
     "acceptedMessage": "Согласие на cookies принято. Ваши предпочтения сохранены.",
     "rejectedMessage": "Включены только необходимые cookies. Ваши предпочтения и цели не будут сохраняться между сеансами. Вы можете изменить это в настройках."
-  },
-  "notifications": {
-    "title": "Уведомления",
-    "empty": "Пока нет уведомлений",
-    "emptyDescription": "Мы уведомим вас, когда будут доступны новые версии",
-    "markAllRead": "Отметить всё прочитанным",
-    "viewAll": "Посмотреть все версии",
-    "tooltip": "Уведомления",
-    "unread": "{{count}} непрочитанных"
-  },
-  "whatsNew": {
-    "title": "Что нового",
-    "titleWithVersion": "Что нового в версии {{version}}",
-    "viewChangelog": "Посмотреть полный список изменений",
-    "viewAllReleases": "Посмотреть все версии",
-    "gotIt": "Понятно!",
-    "released": "Выпущено {{date}}",
-    "previous": "Предыдущая версия",
-    "next": "Следующая версия",
-    "changelog": {
-      "feat": "✨ Новые функции",
-      "fix": "🐛 Исправления ошибок",
-      "perf": "⚡ Производительность",
-      "breaking": "⚠️ Критические изменения",
-      "refactor": "♻️ Рефакторинг",
-      "docs": "📝 Документация",
-      "chore": "🔧 Обслуживание"
-    },
-    "categories": {
-      "major": "Основной релиз",
-      "majorDescription": "Этот релиз содержит значительные новые функции и может включать критические изменения.",
-      "minor": "Минорный релиз",
-      "minorDescription": "Этот релиз представляет новые функции и улучшения.",
-      "patch": "Патч",
-      "patchDescription": "Этот релиз включает исправления ошибок и улучшения производительности."
-    }
   }
 }

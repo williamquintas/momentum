@@ -52,40 +52,7 @@
     "notStarted": "未开始",
     "archived": "已归档",
     "favorites": "收藏",
-    "updateProgressBtn": "更新进度",
-    "updateProgress": {
-      "title": "更新进度",
-      "currentValueLabel": "当前值",
-      "currentValueRequired": "当前值为必填项",
-      "valueRange": "值必须在 {{min}} 和 {{max}} 之间",
-      "checkCompletedItems": "勾选已完成项目",
-      "currentCountLabel": "当前计数",
-      "currentCountRequired": "当前计数为必填项",
-      "countRange": "计数必须在 0 到 {{max}} 之间",
-      "progressLabel": "进度",
-      "statusLabel": "状态",
-      "statusRequired": "状态为必填项",
-      "selectStatus": "选择状态",
-      "previousAssessments": "历史评估",
-      "selectMilestone": "选择里程碑",
-      "selectMilestoneRequired": "请选择一个里程碑",
-      "chooseMilestone": "选择要更新的里程碑",
-      "dependencies": "依赖项",
-      "cannotCompleteDeps": "无法完成：请先完成以下里程碑：{{titles}}",
-      "markAsCompleted": "标记为已完成",
-      "completeThisMilestone": "完成此里程碑",
-      "selectOccurrence": "选择次数",
-      "selectOccurrenceRequired": "请选择一次",
-      "chooseOccurrence": "选择要更新的次数",
-      "pending": "待完成",
-      "missed": "已错过",
-      "dateLabel": "日期",
-      "dateRequired": "请选择日期",
-      "completionStatus": "完成状态",
-      "markAsCompletedLabel": "标记为已完成",
-      "noteOptional": "备注（可选）",
-      "notePlaceholder": "添加关于此次进度更新的备注..."
-    },
+    "updateProgress": "更新进度",
     "markComplete": "标记完成",
     "tooltips": {
       "goalTypeHelp": "点击获取帮助，选择合适的目标类型"
@@ -214,6 +181,39 @@
       "readyDesc": "此目标已完成，可以标记。点击下方按钮完成。",
       "markCompleteBtn": "标记完成"
     },
+    "updateProgress": {
+      "title": "更新进度",
+      "currentValueLabel": "当前值",
+      "currentValueRequired": "当前值为必填项",
+      "valueRange": "值必须在 {{min}} 和 {{max}} 之间",
+      "checkCompletedItems": "勾选已完成项目",
+      "currentCountLabel": "当前计数",
+      "currentCountRequired": "当前计数为必填项",
+      "countRange": "计数必须在 0 到 {{max}} 之间",
+      "progressLabel": "进度",
+      "statusLabel": "状态",
+      "statusRequired": "状态为必填项",
+      "selectStatus": "选择状态",
+      "previousAssessments": "历史评估",
+      "selectMilestone": "选择里程碑",
+      "selectMilestoneRequired": "请选择一个里程碑",
+      "chooseMilestone": "选择要更新的里程碑",
+      "dependencies": "依赖项",
+      "cannotCompleteDeps": "无法完成：请先完成以下里程碑：{{titles}}",
+      "markAsCompleted": "标记为已完成",
+      "completeThisMilestone": "完成此里程碑",
+      "selectOccurrence": "选择次数",
+      "selectOccurrenceRequired": "请选择一次",
+      "chooseOccurrence": "选择要更新的次数",
+      "pending": "待完成",
+      "missed": "已错过",
+      "dateLabel": "日期",
+      "dateRequired": "请选择日期",
+      "completionStatus": "完成状态",
+      "markAsCompletedLabel": "标记为已完成",
+      "noteOptional": "备注（可选）",
+      "notePlaceholder": "添加关于此次进度更新的备注..."
+    },
     "completion": {
       "completedIn": "用时 {{duration}} 完成",
       "viewGoal": "查看目标"
@@ -291,7 +291,6 @@
     "theme": "主题",
     "darkMode": "深色模式",
     "lightMode": "浅色模式",
-    "chooseTheme": "选择主题",
     "importData": "导入数据",
     "exportData": "导出数据",
     "dataManagement": "数据管理",
@@ -363,9 +362,7 @@
     "installApp": "安装应用",
     "installMomentumApp": "安装 Momentum 应用",
     "settings": "设置",
-    "goToSettings": "前往设置",
-    "language": "语言",
-    "toggleTheme": "切换主题"
+    "goToSettings": "前往设置"
   },
   "footer": {
     "resources": "资源",
@@ -661,41 +658,5 @@
     "necessaryOnly": "仅必要",
     "acceptedMessage": "已接受Cookie同意。您的偏好将被保存。",
     "rejectedMessage": "仅启用必要Cookie。您的偏好和目标不会在会话间保存。您可以在设置中更改此选项。"
-  },
-  "notifications": {
-    "title": "通知",
-    "empty": "暂无通知",
-    "emptyDescription": "新版本发布时我们会通知您",
-    "markAllRead": "全部标为已读",
-    "viewAll": "查看所有版本",
-    "tooltip": "通知",
-    "unread": "{{count}} 条未读"
-  },
-  "whatsNew": {
-    "title": "更新内容",
-    "titleWithVersion": "版本 {{version}} 更新内容",
-    "viewChangelog": "查看完整更新日志",
-    "viewAllReleases": "查看所有版本",
-    "gotIt": "知道了！",
-    "released": "发布于 {{date}}",
-    "previous": "上一版本",
-    "next": "下一版本",
-    "changelog": {
-      "feat": "✨ 新功能",
-      "fix": "🐛 错误修复",
-      "perf": "⚡ 性能优化",
-      "breaking": "⚠️ 重大变更",
-      "refactor": "♻️ 重构",
-      "docs": "📝 文档",
-      "chore": "🔧 维护"
-    },
-    "categories": {
-      "major": "重大更新",
-      "majorDescription": "此版本包含重要的新功能，可能包含重大变更。",
-      "minor": "次要更新",
-      "minorDescription": "此版本引入了新功能和改进。",
-      "patch": "补丁更新",
-      "patchDescription": "此版本包含错误修复和性能改进。"
-    }
   }
 }
