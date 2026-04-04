@@ -13,12 +13,12 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
 
 // Mock URL.createObjectURL and URL.revokeObjectURL
 const createObjectURLMock = vi.fn(() => 'blob:http://localhost/mock-url');
 const revokeObjectURLMock = vi.fn();
-Object.defineProperty(global, 'URL', {
+Object.defineProperty(globalThis, 'URL', {
   value: {
     createObjectURL: createObjectURLMock,
     revokeObjectURL: revokeObjectURLMock,
@@ -35,9 +35,9 @@ const mockLink = {
 const createElementMock = vi.fn(() => mockLink);
 const appendChildMock = vi.fn();
 const removeChildMock = vi.fn();
-Object.defineProperty(global.document, 'createElement', { value: createElementMock });
-Object.defineProperty(global.document.body, 'appendChild', { value: appendChildMock });
-Object.defineProperty(global.document.body, 'removeChild', { value: removeChildMock });
+Object.defineProperty(globalThis.document, 'createElement', { value: createElementMock });
+Object.defineProperty(globalThis.document.body, 'appendChild', { value: appendChildMock });
+Object.defineProperty(globalThis.document.body, 'removeChild', { value: removeChildMock });
 
 // Now import after mocks are set up
 import { exportGoals, downloadExport, EXPORT_SCHEMA_VERSION, APP_VERSION } from '../dataExportService';

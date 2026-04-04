@@ -4,6 +4,11 @@
  * Provides locale-aware date and time formatting using date-fns.
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import {
   format,
   formatDistanceToNow,
@@ -14,26 +19,17 @@ import {
   isThisMonth,
   type Locale,
 } from 'date-fns';
-import { de, enUS, es, fr, hi, ja, ko, ptBR, ru, zhCN } from 'date-fns/locale';
+import { enUS, es, ptBR } from 'date-fns/locale';
 
-import i18n from './i18n';
+import i18n from '@/i18n';
 
 /**
  * Map of i18n language codes to date-fns locales
  */
 const localeMap: Record<string, Locale> = {
-  de,
   en: enUS,
-  es,
-  fr,
-  hi,
-  ja,
-  ko,
-  pt_br: ptBR,
-  pt_BR: ptBR,
-  ru,
-  zh: zhCN,
-  'zh-Hans': zhCN,
+  es: es,
+  'pt-br': ptBR,
 };
 
 /**

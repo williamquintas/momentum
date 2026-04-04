@@ -281,7 +281,7 @@ export function safeValidateUpdateProgressInput(data: unknown): {
 export function zodErrorToFieldErrors(error: z.ZodError): Record<string, string[]> {
   const fieldErrors: Record<string, string[]> = {};
 
-  error.errors.forEach((issue) => {
+  error.issues.forEach((issue) => {
     const path = issue.path.join('.');
     if (!fieldErrors[path]) {
       fieldErrors[path] = [];
@@ -324,19 +324,19 @@ export function getFieldErrors(error: z.ZodError, fieldPath: string): string[] {
  * @returns A formatted error message
  */
 export function formatZodError(error: z.ZodError): string {
-  if (error.errors.length === 0) {
+  if (error.issues.length === 0) {
     return 'Validation failed';
   }
 
-  if (error.errors.length === 1) {
-    const issue = error.errors[0];
+  if (error.issues.length === 1) {
+    const issue = error.issues[0];
     if (issue) {
       const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : '';
       return `${path}${issue.message}`;
     }
   }
 
-  return `Validation failed with ${error.errors.length} errors`;
+  return `Validation failed with ${error.issues.length} errors`;
 }
 
 // ============================================================================
@@ -429,7 +429,7 @@ export function zodValidator<T extends z.ZodTypeAny>(schema: T): (_: unknown, va
   return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
-      const firstError = result.error.errors[0];
+      const firstError = result.error.issues[0];
       if (firstError) {
         throw new Error(firstError.message);
       }
@@ -452,12 +452,12 @@ export function zodFieldValidator<T extends z.ZodTypeAny>(
   return (_, value) => {
     const result = schema.safeParse(value);
     if (!result.success) {
-      const fieldError = result.error.errors.find((e) => e.path.includes(fieldName));
+      const fieldError = result.error.issues.find((e) => e.path.includes(fieldName));
       if (fieldError) {
         throw new Error(fieldError.message);
       }
       // If no specific field error, use the first error
-      const firstError = result.error.errors[0];
+      const firstError = result.error.issues[0];
       if (firstError) {
         throw new Error(firstError.message);
       }
