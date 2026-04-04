@@ -10,35 +10,28 @@
  * CI usage: npm run validate:translations
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LOCALES_DIR = path.join(__dirname, '../src/locales');
-const LANGUAGES = ['de', 'en', 'es', 'fr', 'hi', 'ja', 'ko', 'pt-br', 'ru', 'zh'] as const;
-
-type FlatValue = string;
-type TranslationValue = FlatValue | NestedTranslation;
-interface NestedTranslation {
-  [key: string]: TranslationValue;
-}
-type TranslationData = NestedTranslation;
+const LANGUAGES = ['de', 'en', 'es', 'fr', 'hi', 'ja', 'ko', 'pt-br', 'ru', 'zh'];
 
 /**
  * Recursively flattens a nested object into dot-notation keys
  */
-const flattenObject = (obj: TranslationData): Record<string, string> => {
-  const result: Record<string, string> = {};
+const flattenObject = (obj) => {
+  const result = {};
 
-  const flatten = (o: TranslationData, prefix = ''): void => {
+  const flatten = (o, prefix = '') => {
     for (const key in o) {
       const value = o[key];
       const newKey = prefix ? `${prefix}.${key}` : key;
 
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-        flatten(value as TranslationData, newKey);
-      } else if (typeof value === 'string') {
+      if (typeof value === 'object' && value !== null) {
+        flatten(value, newKey);
+      } else {
         result[newKey] = value;
       }
     }
@@ -51,7 +44,7 @@ const flattenObject = (obj: TranslationData): Record<string, string> => {
 /**
  * Loads translation file
  */
-const loadTranslation = (lang: string): TranslationData => {
+const loadTranslation = (lang) => {
   const filePath = path.join(LOCALES_DIR, lang, 'translation.json');
 
   if (!fs.existsSync(filePath)) {
@@ -66,12 +59,11 @@ const loadTranslation = (lang: string): TranslationData => {
 /**
  * Main function
  */
-const main = (): number => {
+const main = () => {
   console.log('Translation Validator');
   console.log('====================================\n');
 
-  // Load all translations
-  const flatTranslations: Record<string, Record<string, string>> = {};
+  const flatTranslations = {};
 
   for (const lang of LANGUAGES) {
     flatTranslations[lang] = flattenObject(loadTranslation(lang));
@@ -83,7 +75,6 @@ const main = (): number => {
   const englishKeys = Object.keys(flatTranslations['en']);
   let hasErrors = false;
 
-  // Check each language against English
   for (const lang of LANGUAGES) {
     if (lang === 'en') continue;
 
@@ -108,13 +99,12 @@ const main = (): number => {
 
   if (hasErrors) {
     console.error('VALIDATION FAILED: Missing translations detected');
-    console.error('Run "node scripts/generateTranslations.ts" to auto-generate missing keys');
-    return 1;
+    console.error('Run "npm run generate:translations" to auto-generate missing keys');
+    process.exit(1);
   }
 
   console.log('VALIDATION PASSED: All translations are complete');
-  return 0;
+  process.exit(0);
 };
 
-const exitCode = main();
-process.exit(exitCode);
+main();

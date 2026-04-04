@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LOCALES_DIR = path.join(__dirname, '../src/locales');
-const LANGUAGES = ['en', 'es', 'pt-br'];
+const LANGUAGES = ['de', 'en', 'es', 'fr', 'hi', 'ja', 'ko', 'pt-br', 'ru', 'zh'];
 
 /**
  * Recursively flattens a nested object into dot-notation keys
