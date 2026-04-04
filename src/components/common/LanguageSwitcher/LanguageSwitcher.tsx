@@ -18,6 +18,13 @@ const LANGUAGE_COUNTRY_CODES: Record<SupportedLanguage, string> = {
   'pt-BR': 'BR',
   en: 'US',
   es: 'ES',
+  zh: 'CN',
+  hi: 'IN',
+  de: 'DE',
+  ru: 'RU',
+  fr: 'FR',
+  ja: 'JP',
+  ko: 'KR',
 };
 
 const getFlagComponent = (countryCode: string) => {

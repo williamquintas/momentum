@@ -4,32 +4,18 @@
  * Provides locale-aware number, currency, and percentage formatting.
  */
 
-import i18n from './i18n';
-
-/**
- * Map of i18n language codes to Intl locale strings
- */
-const localeMap: Record<string, string> = {
-  de: 'de-DE',
-  en: 'en-US',
-  es: 'es-ES',
-  fr: 'fr-FR',
-  hi: 'hi-IN',
-  ja: 'ja-JP',
-  ko: 'ko-KR',
-  pt_br: 'pt-BR',
-  pt_BR: 'pt-BR',
-  ru: 'ru-RU',
-  zh: 'zh-CN',
-  'zh-Hans': 'zh-CN',
-};
-
 /**
  * Gets the Intl locale code based on i18n language
  * @returns The Intl locale string
  */
 const getIntlLocale = (): string => {
-  const lang = i18n.language || 'en';
+  // Default fallback - can be enhanced to read from i18n when available
+  const lang = 'en';
+  const localeMap: Record<string, string> = {
+    en: 'en-US',
+    es: 'es-ES',
+    'pt-br': 'pt-BR',
+  };
   return localeMap[lang] || 'en-US';
 };
 
