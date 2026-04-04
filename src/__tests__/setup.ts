@@ -6,6 +6,7 @@ import { afterEach, vi } from 'vitest';
 
 import en from '../locales/en/translation.json';
 
+// eslint-disable-next-line import/no-named-as-default-member
 void i18next.use(initReactI18next).init({
   resources: {
     en: { translation: en },

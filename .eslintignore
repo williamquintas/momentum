@@ -11,4 +11,5 @@ out
 .idea
 *.d.ts
 scripts
+specs/bkp
 

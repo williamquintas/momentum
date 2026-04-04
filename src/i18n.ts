@@ -6,7 +6,7 @@
  * Russian, German, Japanese, and Korean.
  */
 
-import i18n from 'i18next';
+import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
@@ -88,16 +88,19 @@ const i18nOptions = {
 };
 
 // Initialize i18next
-void i18n.use(LanguageDetector).use(initReactI18next).init(i18nOptions);
+// eslint-disable-next-line import/no-named-as-default-member
+void i18next.use(LanguageDetector).use(initReactI18next).init(i18nOptions);
 
-export default i18n;
+export default i18next;
 
 /**
  * Helper function to change language
  * @param language - Language code to switch to
  */
+// eslint-disable-next-line import/no-named-as-default-member
 export const changeLanguage = async (language: SupportedLanguage): Promise<void> => {
-  await i18n.changeLanguage(language);
+  // eslint-disable-next-line import/no-named-as-default-member
+  await i18next.changeLanguage(language);
   localStorage.setItem('momentum-language', language);
 };
 
@@ -106,5 +109,5 @@ export const changeLanguage = async (language: SupportedLanguage): Promise<void>
  * @returns Current language code
  */
 export const getCurrentLanguage = (): SupportedLanguage => {
-  return i18n.language as SupportedLanguage;
+  return i18next.language as SupportedLanguage;
 };
