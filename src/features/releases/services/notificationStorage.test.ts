@@ -33,7 +33,7 @@ const localStorageMock = {
 
 vi.stubGlobal('localStorage', localStorageMock);
 
-describe.skip('notificationStorage', () => {
+describe('notificationStorage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     store = {};

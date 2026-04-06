@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ImportExportSettings } from '@/features/settings/components/ImportExportSettings';
 import { LanguageSettings } from '@/features/settings/components/LanguageSettings';
+import { ThemeSettings } from '@/features/settings/components/ThemeSettings';
 
 const { Title } = Typography;
 
@@ -23,6 +24,7 @@ export const SettingsPage = (): React.ReactElement => {
   return (
     <div>
       <Title level={2}>{t('settings.title')}</Title>
+      <ThemeSettings />
       <LanguageSettings />
       <ImportExportSettings />
     </div>

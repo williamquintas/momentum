@@ -28,29 +28,7 @@ export const NotificationsPage = (): React.ReactElement => {
   const [selectedRelease, setSelectedRelease] = useState<GitHubRelease | null>(null);
   const [whatsNewOpen, setWhatsNewOpen] = useState(false);
 
-  const stableNotifications = notifications
-    .filter((n) => !isPrerelease(n.release.tag_name))
-    .sort((a, b) => {
-      const tagA = a.release.tag_name;
-      const tagB = b.release.tag_name;
-      const partsA = tagA
-        .replace(/[^\d.]/g, '')
-        .split('.')
-        .map(Number);
-      const partsB = tagB
-        .replace(/[^\d.]/g, '')
-        .split('.')
-        .map(Number);
-      const maxLen = Math.max(partsA.length, partsB.length);
-      for (let i = 0; i < maxLen; i++) {
-        const numA = partsA[i] ?? 0;
-        const numB = partsB[i] ?? 0;
-        if (numA !== numB) {
-          return numB - numA;
-        }
-      }
-      return 0;
-    });
+  const stableNotifications = notifications.filter((n) => !isPrerelease(n.release.tag_name));
   const unreadCount = stableNotifications.filter((n) => !n.isRead).length;
 
   const handleNotificationClick = (notification: (typeof notifications)[number]) => {
@@ -91,7 +69,7 @@ export const NotificationsPage = (): React.ReactElement => {
               <List.Item
                 className={`notification-list-item ${item.isRead ? 'read' : 'unread'}`}
                 onClick={() => handleNotificationClick(item)}
-                style={{ cursor: 'pointer', padding: 0, borderBlockEnd: 0, marginBottom: 4 }}
+                style={{ cursor: 'pointer', padding: 0 }}
               >
                 <Card
                   size="small"

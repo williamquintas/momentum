@@ -49,7 +49,7 @@ const createTestWrapper = () => {
   return QueryProvider;
 };
 
-describe.skip('NotificationBell', () => {
+describe('NotificationBell', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
