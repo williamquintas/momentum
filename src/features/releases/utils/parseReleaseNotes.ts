@@ -154,3 +154,18 @@ export const getReleaseType = (version: string): 'major' | 'minor' | 'patch' => 
 export const isPrerelease = (version: string): boolean => {
   return /-rc\.|rc-/.test(version) || /-beta\./.test(version) || /-alpha\./.test(version);
 };
+
+/**
+ * Parse version string to determine release type
+ */
+export const parseVersion = (version: string): { type: 'major' | 'minor' | 'patch'; version: string } | null => {
+  const match = version.match(/^v?(\d+)\.(\d+)\.(\d+)/);
+  if (!match) return null;
+
+  const [, major] = match;
+
+  return {
+    type: major !== '0' ? 'major' : 'minor',
+    version: match[0],
+  };
+};
