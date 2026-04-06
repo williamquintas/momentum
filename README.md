@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/williamquintas/momentum)
 [![Test Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen.svg)](#)
 [![Vitest](https://img.shields.io/badge/Vitest-4.1-blue.svg)](https://vitest.dev/)
 
