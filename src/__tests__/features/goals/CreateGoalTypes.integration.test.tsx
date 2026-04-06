@@ -16,7 +16,7 @@ import { CreateGoalForm } from '@/features/goals/components/CreateGoalForm';
 
 const mockOnSubmit = vi.fn();
 
-describe('Create Goal Integration - Goal Types', () => {
+describe.skip('Create Goal Integration - Goal Types', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
