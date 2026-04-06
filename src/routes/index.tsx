@@ -14,6 +14,16 @@ const GoalDetailPage = lazy(() =>
     default: module.GoalDetailPage,
   }))
 );
+const SettingsPage = lazy(() =>
+  import('@/pages/SettingsPage').then((module) => ({
+    default: module.SettingsPage,
+  }))
+);
+const NotificationsPage = lazy(() =>
+  import('@/pages/NotificationsPage').then((module) => ({
+    default: module.NotificationsPage,
+  }))
+);
 
 // Loading fallback component using Ant Design Spin
 const RouteLoadingFallback = () => (
@@ -53,6 +63,22 @@ export const AppRoutes = () => {
           element={
             <Suspense fallback={<RouteLoadingFallback />}>
               <GoalDetailPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <SettingsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="notifications"
+          element={
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <NotificationsPage />
             </Suspense>
           }
         />

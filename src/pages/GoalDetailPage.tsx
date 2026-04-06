@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Card, Typography, Spin, message } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { CompleteGoalDialog } from '@/features/goals/components/CompleteGoalDialog';
@@ -46,6 +47,7 @@ const createInputToUpdateInput = (input: CreateGoalInput): UpdateGoalInput => {
  * GoalDetailPage Component
  */
 export const GoalDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -113,20 +115,20 @@ export const GoalDetailPage: React.FC = () => {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.goals.detail(id ?? '') });
-      void message.success('Goal completed successfully! 🎉');
+      void message.success(t('goals.goalCompletedSuccessfully'));
     },
     onError: () => {
-      void message.error('Failed to complete goal');
+      void message.error(t('goals.failedToCompleteGoal'));
     },
   });
 
   // Set page title dynamically based on goal title
-  usePageTitle(goal?.title || 'Goal Details', 'Details');
+  usePageTitle(goal?.title || t('goals.goalDetails'), 'Details');
 
   // Set meta tags dynamically based on goal data
   useMetaTags({
-    title: goal?.title || 'Goal Details',
-    description: goal?.description || `View details and track progress for ${goal?.title || 'this goal'}.`,
+    title: goal?.title || t('goals.goalDetails'),
+    description: goal?.description || t('goals.goalDetails'),
     url: `/goals/${id}`,
     type: 'article',
     keywords: goal?.tags || ['goal', 'tracking', 'progress'],
@@ -144,17 +146,17 @@ export const GoalDetailPage: React.FC = () => {
 
   const handleEditSubmit = async (values: CreateGoalInput) => {
     if (!id) {
-      void message.error('Goal ID is missing');
+      void message.error(t('goals.goalIdMissing'));
       return;
     }
 
     const updateInput = createInputToUpdateInput(values);
     try {
       await updateGoal.mutateAsync({ id, updates: updateInput });
-      void message.success('Goal updated successfully');
+      void message.success(t('goals.goalUpdatedSuccessfully'));
       setEditModalOpen(false);
     } catch (error) {
-      void message.error('Failed to update goal');
+      void message.error(t('goals.failedToUpdateGoal'));
       console.error('Error updating goal:', error);
     }
   };
@@ -164,10 +166,10 @@ export const GoalDetailPage: React.FC = () => {
     void (async () => {
       try {
         await deleteGoal.mutateAsync(goalId);
-        void message.success('Goal deleted successfully');
+        void message.success(t('goals.goalDeletedSuccessfully'));
         navigate('/goals');
       } catch (error) {
-        void message.error('Failed to delete goal');
+        void message.error(t('goals.failedToDeleteGoal'));
         console.error('Error deleting goal:', error);
       }
     })();
@@ -182,9 +184,9 @@ export const GoalDetailPage: React.FC = () => {
           id: goalId,
           updates: { favorite: !currentGoal.favorite, updatedAt: new Date() },
         });
-        void message.success(currentGoal.favorite ? 'Removed from favorites' : 'Added to favorites');
+        void message.success(currentGoal.favorite ? t('goals.removedFromFavorites') : t('goals.addedToFavorites'));
       } catch (error) {
-        void message.error('Failed to update favorite status');
+        void message.error(t('goals.failedToUpdateFavorite'));
         console.error('Error toggling favorite:', error);
       }
     }
@@ -199,9 +201,9 @@ export const GoalDetailPage: React.FC = () => {
           id: goalId,
           updates: { archived: !currentGoal.archived, updatedAt: new Date() },
         });
-        void message.success(currentGoal.archived ? 'Goal unarchived' : 'Goal archived');
+        void message.success(currentGoal.archived ? t('goals.goalUnarchived') : t('goals.goalArchived'));
       } catch (error) {
-        void message.error('Failed to update archive status');
+        void message.error(t('goals.failedToUpdateArchiveStatus'));
         console.error('Error toggling archive:', error);
       }
     }
@@ -211,9 +213,9 @@ export const GoalDetailPage: React.FC = () => {
   const handleUpdateProgress = async (input: Parameters<typeof updateProgress.mutateAsync>[0]) => {
     try {
       await updateProgress.mutateAsync(input);
-      void message.success('Progress updated successfully');
+      void message.success(t('goals.progressUpdatedSuccessfully'));
     } catch (error) {
-      void message.error('Failed to update progress');
+      void message.error(t('goals.failedToUpdateProgress'));
       console.error('Error updating progress:', error);
     }
   };
@@ -224,7 +226,7 @@ export const GoalDetailPage: React.FC = () => {
       <div style={{ textAlign: 'center', padding: '50px' }}>
         <Spin size="large" />
         <div style={{ marginTop: 16 }}>
-          <Paragraph>Loading goal details...</Paragraph>
+          <Paragraph>{t('goals.loadingGoalDetails')}</Paragraph>
         </div>
       </div>
     );
@@ -235,17 +237,13 @@ export const GoalDetailPage: React.FC = () => {
     return (
       <div>
         <Button icon={<ArrowLeftOutlined />} onClick={handleBack} style={{ marginBottom: 16 }}>
-          Back to Goals
+          {t('goals.backToGoals')}
         </Button>
         <Card>
-          <Typography.Title level={3}>Goal Not Found</Typography.Title>
-          <Paragraph>
-            {error
-              ? 'An error occurred while loading the goal. Please try again.'
-              : 'The goal you are looking for does not exist.'}
-          </Paragraph>
+          <Typography.Title level={3}>{t('goals.goalNotFound')}</Typography.Title>
+          <Paragraph>{error ? t('goals.errorLoadingGoal') : t('goals.goalDoesNotExist')}</Paragraph>
           <Button type="primary" onClick={handleBack}>
-            Back to Goals List
+            {t('goals.backToGoalsList')}
           </Button>
         </Card>
       </div>
@@ -257,12 +255,12 @@ export const GoalDetailPage: React.FC = () => {
       {/* Header with back button and actions */}
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
-          Back to Goals
+          {t('goals.backToGoals')}
         </Button>
 
         {goal.status === GoalStatus.ACTIVE && canComplete && (
           <Button type="primary" onClick={() => setCompleteDialogOpen(true)} size="large">
-            {isEligible ? 'Complete Goal' : 'Complete Anyway'}
+            {isEligible ? t('goals.completeGoal') : t('goals.completeAnyway')}
           </Button>
         )}
       </div>

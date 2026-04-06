@@ -4,7 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/williamquintas/momentum)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/williamquintas/momentum)
+[![Test Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen.svg)](#)
+[![Vitest](https://img.shields.io/badge/Vitest-4.1-blue.svg)](https://vitest.dev/)
 
 Momentum is a comprehensive goals tracking management system built with React, TypeScript, and Ant Design. This system provides users with clear visibility into their objectives, progress, and achievements through flexible tracking mechanisms and rich visualization capabilities.
 
@@ -15,35 +17,73 @@ Momentum is a comprehensive goals tracking management system built with React, T
 - **Quantitative Goals**: Track numeric targets with progress bars and percentage completion
 - **Qualitative Goals**: Monitor descriptive achievements with milestone checkpoints
 - **Binary/Checkbox Goals**: Simple done/not-done tracking with count-based progress
-- **Milestone-Based Goals**: Break large goals into smaller, trackable milestones
-- **Recurring Goals**: Track goals that repeat on schedules (daily, weekly, monthly)
-- **Habit Goals**: Build consistent behaviors with streak counters and calendar heatmaps
-- **Time-Bound Goals**: Goals with specific deadlines and countdown timers
+- **[Coming soon] Milestone-Based Goals**: Break large goals into smaller, trackable milestones
+- **[Coming soon] Recurring Goals**: Track goals that repeat on schedules (daily, weekly, monthly)
+- **[Coming soon] Habit Goals**: Build consistent behaviors with streak counters and calendar heatmaps
+- **[Coming soon] Time-Bound Goals**: Goals with specific deadlines and countdown timers
 
 ### Key Capabilities
 
-- 📊 **Dashboard Overview**: Immediate insight into overall goal performance
+- 📊 **[Coming soon] Dashboard Overview**: Immediate insight into overall goal performance
 - 📋 **Goal List View**: Comprehensive list with filtering, sorting, and search
 - 📈 **Progress Tracking**: Visual progress indicators and completion metrics
 - 🏷️ **Categorization**: Organize goals by categories and tags
-- 🔔 **Notifications**: Alerts for upcoming deadlines and overdue goals
+- 🔔 **[Coming soon] Notifications**: Alerts for upcoming deadlines and overdue goals
 - 📱 **Responsive Design**: Works seamlessly on mobile, tablet, and desktop
 - ♿ **Accessible**: Built with accessibility best practices
 
 ## 🛠️ Technology Stack
 
-- **Frontend Framework**: React with TypeScript
-- **UI Library**: Ant Design (antd)
-- **State Management**: Redux Toolkit or Zustand
-- **Data Fetching**: React Query (TanStack Query)
-- **Styling**: Ant Design theme customization, CSS-in-JS if needed
-- **Build Tool**: Vite
+- **Frontend Framework**: React 18.2.0 with TypeScript 5.3.3
+- **UI Library**: Ant Design 5.12.8
+- **State Management**: Zustand 4.4.7
+- **Data Fetching**: React Query (TanStack Query) 5.17.9
+- **Validation**: Zod 3.22.4
+- **Build Tool**: Vite 6.1.6
+- **Testing**: Vitest 4.1.2
 
-## 🚀 Getting Started
+## 🚀 Quick Start
+
+Get up and running in under 2 minutes:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/williamquintas/momentum.git
+cd momentum
+
+# 2. Install dependencies
+npm install
+
+# 3. Start development server
+npm run dev
+
+# 4. Open http://localhost:5173
+```
+
+That's it! The app is now running with hot reload.
+
+### Run Tests
+
+```bash
+npm test           # Run tests
+npm run test:watch # Watch mode
+npm run test:coverage # With coverage
+```
+
+### Build for Production
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## 📋 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher recommended)
+- Node.js (v24 or higher recommended)
 - npm or yarn package manager
 - Git
 
@@ -52,7 +92,7 @@ Momentum is a comprehensive goals tracking management system built with React, T
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/williamquintas/momentum.git
 cd momentum
 ```
 
@@ -129,16 +169,6 @@ This documentation is designed for any AI coding assistant real-world workflow (
 
 For a complete list of all development guidelines, see [AGENTS.md](./AGENTS.md).
 
-### System Planning
-
-For detailed system requirements and planning, see [GOALS_TRACKING_SYSTEM_PLAN.md](./GOALS_TRACKING_SYSTEM_PLAN.md).
-
-### UI Mockups
-
-UI mockups and design references are available in the [docs/mockups](./docs/mockups/) directory:
-
-- **[Dashboard Mockup](./docs/mockups/dashboard-mockup.md)** - Comprehensive dashboard interface mockup with four panel views
-
 ## 🧪 Development
 
 ### Key Principles
@@ -208,25 +238,19 @@ Need help? Here are some ways to get support:
 - ✨ **Feature Requests**: Suggest features using the [feature request template](https://github.com/williamquintas/momentum/issues/new?template=feature_request.md)
 - 📖 **Support Guide**: See [.github/SUPPORT.md](.github/SUPPORT.md) for more information
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
 ## 📦 Demo
 
-<!-- Add live demo link when available -->
-
-🚀 **Live Demo**: Coming soon!
-
-<!-- Add screenshots/GIFs when available -->
+Demo [here](https://momentum.quintas.app/)
 
 ### Screenshots
 
 <!-- Add screenshots here -->
 
-- Dashboard view
 - Goal list view
+  ![Goal list view](./public/screenshots/goals-list.jpeg 'Goal list view')
+
 - Goal detail view
+  ![Goal form view](./public/screenshots/goals-form.jpeg 'Goal form view')
 
 ## 🔗 Links
 

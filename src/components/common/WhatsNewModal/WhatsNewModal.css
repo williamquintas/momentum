@@ -1,0 +1,132 @@
+/**
+ * WhatsNewModal Styles
+ *
+ * A refined, editorial design with smooth transitions and distinctive typography.
+ */
+
+/* Override Ant Design Modal content padding */
+/* Content Area */
+.whats-new-content {
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.whats-new-title {
+  margin-bottom: 8px !important;
+  font-size: 22px;
+  background: linear-gradient(135deg, var(--ant-colorText) 0%, var(--ant-color-primary) 100%);
+  background-clip: text;
+}
+
+/* Changelog */
+.whats-new-changelog {
+  max-height: 40vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Scrollbar styling for changelog */
+.whats-new-changelog::-webkit-scrollbar {
+  width: 6px;
+}
+
+.whats-new-changelog::-webkit-scrollbar-track {
+  background: var(--ant-color-bg-layout);
+  border-radius: 3px;
+}
+
+.whats-new-changelog::-webkit-scrollbar-thumb {
+  background: var(--ant-color-border);
+  border-radius: 3px;
+}
+
+.whats-new-changelog::-webkit-scrollbar-thumb:hover {
+  background: var(--ant-colorTextSecondary);
+}
+
+.changelog-section {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: var(--ant-color-bg-layout);
+  transition: background-color 0.2s ease;
+}
+
+.changelog-section:hover {
+  background-color: var(--ant-color-bg-container);
+}
+
+.changelog-category {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ant-color-border);
+  font-weight: 600;
+  color: var(--ant-colorText);
+}
+
+.changelog-changes {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: none;
+}
+
+.changelog-changes li {
+  margin-bottom: 8px;
+  position: relative;
+  padding-left: 8px;
+}
+
+.changelog-changes li::before {
+  content: '→';
+  position: absolute;
+  left: -16px;
+  color: var(--ant-color-primary);
+  font-weight: 600;
+}
+
+.changelog-changes li .ant-typography {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Raw release body */
+.whats-new-raw {
+  margin-top: 16px;
+}
+
+.release-body {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  font-size: 12px;
+  background: linear-gradient(
+    135deg,
+    var(--ant-color-bg-container) 0%,
+    color-mix(in srgb, var(--ant-color-primary) 3%, var(--ant-color-bg-container)) 100%
+  );
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  margin: 0;
+  border: 1px solid var(--ant-color-border);
+}
+
+/* Animations */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.whats-new-content > * {
+  animation: fadeInSlide 0.3s ease-out;
+}

@@ -1,6 +1,7 @@
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 
+import { OfflineIndicator } from '@/components/common/OfflineIndicator';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
@@ -23,6 +24,7 @@ const { Content } = Layout;
 export const MainLayout = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
+      <OfflineIndicator />
       <Header />
       <Content style={{ padding: '24px' }}>
         <Breadcrumbs />

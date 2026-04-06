@@ -21,6 +21,7 @@ import React, { useEffect } from 'react';
 
 import { Modal, Form, InputNumber, Select, Input, Button, Space, Checkbox, DatePicker, Radio, message } from 'antd';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 import {
@@ -79,6 +80,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
   onSubmit,
   loading = false,
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm<{
     currentValue?: number;
     currentCount?: number;
@@ -143,7 +145,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
 
       if (isQuantitativeGoal(goal)) {
         if (values.currentValue === undefined) {
-          void message.error('Current value is required');
+          void message.error(t('updateProgress.currentValueRequired'));
           return;
         }
         typeSpecificUpdates = {
@@ -161,7 +163,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         }
       } else if (isQualitativeGoal(goal)) {
         if (values.qualitativeStatus === undefined) {
-          void message.error('Status is required');
+          void message.error(t('updateProgress.statusRequired'));
           return;
         }
         typeSpecificUpdates = {
@@ -169,7 +171,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         };
       } else if (isMilestoneGoal(goal)) {
         if (values.milestoneId === undefined) {
-          void message.error('Please select a milestone');
+          void message.error(t('updateProgress.selectMilestoneRequired'));
           return;
         }
 
@@ -180,7 +182,9 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
             goal.requireSequentialCompletion
           );
           if (!canComplete.canComplete) {
-            void message.error(canComplete.reason || 'Cannot complete milestone');
+            void message.error(
+              canComplete.reason || t('updateProgress.blocked', { reason: t('updateProgress.dependenciesNotMet') })
+            );
             return;
           }
         }
@@ -198,7 +202,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         } as Partial<MilestoneGoal>;
       } else if (isRecurringGoal(goal)) {
         if (values.occurrenceId === undefined) {
-          void message.error('Please select an occurrence');
+          void message.error(t('updateProgress.selectOccurrenceRequired'));
           return;
         }
         typeSpecificUpdates = {
@@ -209,7 +213,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
       } else if (isHabitGoal(goal)) {
         const habitDateValue = values.habitDate;
         if (!habitDateValue) {
-          void message.error('Please select a date');
+          void message.error(t('updateProgress.dateRequired'));
           return;
         }
         const date = (habitDateValue as unknown as { toDate?: () => Date })?.toDate?.() ?? habitDateValue;
@@ -253,21 +257,28 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
   };
 
   return (
-    <Modal title="Update Progress" open={open} onCancel={handleCancel} footer={null} width={600} destroyOnClose>
+    <Modal
+      title={t('updateProgress.title')}
+      open={open}
+      onCancel={handleCancel}
+      footer={null}
+      width={600}
+      destroyOnClose
+    >
       <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
         {/* Quantitative Goal Form */}
         {isQuantitativeGoal(goal) && (
           <>
             <Form.Item
-              label="Current Value"
+              label={t('updateProgress.currentValueLabel')}
               name="currentValue"
               rules={[
-                { required: true, message: 'Current value is required' },
+                { required: true, message: t('updateProgress.currentValueRequired') },
                 {
                   type: 'number',
                   min: goal.minValue ?? undefined,
                   max: goal.maxValue ?? undefined,
-                  message: `Value must be between ${goal.minValue ?? 'N/A'} and ${goal.maxValue ?? 'N/A'}`,
+                  message: t('updateProgress.valueRange', { min: goal.minValue ?? 'N/A', max: goal.maxValue ?? 'N/A' }),
                 },
               ]}
             >
@@ -277,12 +288,20 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                 max={goal.maxValue}
                 precision={goal.allowDecimals ? 2 : 0}
                 addonAfter={goal.unit}
-                placeholder={`Enter current value (${goal.startValue} - ${goal.targetValue} ${goal.unit})`}
+                placeholder={t('updateProgress.currentValuePlaceholder', {
+                  start: goal.startValue,
+                  target: goal.targetValue,
+                  unit: goal.unit,
+                })}
               />
             </Form.Item>
-            <Form.Item label="Current Progress">
+            <Form.Item label={t('updateProgress.currentProgress')}>
               <div>
-                Start: {goal.startValue} {goal.unit} → Target: {goal.targetValue} {goal.unit}
+                {t('updateProgress.progressFromTo', {
+                  start: goal.startValue,
+                  target: goal.targetValue,
+                  unit: goal.unit,
+                })}
               </div>
             </Form.Item>
           </>
@@ -292,7 +311,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         {isBinaryGoal(goal) && (
           <>
             {goal.items && goal.items.length > 0 ? (
-              <Form.Item label="Check Completed Items" name="checkedItems">
+              <Form.Item label={t('updateProgress.checkCompletedItems')} name="checkedItems">
                 <Checkbox.Group>
                   <Space direction="vertical">
                     {goal.items.map((item, index) => (
@@ -305,15 +324,15 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
               </Form.Item>
             ) : (
               <Form.Item
-                label="Current Count"
+                label={t('updateProgress.currentCountLabel')}
                 name="currentCount"
                 rules={[
-                  { required: true, message: 'Current count is required' },
+                  { required: true, message: t('updateProgress.currentCountRequired') },
                   {
                     type: 'number',
                     min: 0,
                     max: goal.targetCount,
-                    message: `Count must be between 0 and ${goal.targetCount ?? 'N/A'}`,
+                    message: t('updateProgress.countRange', { max: goal.targetCount ?? 'N/A' }),
                   },
                 ]}
               >
@@ -322,14 +341,16 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                   min={0}
                   max={goal.targetCount}
                   precision={0}
-                  placeholder={`Enter current count${goal.targetCount ? ` (0 - ${goal.targetCount})` : ''}`}
+                  placeholder={t('updateProgress.currentCountPlaceholder', {
+                    range: goal.targetCount ? t('updateProgress.countRangeSuffix', { max: goal.targetCount }) : '',
+                  })}
                 />
               </Form.Item>
             )}
             {goal.targetCount !== undefined && (
-              <Form.Item label="Progress">
+              <Form.Item label={t('updateProgress.progressLabel')}>
                 <div>
-                  Current: {goal.currentCount} / Target: {goal.targetCount}
+                  {t('updateProgress.currentToTarget', { current: goal.currentCount, target: goal.targetCount })}
                 </div>
               </Form.Item>
             )}
@@ -340,22 +361,23 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         {isQualitativeGoal(goal) && (
           <>
             <Form.Item
-              label="Status"
+              label={t('updateProgress.statusLabel')}
               name="qualitativeStatus"
-              rules={[{ required: true, message: 'Status is required' }]}
+              rules={[{ required: true, message: t('updateProgress.statusRequired') }]}
             >
-              <Select placeholder="Select status">
-                <Option value={QualitativeStatus.NOT_STARTED}>Not Started</Option>
-                <Option value={QualitativeStatus.IN_PROGRESS}>In Progress</Option>
-                <Option value={QualitativeStatus.COMPLETED}>Completed</Option>
+              <Select placeholder={t('updateProgress.selectStatus')}>
+                <Option value={QualitativeStatus.NOT_STARTED}>{t('updateProgress.notStarted')}</Option>
+                <Option value={QualitativeStatus.IN_PROGRESS}>{t('updateProgress.inProgress')}</Option>
+                <Option value={QualitativeStatus.COMPLETED}>{t('updateProgress.completed')}</Option>
               </Select>
             </Form.Item>
             {goal.selfAssessments && goal.selfAssessments.length > 0 && (
-              <Form.Item label="Previous Assessments">
+              <Form.Item label={t('updateProgress.previousAssessments')}>
                 <div>
                   {goal.selfAssessments.slice(-3).map((assessment, index) => (
                     <div key={index} style={{ marginBottom: 8 }}>
-                      Rating: {assessment.rating}/10 - {new Date(assessment.date).toLocaleDateString()}
+                      {t('updateProgress.rating', { rating: assessment.rating })} -{' '}
+                      {new Date(assessment.date).toLocaleDateString()}
                     </div>
                   ))}
                 </div>
@@ -368,12 +390,12 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         {isMilestoneGoal(goal) && (
           <>
             <Form.Item
-              label="Select Milestone"
+              label={t('updateProgress.selectMilestone')}
               name="milestoneId"
-              rules={[{ required: true, message: 'Please select a milestone' }]}
+              rules={[{ required: true, message: t('updateProgress.selectMilestoneRequired') }]}
             >
               <Select
-                placeholder="Choose a milestone to update"
+                placeholder={t('updateProgress.chooseMilestone')}
                 onChange={() => {
                   form.setFieldsValue({ milestoneCompleted: false });
                 }}
@@ -388,7 +410,9 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                     );
                     const statusText = canComplete.canComplete
                       ? milestone.status
-                      : `Blocked: ${canComplete.reason?.split(':')[0] || 'Dependencies not met'}`;
+                      : t('updateProgress.blocked', {
+                          reason: canComplete.reason?.split(':')[0] || t('updateProgress.dependenciesNotMet'),
+                        });
                     return (
                       <Option key={milestone.id} value={milestone.id}>
                         {milestone.title} ({statusText})
@@ -416,9 +440,9 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                     .map((id) => goal.milestones.find((m) => m.id === id)?.title || id)
                     .join(', ');
                   return (
-                    <Form.Item label="Dependencies">
+                    <Form.Item label={t('updateProgress.dependencies')}>
                       <div style={{ color: '#ff4d4f' }}>
-                        Cannot complete: Complete these milestones first: {depTitles}
+                        {t('updateProgress.cannotCompleteDeps', { titles: depTitles })}
                       </div>
                     </Form.Item>
                   );
@@ -426,13 +450,15 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                 return null;
               }}
             </Form.Item>
-            <Form.Item label="Mark as Completed" name="milestoneCompleted" valuePropName="checked">
-              <Checkbox>Complete this milestone</Checkbox>
+            <Form.Item label={t('updateProgress.markAsCompleted')} name="milestoneCompleted" valuePropName="checked">
+              <Checkbox>{t('updateProgress.completeThisMilestone')}</Checkbox>
             </Form.Item>
-            <Form.Item label="Progress">
+            <Form.Item label={t('updateProgress.progressLabel')}>
               <div>
-                {goal.milestones.filter((m) => m.status === 'completed').length} / {goal.milestones.length} milestones
-                completed
+                {t('updateProgress.milestonesCompleted', {
+                  completed: goal.milestones.filter((m) => m.status === 'completed').length,
+                  total: goal.milestones.length,
+                })}
               </div>
             </Form.Item>
           </>
@@ -442,11 +468,11 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         {isRecurringGoal(goal) && (
           <>
             <Form.Item
-              label="Select Occurrence"
+              label={t('updateProgress.selectOccurrence')}
               name="occurrenceId"
-              rules={[{ required: true, message: 'Please select an occurrence' }]}
+              rules={[{ required: true, message: t('updateProgress.selectOccurrenceRequired') }]}
             >
-              <Select placeholder="Choose an occurrence to update">
+              <Select placeholder={t('updateProgress.chooseOccurrence')}>
                 {goal.occurrences
                   .filter((o) => {
                     const now = new Date();
@@ -456,24 +482,24 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
                   .map((occurrence) => (
                     <Option key={occurrence.id} value={occurrence.id}>
                       {new Date(occurrence.date).toLocaleDateString()} -{' '}
-                      {occurrence.completed ? 'Completed' : 'Pending'}
+                      {occurrence.completed ? t('updateProgress.completed') : t('updateProgress.pending')}
                     </Option>
                   ))}
               </Select>
             </Form.Item>
             <Form.Item
-              label="Status"
+              label={t('updateProgress.statusLabel')}
               name="occurrenceStatus"
-              rules={[{ required: true, message: 'Status is required' }]}
+              rules={[{ required: true, message: t('updateProgress.statusRequired') }]}
             >
               <Radio.Group>
-                <Radio value="completed">Completed</Radio>
-                <Radio value="missed">Missed</Radio>
-                <Radio value="pending">Pending</Radio>
+                <Radio value="completed">{t('updateProgress.completed')}</Radio>
+                <Radio value="missed">{t('updateProgress.missed')}</Radio>
+                <Radio value="pending">{t('updateProgress.pending')}</Radio>
               </Radio.Group>
             </Form.Item>
-            <Form.Item label="Current Progress">
-              <div>Completion Rate: {Math.round(goal.completionStats.completionRate)}%</div>
+            <Form.Item label={t('updateProgress.currentProgress')}>
+              <div>{t('updateProgress.completionRate', { rate: Math.round(goal.completionStats.completionRate) })}</div>
             </Form.Item>
           </>
         )}
@@ -481,33 +507,37 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
         {/* Habit Goal Form */}
         {isHabitGoal(goal) && (
           <>
-            <Form.Item label="Date" name="habitDate" rules={[{ required: true, message: 'Please select a date' }]}>
+            <Form.Item
+              label={t('updateProgress.dateLabel')}
+              name="habitDate"
+              rules={[{ required: true, message: t('updateProgress.dateRequired') }]}
+            >
               <DatePicker style={{ width: '100%' }} />
             </Form.Item>
-            <Form.Item label="Completion Status" name="habitCompleted" valuePropName="checked">
-              <Checkbox>Mark as completed</Checkbox>
+            <Form.Item label={t('updateProgress.completionStatus')} name="habitCompleted" valuePropName="checked">
+              <Checkbox>{t('updateProgress.markAsCompletedLabel')}</Checkbox>
             </Form.Item>
-            <Form.Item label="Current Streak">
-              <div>Current streak: {goal.completionStats.streak.current} days</div>
-              <div>Longest streak: {goal.completionStats.streak.longest} days</div>
+            <Form.Item label={t('updateProgress.currentStreak')}>
+              <div>{t('updateProgress.currentStreakDays', { count: goal.completionStats.streak.current })}</div>
+              <div>{t('updateProgress.longestStreakDays', { count: goal.completionStats.streak.longest })}</div>
             </Form.Item>
-            <Form.Item label="Completion Rate">
+            <Form.Item label={t('updateProgress.completionRate')}>
               <div>{Math.round(goal.completionStats.completionRate)}%</div>
             </Form.Item>
           </>
         )}
 
         {/* Note Field (for all types) */}
-        <Form.Item label="Note (Optional)" name="note">
-          <TextArea rows={3} placeholder="Add a note about this progress update..." />
+        <Form.Item label={t('updateProgress.noteOptional')} name="note">
+          <TextArea rows={3} placeholder={t('updateProgress.notePlaceholder')} />
         </Form.Item>
 
         {/* Form Actions */}
         <Form.Item>
           <Space>
-            <Button onClick={handleCancel}>Cancel</Button>
+            <Button onClick={handleCancel}>{t('updateProgress.cancel')}</Button>
             <Button type="primary" htmlType="submit" loading={loading}>
-              Update Progress
+              {t('updateProgress.updateProgress')}
             </Button>
           </Space>
         </Form.Item>
