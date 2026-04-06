@@ -291,6 +291,7 @@
     "theme": "Theme",
     "darkMode": "Dark Mode",
     "lightMode": "Light Mode",
+    "chooseTheme": "Choose a theme",
     "importData": "Import Data",
     "exportData": "Export Data",
     "dataManagement": "Data Management",
@@ -362,7 +363,9 @@
     "installApp": "Install app",
     "installMomentumApp": "Install Momentum app",
     "settings": "Settings",
-    "goToSettings": "Go to settings"
+    "goToSettings": "Go to settings",
+    "language": "Language",
+    "toggleTheme": "Toggle theme"
   },
   "footer": {
     "resources": "Resources",
@@ -658,5 +661,41 @@
     "necessaryOnly": "Necessary Only",
     "acceptedMessage": "Cookie consent accepted. Your preferences will be saved.",
     "rejectedMessage": "Only necessary cookies enabled. Your preferences and goals will not be saved between sessions. You can change this in settings."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "emptyDescription": "We'll notify you when new releases are available",
+    "markAllRead": "Mark all read",
+    "viewAll": "View all releases",
+    "tooltip": "Notifications",
+    "unread": "{{count}} unread"
+  },
+  "whatsNew": {
+    "title": "What's New",
+    "titleWithVersion": "What's New in {{version}}",
+    "viewChangelog": "View Full Changelog",
+    "viewAllReleases": "View all releases",
+    "gotIt": "Got it!",
+    "released": "Released {{date}}",
+    "previous": "Previous version",
+    "next": "Next version",
+    "changelog": {
+      "feat": "✨ Features",
+      "fix": "🐛 Bug Fixes",
+      "perf": "⚡ Performance",
+      "breaking": "⚠️ Breaking Changes",
+      "refactor": "♻️ Refactoring",
+      "docs": "📝 Documentation",
+      "chore": "🔧 Maintenance"
+    },
+    "categories": {
+      "major": "Major Release",
+      "majorDescription": "This release contains significant new features and may include breaking changes.",
+      "minor": "Minor Release",
+      "minorDescription": "This release introduces new features and improvements.",
+      "patch": "Patch Update",
+      "patchDescription": "This release includes bug fixes and performance improvements."
+    }
   }
 }

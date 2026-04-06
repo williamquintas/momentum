@@ -43,6 +43,16 @@ const getBreadcrumbItems = (pathname: string, t: (key: string) => string): Bread
     return [{ title: t('breadcrumbs.home'), path: '/' }, { title: t('breadcrumbs.goals') }];
   }
 
+  // Notifications page
+  if (pathname === '/notifications') {
+    return [{ title: t('breadcrumbs.home'), path: '/' }, { title: t('notifications.title') }];
+  }
+
+  // Settings page
+  if (pathname === '/settings') {
+    return [{ title: t('breadcrumbs.home'), path: '/' }, { title: t('settings.title') }];
+  }
+
   // Goal detail page (pattern: /goals/:id)
   if (pathname.startsWith('/goals/')) {
     return [

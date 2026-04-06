@@ -34,6 +34,8 @@ interface ThemeContextValue {
   theme: ThemeMode;
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
+  toggleLight: () => void;
+  toggleDark: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -64,7 +66,19 @@ export const ThemeContextProvider = ({ children }: { children: ReactNode }) => {
     setThemeState((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  return <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  const toggleLight = () => {
+    setThemeState('light');
+  };
+
+  const toggleDark = () => {
+    setThemeState('dark');
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme, toggleLight, toggleDark }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 };
 
 /**

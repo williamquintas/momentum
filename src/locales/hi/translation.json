@@ -52,7 +52,39 @@
     "notStarted": "शुरू नहीं हुआ",
     "archived": "संग्रहित",
     "favorites": "पसंदीदा",
-    "updateProgress": "प्रगति अपडेट करें",
+    "updateProgress": {
+      "title": "प्रगति अपडेट करें",
+      "currentValueLabel": "वर्तमान मान",
+      "currentValueRequired": "वर्तमान मान आवश्यक है",
+      "valueRange": "मान {{min}} और {{max}} के बीच होना चाहिए",
+      "checkCompletedItems": "पूर्ण किए गए आइटम जाँचें",
+      "currentCountLabel": "वर्तमान गिनती",
+      "currentCountRequired": "वर्तमान गिनती आवश्यक है",
+      "countRange": "गिनती 0 और {{max}} के बीच होनी चाहिए",
+      "progressLabel": "प्रगति",
+      "statusLabel": "स्थिति",
+      "statusRequired": "स्थिति आवश्यक है",
+      "selectStatus": "स्थिति चुनें",
+      "previousAssessments": "पिछले मूल्यांकन",
+      "selectMilestone": "मील का पत्थर चुनें",
+      "selectMilestoneRequired": "कृपया एक मील का पत्थर चुनें",
+      "chooseMilestone": "अपडेट करने के लिए एक मील का पत्थर चुनें",
+      "dependencies": "निर्भरताएँ",
+      "cannotCompleteDeps": "पूरा नहीं कर सकते: पहले इन मील के पत्थरों को पूरा करें: {{titles}}",
+      "markAsCompleted": "पूर्ण के रूप में चिह्नित करें",
+      "completeThisMilestone": "इस मील के पत्थर को पूरा करें",
+      "selectOccurrence": "घटना चुनें",
+      "selectOccurrenceRequired": "कृपया एक घटना चुनें",
+      "chooseOccurrence": "अपडेट करने के लिए एक घटना चुनें",
+      "pending": "लंबित",
+      "missed": "छूटा हुआ",
+      "dateLabel": "तारीख",
+      "dateRequired": "कृपया एक तारीख चुनें",
+      "completionStatus": "पूर्णता स्थिति",
+      "markAsCompletedLabel": "पूर्ण के रूप में चिह्नित करें",
+      "noteOptional": "नोट (वैकल्पिक)",
+      "notePlaceholder": "इस प्रगति अपडेट के बारे में एक नोट जोड़ें..."
+    },
     "markComplete": "पूर्ण चिह्नित करें",
     "tooltips": {
       "goalTypeHelp": "सही लक्ष्य प्रकार चुनने में सहायता के लिए क्लिक करें"
@@ -181,39 +213,6 @@
       "readyDesc": "यह लक्ष्य पूरा करने के लिए तैयार है। समाप्त करने के लिए नीचे दिए गए बटन पर क्लिक करें।",
       "markCompleteBtn": "पूर्ण चिह्नित करें"
     },
-    "updateProgress": {
-      "title": "प्रगति अपडेट करें",
-      "currentValueLabel": "वर्तमान मान",
-      "currentValueRequired": "वर्तमान मान आवश्यक है",
-      "valueRange": "मान {{min}} और {{max}} के बीच होना चाहिए",
-      "checkCompletedItems": "पूर्ण किए गए आइटम जाँचें",
-      "currentCountLabel": "वर्तमान गिनती",
-      "currentCountRequired": "वर्तमान गिनती आवश्यक है",
-      "countRange": "गिनती 0 और {{max}} के बीच होनी चाहिए",
-      "progressLabel": "प्रगति",
-      "statusLabel": "स्थिति",
-      "statusRequired": "स्थिति आवश्यक है",
-      "selectStatus": "स्थिति चुनें",
-      "previousAssessments": "पिछले मूल्यांकन",
-      "selectMilestone": "मील का पत्थर चुनें",
-      "selectMilestoneRequired": "कृपया एक मील का पत्थर चुनें",
-      "chooseMilestone": "अपडेट करने के लिए एक मील का पत्थर चुनें",
-      "dependencies": "निर्भरताएँ",
-      "cannotCompleteDeps": "पूरा नहीं कर सकते: पहले इन मील के पत्थरों को पूरा करें: {{titles}}",
-      "markAsCompleted": "पूर्ण के रूप में चिह्नित करें",
-      "completeThisMilestone": "इस मील के पत्थर को पूरा करें",
-      "selectOccurrence": "घटना चुनें",
-      "selectOccurrenceRequired": "कृपया एक घटना चुनें",
-      "chooseOccurrence": "अपडेट करने के लिए एक घटना चुनें",
-      "pending": "लंबित",
-      "missed": "छूटा हुआ",
-      "dateLabel": "तारीख",
-      "dateRequired": "कृपया एक तारीख चुनें",
-      "completionStatus": "पूर्णता स्थिति",
-      "markAsCompletedLabel": "पूर्ण के रूप में चिह्नित करें",
-      "noteOptional": "नोट (वैकल्पिक)",
-      "notePlaceholder": "इस प्रगति अपडेट के बारे में एक नोट जोड़ें..."
-    },
     "completion": {
       "completedIn": "{{duration}} में पूर्ण",
       "viewGoal": "लक्ष्य देखें"
@@ -291,6 +290,7 @@
     "theme": "थीम",
     "darkMode": "डार्क मोड",
     "lightMode": "लाइट मोड",
+    "chooseTheme": "थीम चुनें",
     "importData": "डेटा आयात करें",
     "exportData": "डेटा निर्यात करें",
     "dataManagement": "डेटा प्रबंधन",
@@ -362,7 +362,9 @@
     "installApp": "ऐप इंस्टॉल करें",
     "installMomentumApp": "Momentum ऐप इंस्टॉल करें",
     "settings": "सेटिंग्स",
-    "goToSettings": "सेटिंग्स पर जाएं"
+    "goToSettings": "सेटिंग्स पर जाएं",
+    "language": "भाषा",
+    "toggleTheme": "थीम टॉगल करें"
   },
   "footer": {
     "resources": "संसाधन",
@@ -658,5 +660,41 @@
     "necessaryOnly": "केवल आवश्यक",
     "acceptedMessage": "कुकी सहमति स्वीकार की गई। आपकी प्राथमिकताएँ सहेजी जाएंगी।",
     "rejectedMessage": "केवल आवश्यक कुकीज़ सक्षम। आपकी प्राथमिकताएँ और लक्ष्य सत्रों के बीच सहेजे नहीं जाएंगे। आप इसे सेटिंग्स में बदल सकते हैं।"
+  },
+  "notifications": {
+    "title": "सूचनाएं",
+    "empty": "अभी तक कोई सूचना नहीं",
+    "emptyDescription": "जब नए रिलीज उपलब्ध होंगे तो हम आपको सूचित करेंगे",
+    "markAllRead": "सभी पढ़े हुए चिह्नित करें",
+    "viewAll": "सभी रिलीज देखें",
+    "tooltip": "सूचनाएं",
+    "unread": "{{count}} अपठित"
+  },
+  "whatsNew": {
+    "title": "नया क्या है",
+    "titleWithVersion": "संस्करण {{version}} में नया क्या है",
+    "viewChangelog": "पूर्ण चेंजलॉग देखें",
+    "viewAllReleases": "सभी रिलीज देखें",
+    "gotIt": "समझ गया!",
+    "released": "{{date}} को रिलीज हुआ",
+    "previous": "पिछला संस्करण",
+    "next": "अगला संस्करण",
+    "changelog": {
+      "feat": "✨ सुविधाएं",
+      "fix": "🐛 बग फिक्स",
+      "perf": "⚡ प्रदर्शन",
+      "breaking": "⚠️ महत्वपूर्ण परिवर्तन",
+      "refactor": "♻️ रिफैक्टरिंग",
+      "docs": "📝 दस्तावेज़ीकरण",
+      "chore": "🔧 रखरखाव"
+    },
+    "categories": {
+      "major": "प्रमुख रिलीज",
+      "majorDescription": "इस रिलीज में महत्वपूर्ण नई सुविधाएं हैं और इसमें महत्वपूर्ण परिवर्तन शामिल हो सकते हैं।",
+      "minor": "माइनर रिलीज",
+      "minorDescription": "यह रिलीज नई सुविधाएं और सुधार लाता है।",
+      "patch": "पैच अपडेट",
+      "patchDescription": "इस रिलीज में बग फिक्स और प्रदर्शन सुधार शामिल हैं।"
+    }
   }
 }
