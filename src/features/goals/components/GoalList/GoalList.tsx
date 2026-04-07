@@ -5,7 +5,7 @@
  * Supports loading states, empty states, click handlers, sorting, and filtering.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { List, Empty, Spin, Table, Tag, Progress, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -67,6 +67,16 @@ export const GoalList: React.FC<GoalListProps> = ({
   const { t } = useTranslation();
   const [pageSize, setPageSize] = useState(10);
 
+  // Sort goals by favorite first (favorites appear at top by default)
+  const sortedGoals = useMemo(() => {
+    return [...goals].sort((a, b) => {
+      if (a.favorite !== b.favorite) {
+        return a.favorite ? -1 : 1;
+      }
+      return 0;
+    });
+  }, [goals]);
+
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -85,7 +95,6 @@ export const GoalList: React.FC<GoalListProps> = ({
     );
   }
 
-  // Table view (default)
   if (viewMode === 'table') {
     const columns: ColumnsType<Goal> = [
       {
@@ -187,7 +196,7 @@ export const GoalList: React.FC<GoalListProps> = ({
         <Table
           className={className}
           columns={columns}
-          dataSource={goals}
+          dataSource={sortedGoals}
           rowKey="id"
           loading={loading}
           onRow={(record) => ({
@@ -213,7 +222,7 @@ export const GoalList: React.FC<GoalListProps> = ({
   return (
     <List
       className={className}
-      dataSource={goals}
+      dataSource={sortedGoals}
       split={false}
       renderItem={(goal) => (
         <List.Item key={goal.id} style={{ padding: 0 }}>

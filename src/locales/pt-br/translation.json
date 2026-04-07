@@ -52,6 +52,7 @@
     "notStarted": "Não Iniciada",
     "archived": "Arquivada",
     "favorites": "Favoritas",
+    "updateProgressBtn": "Atualizar Progresso",
     "updateProgress": {
       "title": "Atualizar Progresso",
       "currentValueLabel": "Valor Atual",

@@ -52,6 +52,7 @@
     "notStarted": "शुरू नहीं हुआ",
     "archived": "संग्रहित",
     "favorites": "पसंदीदा",
+    "updateProgressBtn": "प्रगति अपडेट करें",
     "updateProgress": {
       "title": "प्रगति अपडेट करें",
       "currentValueLabel": "वर्तमान मान",

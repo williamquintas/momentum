@@ -13,10 +13,10 @@
  * - Empty and loading states
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import { PlusOutlined, SearchOutlined, FilterOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Card, Space, Input, Select, Button, Row, Col, Typography, message, Collapse } from 'antd';
+import { DownloadOutlined, FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Collapse, Grid, Input, Row, Select, Space, Typography, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,11 +27,11 @@ import { useCreateGoal } from '@/features/goals/hooks/useCreateGoal';
 import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
 import { useViewMode } from '@/features/goals/hooks/useViewMode';
-import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
-import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
+import type { CreateGoalInput, Goal, GoalFilters } from '@/features/goals/types';
+import { GoalStatus, GoalType, Priority } from '@/features/goals/types';
 import { useMetaTags } from '@/hooks/useMetaTags';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { exportGoals, downloadExport } from '@/services/storage/dataExportService';
+import { downloadExport, exportGoals } from '@/services/storage/dataExportService';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
 const { Title } = Typography;
@@ -44,6 +44,7 @@ export const GoalsPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { viewMode, setViewMode } = useViewMode();
+  const isDesktop = Grid.useBreakpoint().lg;
 
   // Set page title and meta tags
   usePageTitle(t('goals.title'));
@@ -59,13 +60,21 @@ export const GoalsPage: React.FC = () => {
   const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
 
   // Filter state
-  const [statusFilter, setStatusFilter] = useState<GoalStatus[] | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<GoalStatus[] | undefined>([GoalStatus.ACTIVE]);
   const [typeFilter, setTypeFilter] = useState<GoalType[] | undefined>(undefined);
   const [priorityFilter, setPriorityFilter] = useState<Priority[] | undefined>(undefined);
   const [categoryFilter, setCategoryFilter] = useState<string[] | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [favoriteFilter, setFavoriteFilter] = useState<boolean | undefined>(undefined);
-  const [archivedFilter, setArchivedFilter] = useState<boolean | undefined>(undefined);
+  const [archivedFilter, setArchivedFilter] = useState<boolean | undefined>(false);
+
+  // Filters expanded state - controlled for responsive behavior
+  const [filtersExpanded, setFiltersExpanded] = useState<string[]>([]);
+
+  // Set filters expanded on desktop, collapsed on mobile
+  useEffect(() => {
+    setFiltersExpanded(isDesktop ? ['filters'] : []);
+  }, [isDesktop]);
 
   // Create goal modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -140,26 +149,28 @@ export const GoalsPage: React.FC = () => {
     }
   };
 
-  // Clear all filters
+  // Clear all filters - reset to default values
   const handleClearFilters = () => {
-    setStatusFilter(undefined);
+    setStatusFilter([GoalStatus.ACTIVE]);
     setTypeFilter(undefined);
     setPriorityFilter(undefined);
     setCategoryFilter(undefined);
     setFavoriteFilter(undefined);
-    setArchivedFilter(undefined);
+    setArchivedFilter(false);
     setSearchQuery('');
   };
 
-  // Check if any filters are active
+  // Check if any filters are active (excluding defaults)
   const hasActiveFilters = useMemo(
     () =>
-      (statusFilter !== undefined && statusFilter.length > 0) ||
+      (statusFilter !== undefined &&
+        statusFilter.length > 0 &&
+        (statusFilter.length !== 1 || statusFilter[0] !== GoalStatus.ACTIVE)) ||
       (typeFilter !== undefined && typeFilter.length > 0) ||
       (priorityFilter !== undefined && priorityFilter.length > 0) ||
       (categoryFilter !== undefined && categoryFilter.length > 0) ||
       favoriteFilter !== undefined ||
-      archivedFilter !== undefined ||
+      archivedFilter === true ||
       searchQuery.trim().length > 0,
     [statusFilter, typeFilter, priorityFilter, categoryFilter, favoriteFilter, archivedFilter, searchQuery]
   );
@@ -204,7 +215,8 @@ export const GoalsPage: React.FC = () => {
           {/* Filters - Collapsible on mobile */}
           <Collapse
             ghost
-            defaultActiveKey={[]}
+            activeKey={filtersExpanded}
+            onChange={(keys) => setFiltersExpanded(keys as string[])}
             items={[
               {
                 key: 'filters',

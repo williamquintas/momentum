@@ -259,7 +259,7 @@ export const GoalDetailPage: React.FC = () => {
         </Button>
 
         {goal.status === GoalStatus.ACTIVE && canComplete && (
-          <Button type="primary" onClick={() => setCompleteDialogOpen(true)} size="large">
+          <Button type="primary" onClick={() => setCompleteDialogOpen(true)}>
             {isEligible ? t('goals.completeGoal') : t('goals.completeAnyway')}
           </Button>
         )}

@@ -52,6 +52,7 @@
     "notStarted": "Non commencé",
     "archived": "Archivé",
     "favorites": "Favoris",
+    "updateProgressBtn": "Mettre à jour la progression",
     "updateProgress": {
       "title": "Mettre à jour la progression",
       "currentValueLabel": "Valeur actuelle",

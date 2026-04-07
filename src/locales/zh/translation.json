@@ -52,6 +52,7 @@
     "notStarted": "未开始",
     "archived": "已归档",
     "favorites": "收藏",
+    "updateProgressBtn": "更新进度",
     "updateProgress": {
       "title": "更新进度",
       "currentValueLabel": "当前值",
