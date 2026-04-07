@@ -254,7 +254,7 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               <Space wrap style={{ width: '100%' }}>
                 {onUpdateProgress && (
                   <Button type="primary" icon={<RiseOutlined />} onClick={handleUpdateProgress}>
-                    {t('goals.updateProgress')}
+                    {t('goals.updateProgressBtn')}
                   </Button>
                 )}
                 {onEdit && (
