@@ -290,14 +290,14 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               <Card size="small">
                 <Statistic
                   title={t('goals.goalStatus')}
-                  value={goal.status}
+                  value={t(`goals.status.${goal.status}`)}
                   valueStyle={{ textTransform: 'capitalize' }}
                 />
               </Card>
               <Card size="small">
                 <Statistic
                   title={t('goals.priority')}
-                  value={goal.priority}
+                  value={t(`goals.priorities.${goal.priority}`)}
                   valueStyle={{ textTransform: 'capitalize' }}
                 />
               </Card>
@@ -318,10 +318,10 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
             <Tag>{formatGoalType(goal.type)}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label={t('goals.goalStatus')}>
-            <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
+            <Tag color={getStatusColor(goal.status)}>{t(`goals.status.${goal.status}`)}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label={t('goals.priority')}>
-            <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
+            <Tag color={getPriorityColor(goal.priority)}>{t(`goals.priorities.${goal.priority}`)}</Tag>
           </Descriptions.Item>
           {goal.category && <Descriptions.Item label={t('goals.categories')}>{goal.category}</Descriptions.Item>}
           {goal.tags.length > 0 && (

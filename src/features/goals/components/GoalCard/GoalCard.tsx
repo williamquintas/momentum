@@ -97,10 +97,10 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
           <Title level={5} style={{ margin: 0, flex: 1 }}>
             {goal.title}
           </Title>
-          <Space size="small">
+          <Space size="small" align="center">
             <span
               onClick={handleFavoriteClick}
-              style={{ cursor: onToggleFavorite ? 'pointer' : 'default', fontSize: '16px' }}
+              style={{ cursor: onToggleFavorite ? 'pointer' : 'default', fontSize: '16px', lineHeight: 1 }}
               role={onToggleFavorite ? 'button' : undefined}
               tabIndex={onToggleFavorite ? 0 : undefined}
               onKeyDown={(e) => {
@@ -116,8 +116,8 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
               )}
             </span>
             {goal.archived && <Tag color="default">{t('goalList.archived')}</Tag>}
-            <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
-            <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
+            <Tag color={getStatusColor(goal.status)}>{t(`goals.status.${goal.status}`)}</Tag>
+            <Tag color={getPriorityColor(goal.priority)}>{t(`goals.priorities.${goal.priority}`)}</Tag>
           </Space>
         </div>
 

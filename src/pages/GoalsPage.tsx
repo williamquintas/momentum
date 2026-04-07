@@ -185,8 +185,8 @@ export const GoalsPage: React.FC = () => {
               {t('goals.goalsList')}
             </Title>
           </Col>
-          <Col xs={24} sm={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Space className="goals-page-actions">
+          <Col xs={24} sm={12}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 8 }}>
               <ViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button icon={<DownloadOutlined />} onClick={handleExport}>
                 {t('goals.export')}
@@ -194,7 +194,7 @@ export const GoalsPage: React.FC = () => {
               <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsCreateModalOpen(true)}>
                 {t('goals.createGoal')}
               </Button>
-            </Space>
+            </div>
           </Col>
         </Row>
       </div>
@@ -204,7 +204,7 @@ export const GoalsPage: React.FC = () => {
           {/* Filters - Collapsible on mobile */}
           <Collapse
             ghost
-            defaultActiveKey={['filters']}
+            defaultActiveKey={[]}
             items={[
               {
                 key: 'filters',
