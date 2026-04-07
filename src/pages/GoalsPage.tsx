@@ -13,10 +13,10 @@
  * - Empty and loading states
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { DownloadOutlined, FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Collapse, Input, Row, Select, Space, Typography, message } from 'antd';
+import { Button, Card, Col, Collapse, Grid, Input, Row, Select, Space, Typography, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,6 +44,7 @@ export const GoalsPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { viewMode, setViewMode } = useViewMode();
+  const isDesktop = Grid.useBreakpoint().lg;
 
   // Set page title and meta tags
   usePageTitle(t('goals.title'));
@@ -66,6 +67,14 @@ export const GoalsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [favoriteFilter, setFavoriteFilter] = useState<boolean | undefined>(undefined);
   const [archivedFilter, setArchivedFilter] = useState<boolean | undefined>(false);
+
+  // Filters expanded state - controlled for responsive behavior
+  const [filtersExpanded, setFiltersExpanded] = useState<string[]>([]);
+
+  // Set filters expanded on desktop, collapsed on mobile
+  useEffect(() => {
+    setFiltersExpanded(isDesktop ? ['filters'] : []);
+  }, [isDesktop]);
 
   // Create goal modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -206,7 +215,8 @@ export const GoalsPage: React.FC = () => {
           {/* Filters - Collapsible on mobile */}
           <Collapse
             ghost
-            defaultActiveKey={['filters']}
+            activeKey={filtersExpanded}
+            onChange={(keys) => setFiltersExpanded(keys as string[])}
             items={[
               {
                 key: 'filters',
