@@ -52,6 +52,7 @@
     "notStarted": "시작 전",
     "archived": "보관됨",
     "favorites": "즐겨찾기",
+    "updateProgressBtn": "진행률 업데이트",
     "updateProgress": {
       "title": "진행률 업데이트",
       "currentValueLabel": "현재 값",

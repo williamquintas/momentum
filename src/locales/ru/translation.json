@@ -52,6 +52,7 @@
     "notStarted": "Не начато",
     "archived": "В архиве",
     "favorites": "Избранное",
+    "updateProgressBtn": "Обновить прогресс",
     "updateProgress": {
       "title": "Обновить прогресс",
       "currentValueLabel": "Текущее значение",

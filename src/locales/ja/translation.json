@@ -52,6 +52,7 @@
     "notStarted": "未着手",
     "archived": "アーカイブ済み",
     "favorites": "お気に入り",
+    "updateProgressBtn": "進捗を更新",
     "updateProgress": {
       "title": "進捗を更新",
       "currentValueLabel": "現在値",

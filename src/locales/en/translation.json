@@ -52,7 +52,7 @@
     "notStarted": "Not Started",
     "archived": "Archived",
     "favorites": "Favorites",
-    "updateProgress": "Update Progress",
+    "updateProgressBtn": "Update Progress",
     "markComplete": "Mark Complete",
     "tooltips": {
       "goalTypeHelp": "Click for help choosing the right goal type"
