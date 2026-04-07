@@ -16,7 +16,7 @@ export type ViewMode = 'table' | 'list';
 /**
  * Default view mode
  */
-const DEFAULT_VIEW_MODE: ViewMode = 'table';
+const DEFAULT_VIEW_MODE: ViewMode = 'list';
 
 /**
  * Hook to manage view mode preference

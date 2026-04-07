@@ -120,7 +120,7 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: status,
         })),
         onFilter: (value, record) => record.status === value,
-        render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{status}</Tag>,
+        render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{t(`goals.status.${status}`)}</Tag>,
       },
       {
         title: t('goalList.priority'),
@@ -132,7 +132,9 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: priority,
         })),
         onFilter: (value, record) => record.priority === value,
-        render: (priority: Priority) => <Tag color={getPriorityColor(priority)}>{priority}</Tag>,
+        render: (priority: Priority) => (
+          <Tag color={getPriorityColor(priority)}>{t(`goals.priorities.${priority}`)}</Tag>
+        ),
       },
       {
         title: t('goalList.progress'),

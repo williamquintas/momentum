@@ -5,17 +5,40 @@
  * according to the mockup specifications.
  */
 
-import { format } from 'date-fns';
+import { format, type Locale } from 'date-fns';
+import { enUS, es, ptBR, de, fr, hi, ja, ko, ru, zhCN } from 'date-fns/locale';
+
+import i18n from '@/i18n';
+
+type DateFnsLocale = typeof enUS;
+
+const localeMap: Record<string, DateFnsLocale> = {
+  en: enUS,
+  es: es,
+  'pt-BR': ptBR,
+  de: de,
+  fr: fr,
+  hi: hi,
+  ja: ja,
+  ko: ko,
+  ru: ru,
+  zh: zhCN,
+};
+
+const getDateFnsLocale = (): Locale => {
+  const lang = i18n.language || 'en';
+  return localeMap[lang] || enUS;
+};
 
 /**
  * Format date for display (e.g., "Aug 30, 2022")
- * Matches mockup format requirements
+ * Matches mockup format requirements, but locale-aware
  */
 export const formatDate = (date: Date | undefined | null): string => {
   if (!date) {
     return '';
   }
-  return format(date, 'MMM d, yyyy');
+  return format(date, 'MMM d, yyyy', { locale: getDateFnsLocale() });
 };
 
 /**
