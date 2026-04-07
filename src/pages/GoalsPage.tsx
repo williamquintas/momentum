@@ -59,13 +59,13 @@ export const GoalsPage: React.FC = () => {
   const availableGoalTypes = getAvailableGoalTypes(Object.values(GoalType));
 
   // Filter state
-  const [statusFilter, setStatusFilter] = useState<GoalStatus[] | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<GoalStatus[] | undefined>([GoalStatus.ACTIVE]);
   const [typeFilter, setTypeFilter] = useState<GoalType[] | undefined>(undefined);
   const [priorityFilter, setPriorityFilter] = useState<Priority[] | undefined>(undefined);
   const [categoryFilter, setCategoryFilter] = useState<string[] | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [favoriteFilter, setFavoriteFilter] = useState<boolean | undefined>(undefined);
-  const [archivedFilter, setArchivedFilter] = useState<boolean | undefined>(undefined);
+  const [archivedFilter, setArchivedFilter] = useState<boolean | undefined>(false);
 
   // Create goal modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -140,26 +140,28 @@ export const GoalsPage: React.FC = () => {
     }
   };
 
-  // Clear all filters
+  // Clear all filters - reset to default values
   const handleClearFilters = () => {
-    setStatusFilter(undefined);
+    setStatusFilter([GoalStatus.ACTIVE]);
     setTypeFilter(undefined);
     setPriorityFilter(undefined);
     setCategoryFilter(undefined);
     setFavoriteFilter(undefined);
-    setArchivedFilter(undefined);
+    setArchivedFilter(false);
     setSearchQuery('');
   };
 
-  // Check if any filters are active
+  // Check if any filters are active (excluding defaults)
   const hasActiveFilters = useMemo(
     () =>
-      (statusFilter !== undefined && statusFilter.length > 0) ||
+      (statusFilter !== undefined &&
+        statusFilter.length > 0 &&
+        (statusFilter.length !== 1 || statusFilter[0] !== GoalStatus.ACTIVE)) ||
       (typeFilter !== undefined && typeFilter.length > 0) ||
       (priorityFilter !== undefined && priorityFilter.length > 0) ||
       (categoryFilter !== undefined && categoryFilter.length > 0) ||
       favoriteFilter !== undefined ||
-      archivedFilter !== undefined ||
+      archivedFilter === true ||
       searchQuery.trim().length > 0,
     [statusFilter, typeFilter, priorityFilter, categoryFilter, favoriteFilter, archivedFilter, searchQuery]
   );
