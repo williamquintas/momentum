@@ -13,10 +13,10 @@
  * - Empty and loading states
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import { PlusOutlined, SearchOutlined, FilterOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Card, Space, Input, Select, Button, Row, Col, Typography, message, Collapse } from 'antd';
+import { DownloadOutlined, FilterOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Collapse, Input, Row, Select, Space, Typography, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,11 +27,11 @@ import { useCreateGoal } from '@/features/goals/hooks/useCreateGoal';
 import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
 import { useViewMode } from '@/features/goals/hooks/useViewMode';
-import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
-import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
+import type { CreateGoalInput, Goal, GoalFilters } from '@/features/goals/types';
+import { GoalStatus, GoalType, Priority } from '@/features/goals/types';
 import { useMetaTags } from '@/hooks/useMetaTags';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { exportGoals, downloadExport } from '@/services/storage/dataExportService';
+import { downloadExport, exportGoals } from '@/services/storage/dataExportService';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
 const { Title } = Typography;
@@ -206,7 +206,7 @@ export const GoalsPage: React.FC = () => {
           {/* Filters - Collapsible on mobile */}
           <Collapse
             ghost
-            defaultActiveKey={[]}
+            defaultActiveKey={['filters']}
             items={[
               {
                 key: 'filters',
