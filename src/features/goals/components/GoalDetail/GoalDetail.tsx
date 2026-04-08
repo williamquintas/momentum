@@ -9,16 +9,12 @@
 import React, { useState } from 'react';
 
 import {
-  EditOutlined,
-  DeleteOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   FileTextOutlined,
   PaperClipOutlined,
-  RiseOutlined,
   StarOutlined,
   StarFilled,
-  InboxOutlined,
 } from '@ant-design/icons';
 import {
   Card,
@@ -27,13 +23,11 @@ import {
   Tag,
   Space,
   Typography,
-  Button,
   Divider,
   Steps,
   Timeline,
   List,
   Empty,
-  Popconfirm,
   Row,
   Col,
   Statistic,
@@ -112,6 +106,16 @@ export interface GoalDetailProps {
    * Loading state for progress update operation
    */
   updatingProgress?: boolean;
+
+  /**
+   * Show progress modal (controlled)
+   */
+  showProgressModal?: boolean;
+
+  /**
+   * Callback to close progress modal
+   */
+  onProgressModalClose?: () => void;
 }
 
 /**
@@ -142,23 +146,26 @@ const formatGoalType = (type: string): string => {
  */
 export const GoalDetail: React.FC<GoalDetailProps> = ({
   goal,
-  onEdit,
-  onDelete,
   onUpdateProgress,
   onToggleFavorite,
-  onToggleArchive,
   relatedGoals,
-  deleting = false,
   updatingProgress = false,
+  showProgressModal: externalProgressModalOpen,
+  onProgressModalClose,
 }) => {
   const { t } = useTranslation();
-  const [progressModalOpen, setProgressModalOpen] = useState(false);
+  const [internalProgressModalOpen, setInternalProgressModalOpen] = useState(false);
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
 
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete(goal.id);
+  const isProgressModalOpen =
+    externalProgressModalOpen !== undefined ? externalProgressModalOpen : internalProgressModalOpen;
+
+  const handleProgressModalClose = () => {
+    if (onProgressModalClose) {
+      onProgressModalClose();
+    } else {
+      setInternalProgressModalOpen(false);
     }
   };
 
@@ -168,20 +175,10 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
     }
   };
 
-  const handleToggleArchive = () => {
-    if (onToggleArchive) {
-      void onToggleArchive(goal.id);
-    }
-  };
-
-  const handleUpdateProgress = () => {
-    setProgressModalOpen(true);
-  };
-
   const handleProgressSubmit = async (input: UpdateProgressInput) => {
     if (onUpdateProgress) {
       await onUpdateProgress(input);
-      setProgressModalOpen(false);
+      handleProgressModalClose();
     }
   };
 
@@ -197,9 +194,6 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div>
                 <Space align="start">
-                  <Title level={2} style={{ margin: 0 }}>
-                    {goal.title}
-                  </Title>
                   {onToggleFavorite && (
                     <span
                       onClick={handleToggleFavorite}
@@ -215,6 +209,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
                       {goal.favorite ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
                     </span>
                   )}
+                  <Title level={2} style={{ margin: 0 }}>
+                    {goal.title}
+                  </Title>
                 </Space>
                 {goal.description && (
                   <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>
@@ -249,63 +246,6 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
                   </Space>
                 </div>
               )}
-
-              {/* Action Buttons */}
-              <Space wrap style={{ width: '100%' }}>
-                {onUpdateProgress && (
-                  <Button type="primary" icon={<RiseOutlined />} onClick={handleUpdateProgress}>
-                    {t('goals.updateProgress')}
-                  </Button>
-                )}
-                {onEdit && (
-                  <Button icon={<EditOutlined />} onClick={() => onEdit(goal)}>
-                    {t('goals.editGoal')}
-                  </Button>
-                )}
-                {onToggleArchive && (
-                  <Button icon={<InboxOutlined />} onClick={handleToggleArchive}>
-                    {goal.archived ? t('goals.unarchive') : t('goals.archive')}
-                  </Button>
-                )}
-                {onDelete && (
-                  <Popconfirm
-                    title={t('goals.deleteGoal')}
-                    description={t('goals.deleteGoalConfirm')}
-                    onConfirm={handleDelete}
-                    okText={t('goals.yesDelete')}
-                    cancelText={t('common.cancel')}
-                    okButtonProps={{ danger: true }}
-                  >
-                    <Button danger icon={<DeleteOutlined />} loading={deleting}>
-                      {t('goals.deleteGoal')}
-                    </Button>
-                  </Popconfirm>
-                )}
-              </Space>
-            </Space>
-          </Col>
-          <Col xs={24} md={8}>
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-              {/* Quick Stats */}
-              <Card size="small">
-                <Statistic
-                  title={t('goals.goalStatus')}
-                  value={goal.status}
-                  valueStyle={{ textTransform: 'capitalize' }}
-                />
-              </Card>
-              <Card size="small">
-                <Statistic
-                  title={t('goals.priority')}
-                  value={goal.priority}
-                  valueStyle={{ textTransform: 'capitalize' }}
-                />
-              </Card>
-              {goal.category && (
-                <Card size="small">
-                  <Statistic title={t('goals.categories')} value={goal.category} />
-                </Card>
-              )}
             </Space>
           </Col>
         </Row>
@@ -318,10 +258,10 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
             <Tag>{formatGoalType(goal.type)}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label={t('goals.goalStatus')}>
-            <Tag color={getStatusColor(goal.status)}>{goal.status}</Tag>
+            <Tag color={getStatusColor(goal.status)}>{t(`goals.status.${goal.status}`)}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label={t('goals.priority')}>
-            <Tag color={getPriorityColor(goal.priority)}>{goal.priority}</Tag>
+            <Tag color={getPriorityColor(goal.priority)}>{t(`goals.priorities.${goal.priority}`)}</Tag>
           </Descriptions.Item>
           {goal.category && <Descriptions.Item label={t('goals.categories')}>{goal.category}</Descriptions.Item>}
           {goal.tags.length > 0 && (
@@ -672,9 +612,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       {/* Update Progress Modal */}
       {onUpdateProgress && (
         <UpdateProgressModal
-          open={progressModalOpen}
+          open={isProgressModalOpen}
           goal={goal}
-          onCancel={() => setProgressModalOpen(false)}
+          onCancel={handleProgressModalClose}
           onSubmit={handleProgressSubmit}
           loading={updatingProgress}
         />

@@ -7,11 +7,13 @@
 
 import React from 'react';
 
-import { Select, Space } from 'antd';
+import { Select, Space, Typography } from 'antd';
 import * as FlagIcons from 'country-flag-icons/react/3x2';
 import { useTranslation } from 'react-i18next';
 
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/i18n';
+
+const { Text } = Typography;
 
 // Map language codes to country codes for flags
 const LANGUAGE_COUNTRY_CODES: Record<SupportedLanguage, string> = {
@@ -59,13 +61,16 @@ export const LanguageSwitcher = (): React.ReactElement => {
   };
 
   return (
-    <Select
-      value={i18n.language as SupportedLanguage}
-      onChange={handleLanguageChange}
-      options={LANGUAGE_OPTIONS}
-      placeholder={t('settings.language')}
-      aria-label={t('accessibility.languageSelector')}
-    />
+    <Space>
+      <Text>{SUPPORTED_LANGUAGES[i18n.language as SupportedLanguage]?.nativeName}</Text>
+      <Select
+        value={i18n.language as SupportedLanguage}
+        onChange={handleLanguageChange}
+        options={LANGUAGE_OPTIONS}
+        placeholder={t('settings.language')}
+        aria-label={t('accessibility.languageSelector')}
+      />
+    </Space>
   );
 };
 

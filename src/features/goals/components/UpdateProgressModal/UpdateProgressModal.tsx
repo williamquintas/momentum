@@ -258,7 +258,7 @@ export const UpdateProgressModal: React.FC<UpdateProgressModalProps> = ({
 
   return (
     <Modal
-      title={t('updateProgress.title')}
+      title={t('updateProgressModal.title')}
       open={open}
       onCancel={handleCancel}
       footer={null}

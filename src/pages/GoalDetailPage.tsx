@@ -7,11 +7,19 @@
 
 import React, { useState } from 'react';
 
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Button, Card, Typography, Spin, message } from 'antd';
+import {
+  ArrowLeftOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  InboxOutlined,
+  MoreOutlined,
+  RiseOutlined,
+} from '@ant-design/icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { MenuProps } from 'antd';
+import { Affix, Button, Card, Col, Dropdown, Grid, message, Row, Spin, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { CompleteGoalDialog } from '@/features/goals/components/CompleteGoalDialog';
 import { EditGoalModal } from '@/features/goals/components/EditGoalModal';
@@ -34,7 +42,6 @@ const { Paragraph } = Typography;
  * Convert CreateGoalInput to UpdateGoalInput
  */
 const createInputToUpdateInput = (input: CreateGoalInput): UpdateGoalInput => {
-  // Remove fields that shouldn't be in UpdateGoalInput
   const { progressHistory: _progressHistory, ...rest } = input;
 
   return {
@@ -53,8 +60,10 @@ export const GoalDetailPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(false);
+  const screens = Grid.useBreakpoint();
+  const isDesktop = screens.lg;
 
-  // Fetch goal details
   const {
     data: goal,
     isLoading,
@@ -74,12 +83,10 @@ export const GoalDetailPage: React.FC = () => {
     enabled: !!id,
   });
 
-  // Update and delete mutations
   const updateGoal = useUpdateGoal();
   const deleteGoal = useDeleteGoal();
   const updateProgress = useUpdateProgress();
 
-  // Fetch related goals
   const relatedGoalIds = goal?.relatedGoals ?? [];
   const { data: relatedGoals = [] } = useQuery({
     queryKey: queryKeys.goals.list({ ids: relatedGoalIds }),
@@ -90,17 +97,14 @@ export const GoalDetailPage: React.FC = () => {
     enabled: relatedGoalIds.length > 0,
   });
 
-  // Completion detection
   const { isEligible, canComplete } = useCompletionDetection(goal);
 
-  // Completion mutation
   const completeGoalMutation = useMutation({
     mutationFn: async (options: CompletionOptions) => {
       if (!goal || !id) {
         throw new Error('Goal is required');
       }
 
-      // Update goal status to completed
       await updateGoal.mutateAsync({
         id,
         updates: {
@@ -122,10 +126,8 @@ export const GoalDetailPage: React.FC = () => {
     },
   });
 
-  // Set page title dynamically based on goal title
   usePageTitle(goal?.title || t('goals.goalDetails'), 'Details');
 
-  // Set meta tags dynamically based on goal data
   useMetaTags({
     title: goal?.title || t('goals.goalDetails'),
     description: goal?.description || t('goals.goalDetails'),
@@ -134,12 +136,10 @@ export const GoalDetailPage: React.FC = () => {
     keywords: goal?.tags || ['goal', 'tracking', 'progress'],
   });
 
-  // Handle navigation back
   const handleBack = () => {
     navigate('/goals');
   };
 
-  // Handle edit
   const handleEdit = () => {
     setEditModalOpen(true);
   };
@@ -161,7 +161,6 @@ export const GoalDetailPage: React.FC = () => {
     }
   };
 
-  // Handle delete
   const handleDelete = (goalId: string) => {
     void (async () => {
       try {
@@ -175,7 +174,6 @@ export const GoalDetailPage: React.FC = () => {
     })();
   };
 
-  // Handle toggle favorite
   const handleToggleFavorite = async (goalId: string) => {
     const currentGoal = goal;
     if (currentGoal) {
@@ -192,7 +190,6 @@ export const GoalDetailPage: React.FC = () => {
     }
   };
 
-  // Handle toggle archive
   const handleToggleArchive = async (goalId: string) => {
     const currentGoal = goal;
     if (currentGoal) {
@@ -209,7 +206,6 @@ export const GoalDetailPage: React.FC = () => {
     }
   };
 
-  // Handle progress update
   const handleUpdateProgress = async (input: Parameters<typeof updateProgress.mutateAsync>[0]) => {
     try {
       await updateProgress.mutateAsync(input);
@@ -220,7 +216,39 @@ export const GoalDetailPage: React.FC = () => {
     }
   };
 
-  // Loading state
+  const moreMenuItems: MenuProps['items'] = [
+    {
+      key: 'edit',
+      icon: <EditOutlined />,
+      label: t('goals.editGoal'),
+      onClick: handleEdit,
+    },
+    {
+      key: 'archive',
+      icon: <InboxOutlined />,
+      label: goal?.archived ? t('goals.unarchive') : t('goals.archive'),
+      onClick: () => {
+        if (goal) {
+          void handleToggleArchive(goal.id);
+        }
+      },
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'delete',
+      icon: <DeleteOutlined />,
+      label: t('goals.deleteGoal'),
+      danger: true,
+      onClick: () => {
+        if (goal) {
+          handleDelete(goal.id);
+        }
+      },
+    },
+  ];
+
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -232,7 +260,6 @@ export const GoalDetailPage: React.FC = () => {
     );
   }
 
-  // Error state
   if (error || !goal) {
     return (
       <div>
@@ -251,34 +278,105 @@ export const GoalDetailPage: React.FC = () => {
   }
 
   return (
-    <div>
-      {/* Header with back button and actions */}
+    <div style={{ paddingBottom: 0 }}>
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button icon={<ArrowLeftOutlined />} onClick={handleBack}>
           {t('goals.backToGoals')}
         </Button>
 
-        {goal.status === GoalStatus.ACTIVE && canComplete && (
-          <Button type="primary" onClick={() => setCompleteDialogOpen(true)} size="large">
-            {isEligible ? t('goals.completeGoal') : t('goals.completeAnyway')}
-          </Button>
-        )}
+        <Dropdown menu={{ items: moreMenuItems }} trigger={['click']}>
+          <Button icon={<MoreOutlined />} />
+        </Dropdown>
       </div>
 
-      {/* Goal Detail Component */}
-      <GoalDetail
-        goal={goal}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onUpdateProgress={handleUpdateProgress}
-        onToggleFavorite={handleToggleFavorite}
-        onToggleArchive={handleToggleArchive}
-        relatedGoals={relatedGoals}
-        deleting={deleteGoal.isPending}
-        updatingProgress={updateProgress.isPending}
-      />
+      {isDesktop ? (
+        <Row gutter={24}>
+          <Col xs={24} lg={16}>
+            <GoalDetail
+              goal={goal}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onUpdateProgress={handleUpdateProgress}
+              onToggleFavorite={handleToggleFavorite}
+              onToggleArchive={handleToggleArchive}
+              relatedGoals={relatedGoals}
+              deleting={deleteGoal.isPending}
+              updatingProgress={updateProgress.isPending}
+              showProgressModal={showProgressModal}
+              onProgressModalClose={() => setShowProgressModal(false)}
+            />
+            {goal.status === GoalStatus.ACTIVE && canComplete && (
+              <div style={{ marginTop: 16 }}>
+                <Button type="default" block onClick={() => setCompleteDialogOpen(true)}>
+                  {isEligible ? t('goals.completeGoal') : t('goals.completeAnyway')}
+                </Button>
+              </div>
+            )}
+          </Col>
+          <Col xs={24} lg={8}>
+            <div style={{ position: 'sticky', top: 24 }}>
+              <Button
+                type="primary"
+                size="large"
+                block
+                icon={<RiseOutlined />}
+                onClick={() => setShowProgressModal(true)}
+                style={{ marginBottom: 16 }}
+              >
+                {t('goals.updateProgress.title')}
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      ) : (
+        <>
+          <GoalDetail
+            goal={goal}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onUpdateProgress={handleUpdateProgress}
+            onToggleFavorite={handleToggleFavorite}
+            onToggleArchive={handleToggleArchive}
+            relatedGoals={relatedGoals}
+            deleting={deleteGoal.isPending}
+            updatingProgress={updateProgress.isPending}
+            showProgressModal={showProgressModal}
+            onProgressModalClose={() => setShowProgressModal(false)}
+          />
 
-      {/* Edit Modal */}
+          {goal.status === GoalStatus.ACTIVE && canComplete && (
+            <div style={{ marginTop: 16 }}>
+              <Button type="default" block onClick={() => setCompleteDialogOpen(true)}>
+                {isEligible ? t('goals.completeGoal') : t('goals.completeAnyway')}
+              </Button>
+            </div>
+          )}
+
+          <Affix
+            style={{
+              position: 'fixed',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: '16px 24px',
+              background: 'var(--ant-color-bg-container)',
+              borderTop: '1px solid var(--ant-color-border)',
+              zIndex: 100,
+            }}
+          >
+            <Button
+              type="primary"
+              size="large"
+              block
+              onClick={() => setShowProgressModal(true)}
+              icon={<RiseOutlined />}
+            >
+              {t('goals.updateProgress.title')}
+            </Button>
+          </Affix>
+        </>
+      )}
+
       <EditGoalModal
         open={editModalOpen}
         goal={goal}
@@ -287,7 +385,6 @@ export const GoalDetailPage: React.FC = () => {
         loading={updateGoal.isPending}
       />
 
-      {/* Complete Goal Dialog */}
       <CompleteGoalDialog
         goal={goal}
         open={completeDialogOpen}
