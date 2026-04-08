@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-04-07
+
+### Fixed
+
+- Translation key conflict between button and modal - use separate `updateProgressBtn` key for button
+
+## [0.2.1] - 2026-04-07
+
+### Fixed
+
+- Date utilities with improved deadline calculations
+- View mode handling of null/undefined states
+
+## [0.2.0] - 2026-04-06
+
+### Added
+
+- Full internationalization (i18n) support with 10 languages (English, Portuguese-BR, Spanish, French, German, Russian, Japanese, Korean, Chinese, Hindi)
+- In-app release notifications with changelog modal and "What's New" feature
+- Data import/export functionality for backup and restore
+- PWA support with install prompt, offline indicator, and auto-update
+- Theme settings component for light/dark mode customization
+- Notifications page for viewing release updates
+- Notification bell component for new release alerts
+
+### Changed
+
+- Refactored Header component into layout-based structure
+- Updated i18n configuration and localization files
+- Enhanced theme context with persistence support
+
+### Fixed
+
+- Fixed APP_VERSION in dataExportService to use package.json version
+- Improved duplicate detection for progress updates
+
+### Testing
+
+- Added tests for release notification system
+- Added tests for GitHub API integration
+- Added tests for notification storage
+- Added tests for release notes parser
+
+---
+
 ## [0.1.0] - 2026-03-27
 
 ### Added
