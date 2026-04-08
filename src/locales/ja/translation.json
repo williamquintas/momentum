@@ -20,11 +20,13 @@
     "no": "いいえ",
     "optional": "任意",
     "ok": "OK",
-    "and": "と"
+    "and": "と",
+    "apply": "適用"
   },
   "nav": {
     "home": "ホーム",
     "goals": "目標",
+    "notifications": "通知",
     "settings": "設定"
   },
   "goals": {
@@ -285,6 +287,10 @@
   },
   "settings": {
     "title": "設定",
+    "preferences": "設定",
+    "data": "データ",
+    "about": "概要",
+    "version": "バージョン",
     "language": "言語",
     "selectLanguage": "言語を選択:",
     "theme": "テーマ",

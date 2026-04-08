@@ -20,11 +20,13 @@
     "no": "Нет",
     "optional": "Необязательно",
     "ok": "ОК",
-    "and": "И"
+    "and": "И",
+    "apply": "Применить"
   },
   "nav": {
     "home": "Главная",
     "goals": "Цели",
+    "notifications": "Уведомления",
     "settings": "Настройки"
   },
   "goals": {
@@ -285,6 +287,10 @@
   },
   "settings": {
     "title": "Настройки",
+    "preferences": "Предпочтения",
+    "data": "Данные",
+    "about": "О приложении",
+    "version": "Версия",
     "language": "Язык",
     "selectLanguage": "Выберите язык:",
     "theme": "Тема",

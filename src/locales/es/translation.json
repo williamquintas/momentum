@@ -20,11 +20,13 @@
     "no": "No",
     "optional": "Opcional",
     "ok": "Aceptar",
-    "and": "Y"
+    "and": "Y",
+    "apply": "Aplicar"
   },
   "nav": {
     "home": "Inicio",
     "goals": "Metas",
+    "notifications": "Notificaciones",
     "settings": "Configuración"
   },
   "goals": {
@@ -285,6 +287,10 @@
   },
   "settings": {
     "title": "Configuración",
+    "preferences": "Preferencias",
+    "data": "Datos",
+    "about": "Acerca de",
+    "version": "Versión",
     "language": "Idioma",
     "selectLanguage": "Selecciona tu idioma:",
     "theme": "Tema",

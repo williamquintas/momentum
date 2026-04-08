@@ -20,11 +20,13 @@
     "no": "नहीं",
     "optional": "वैकल्पिक",
     "ok": "ठीक है",
-    "and": "और"
+    "and": "और",
+    "apply": "लागू करें"
   },
   "nav": {
     "home": "होम",
     "goals": "लक्ष्य",
+    "notifications": "सूचनाएं",
     "settings": "सेटिंग्स"
   },
   "goals": {
@@ -285,6 +287,10 @@
   },
   "settings": {
     "title": "सेटिंग्स",
+    "preferences": "प्राथमिकताएं",
+    "data": "डेटा",
+    "about": "के बारे में",
+    "version": "संस्करण",
     "language": "भाषा",
     "selectLanguage": "अपनी भाषा चुनें:",
     "theme": "थीम",
