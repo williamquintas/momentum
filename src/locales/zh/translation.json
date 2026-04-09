@@ -114,6 +114,7 @@
     "goalDeletedSuccessfully": "目标删除成功",
     "failedToDeleteGoal": "删除目标失败",
     "progressUpdatedSuccessfully": "进度更新成功",
+    "progressUpdated": "进度更新成功",
     "failedToUpdateProgress": "更新进度失败",
     "noteAdded": "笔记添加成功",
     "noteUpdated": "笔记更新成功",
@@ -572,7 +573,14 @@
     "noteOptional": "备注（可选）",
     "notePlaceholder": "添加关于此次进度更新的备注...",
     "cancel": "取消",
-    "updateProgress": "更新进度"
+    "updateProgress": "更新进度",
+    "qualitativeRequiresDetail": "定性目标需要在详情页更新"
+  },
+  "quickProgressModal": {
+    "title": "更新进度",
+    "save": "保存",
+    "complexGoal": "复杂目标",
+    "useDetailPage": "使用目标详情页获取完整进度选项"
   },
   "createGoalModal": {
     "title": "创建新目标"

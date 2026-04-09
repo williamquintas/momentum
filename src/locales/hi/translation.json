@@ -114,6 +114,7 @@
     "goalDeletedSuccessfully": "लक्ष्य सफलतापूर्वक हटाया गया",
     "failedToDeleteGoal": "लक्ष्य हटाने में विफल",
     "progressUpdatedSuccessfully": "प्रगति सफलतापूर्वक अपडेट की गई",
+    "progressUpdated": "प्रगति सफलतापूर्वक अपडेट की गई",
     "failedToUpdateProgress": "प्रगति अपडेट करने में विफल",
     "noteAdded": "नोट सफलतापूर्वक जोड़ा गया",
     "noteUpdated": "नोट सफलतापूर्वक अपडेट किया गया",
@@ -572,7 +573,14 @@
     "noteOptional": "नोट (वैकल्पिक)",
     "notePlaceholder": "इस प्रगति अपडेट के बारे में एक नोट जोड़ें...",
     "cancel": "रद्द करें",
-    "updateProgress": "प्रगति अपडेट करें"
+    "updateProgress": "प्रगति अपडेट करें",
+    "qualitativeRequiresDetail": "गुणात्मक लक्ष्यों को अपडेट करने के लिए विवरण पृष्ठ आवश्यक है"
+  },
+  "quickProgressModal": {
+    "title": "प्रगति अपडेट करें",
+    "save": "सहेजें",
+    "complexGoal": "जटिल लक्ष्य",
+    "useDetailPage": "पूर्ण प्रगति विकल्पों के लिए लक्ष्य विवरण पृष्ठ का उपयोग करें"
   },
   "createGoalModal": {
     "title": "नया लक्ष्य बनाएं"

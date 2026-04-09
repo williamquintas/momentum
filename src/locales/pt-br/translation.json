@@ -572,7 +572,14 @@
     "noteOptional": "Nota (Opcional)",
     "notePlaceholder": "Adicione uma nota sobre esta atualização de progresso...",
     "cancel": "Cancelar",
-    "updateProgress": "Atualizar Progresso"
+    "updateProgress": "Atualizar Progresso",
+    "qualitativeRequiresDetail": "Metas qualitativas requerem a página de detalhes para atualizar"
+  },
+  "quickProgressModal": {
+    "title": "Atualizar Progresso",
+    "save": "Salvar",
+    "complexGoal": "Meta Complexa",
+    "useDetailPage": "Use a página de detalhes da meta para opções completas de progresso"
   },
   "createGoalModal": {
     "title": "Criar Nova Meta"

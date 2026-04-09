@@ -7,7 +7,8 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { Col, Empty, Grid, List, Progress, Row, Spin, Table, Tag, Typography } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Col, Empty, Grid, List, Progress, Row, Spin, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 
@@ -43,6 +44,11 @@ export interface GoalListProps {
   onToggleFavorite?: (goalId: string) => void;
 
   /**
+   * Callback when progress update button is clicked
+   */
+  onProgressUpdate?: (goal: Goal) => void;
+
+  /**
    * Additional CSS class name
    */
   className?: string;
@@ -61,6 +67,7 @@ export const GoalList: React.FC<GoalListProps> = ({
   loading = false,
   onGoalClick,
   onToggleFavorite,
+  onProgressUpdate,
   className,
   viewMode = 'table',
 }) => {
@@ -157,8 +164,20 @@ export const GoalList: React.FC<GoalListProps> = ({
         render: (_: unknown, goal: Goal) => {
           const progress = getProgressValue(goal);
           return (
-            <div style={{ minWidth: 100 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 100 }}>
               <Progress percent={progress} format={() => formatProgress(goal)} size="small" showInfo />
+              {onProgressUpdate && (
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onProgressUpdate(goal);
+                  }}
+                  style={{ minWidth: 32, padding: '2px 6px' }}
+                  size="small"
+                />
+              )}
             </div>
           );
         },
@@ -230,7 +249,12 @@ export const GoalList: React.FC<GoalListProps> = ({
       <Row gutter={[16, 16]} className={className}>
         {sortedGoals.map((goal) => (
           <Col key={goal.id} xs={24} sm={12} lg={12}>
-            <GoalCard goal={goal} onClick={onGoalClick} onToggleFavorite={onToggleFavorite} />
+            <GoalCard
+              goal={goal}
+              onClick={onGoalClick}
+              onToggleFavorite={onToggleFavorite}
+              onProgressUpdate={onProgressUpdate}
+            />
           </Col>
         ))}
       </Row>
@@ -244,7 +268,12 @@ export const GoalList: React.FC<GoalListProps> = ({
       split={false}
       renderItem={(goal) => (
         <List.Item key={goal.id} style={{ padding: 0 }}>
-          <GoalCard goal={goal} onClick={onGoalClick} onToggleFavorite={onToggleFavorite} />
+          <GoalCard
+            goal={goal}
+            onClick={onGoalClick}
+            onToggleFavorite={onToggleFavorite}
+            onProgressUpdate={onProgressUpdate}
+          />
         </List.Item>
       )}
     />

@@ -37,10 +37,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { CreateGoalModal } from '@/features/goals/components/CreateGoalModal';
 import { GoalList } from '@/features/goals/components/GoalList';
+import { QuickProgressModal } from '@/features/goals/components/QuickProgressModal/QuickProgressModal';
 import { ViewModeToggle } from '@/features/goals/components/ViewModeToggle';
 import { useCreateGoal } from '@/features/goals/hooks/useCreateGoal';
 import { useGoals } from '@/features/goals/hooks/useGoals';
 import { useUpdateGoal } from '@/features/goals/hooks/useUpdateGoal';
+import { useUpdateProgress } from '@/features/goals/hooks/useUpdateProgress';
 import { useViewMode } from '@/features/goals/hooks/useViewMode';
 import type { GoalFilters, Goal, CreateGoalInput } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
@@ -79,6 +81,7 @@ export const GoalsPage: React.FC = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
+  const [progressUpdateGoal, setProgressUpdateGoal] = useState<Goal | null>(null);
 
   const filters: GoalFilters = useMemo(
     () => ({
@@ -96,6 +99,7 @@ export const GoalsPage: React.FC = () => {
   const { data: goals = [], isLoading } = useGoals(filters);
   const createGoal = useCreateGoal();
   const updateGoal = useUpdateGoal();
+  const updateProgress = useUpdateProgress();
 
   const handleGoalClick = (goal: Goal) => {
     navigate(`/goals/${goal.id}`);
@@ -110,6 +114,25 @@ export const GoalsPage: React.FC = () => {
       } catch {
         void message.error(t('goals.failedToUpdateFavorite'));
       }
+    }
+  };
+
+  const handleProgressUpdate = (goal: Goal) => {
+    setProgressUpdateGoal(goal);
+  };
+
+  const handleProgressSubmit = async (input: {
+    goalId: string;
+    progressValue?: number;
+    note?: string;
+    typeSpecificUpdates?: Partial<Goal>;
+  }) => {
+    try {
+      await updateProgress.mutateAsync(input);
+      void message.success(t('goals.progressUpdated'));
+      setProgressUpdateGoal(null);
+    } catch {
+      void message.error(t('goals.failedToUpdateProgress'));
     }
   };
 
@@ -377,9 +400,20 @@ export const GoalsPage: React.FC = () => {
           onToggleFavorite={(goalId) => {
             void handleToggleFavorite(goalId);
           }}
+          onProgressUpdate={handleProgressUpdate}
           viewMode={viewMode}
         />
       </Card>
+
+      {progressUpdateGoal && (
+        <QuickProgressModal
+          open={true}
+          goal={progressUpdateGoal}
+          onCancel={() => setProgressUpdateGoal(null)}
+          onSubmit={handleProgressSubmit}
+          loading={updateProgress.isPending}
+        />
+      )}
 
       {isMobile && (
         <FloatButton

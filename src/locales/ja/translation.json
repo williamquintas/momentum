@@ -114,6 +114,7 @@
     "goalDeletedSuccessfully": "目標を削除しました",
     "failedToDeleteGoal": "目標の削除に失敗しました",
     "progressUpdatedSuccessfully": "進捗を更新しました",
+    "progressUpdated": "進捗を更新しました",
     "failedToUpdateProgress": "進捗の更新に失敗しました",
     "noteAdded": "ノートを追加しました",
     "noteUpdated": "ノートを更新しました",
@@ -572,7 +573,14 @@
     "noteOptional": "メモ（任意）",
     "notePlaceholder": "この進捗更新についてのメモを追加...",
     "cancel": "キャンセル",
-    "updateProgress": "進捗を更新"
+    "updateProgress": "進捗を更新",
+    "qualitativeRequiresDetail": "定性的な目標の更新には詳細ページが必要です"
+  },
+  "quickProgressModal": {
+    "title": "進捗を更新",
+    "save": "保存",
+    "complexGoal": "複雑な目標",
+    "useDetailPage": "完全な進捗オプションについては目標詳細ページを使用してください"
   },
   "createGoalModal": {
     "title": "新しい目標を作成"
