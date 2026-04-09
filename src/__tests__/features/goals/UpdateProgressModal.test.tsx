@@ -247,7 +247,7 @@ describe('UpdateProgressModal', () => {
 
       render(<UpdateProgressModal open={true} goal={goal} onCancel={mockOnCancel} onSubmit={mockOnSubmit} />);
 
-      expect(screen.getByText(/1 \/ 3 milestones completed/i)).toBeInTheDocument();
+      expect(screen.getByText(/1 of 3 milestones completed/i)).toBeInTheDocument();
     });
   });
 
