@@ -115,6 +115,13 @@
     "failedToDeleteGoal": "목표 삭제에 실패했습니다",
     "progressUpdatedSuccessfully": "진행률이 성공적으로 업데이트되었습니다",
     "failedToUpdateProgress": "진행률 업데이트에 실패했습니다",
+    "noteAdded": "노트가 추가되었습니다",
+    "noteUpdated": "노트가 업데이트되었습니다",
+    "noteDeleted": "노트가 삭제되었습니다",
+    "failedToAddNote": "노트 추가에 실패했습니다",
+    "failedToUpdateNote": "노트 업데이트에 실패했습니다",
+    "failedToDeleteNote": "노트 삭제에 실패했습니다",
+    "notes": "노트",
     "goalArchived": "목표가 보관되었습니다",
     "goalUnarchived": "목표 보관이 해제되었습니다",
     "failedToUpdateArchiveStatus": "보관 상태 업데이트에 실패했습니다",
@@ -445,6 +452,30 @@
     "progressHistory": "진행 이력",
     "relatedGoals": "관련 목표",
     "progress": "진행률"
+  },
+  "note": {
+    "title": {
+      "add": "노트 추가",
+      "edit": "노트 편집"
+    },
+    "placeholder": {
+      "content": "여기에 노트를 작성하세요...",
+      "tag": "태그 추가"
+    },
+    "labels": {
+      "tags": "태그"
+    },
+    "actions": {
+      "addTag": "추가",
+      "save": "노트 저장",
+      "update": "노트 업데이트",
+      "delete": "노트 삭제",
+      "edit": "편집"
+    },
+    "validation": {
+      "contentRequired": "노트 내용은 필수입니다"
+    },
+    "confirmDelete": "이 노트를 삭제하시겠습니까?"
   },
   "completeDialog": {
     "readyToComplete": "완료 준비됨",

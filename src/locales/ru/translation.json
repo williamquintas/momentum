@@ -115,6 +115,13 @@
     "failedToDeleteGoal": "Не удалось удалить цель",
     "progressUpdatedSuccessfully": "Прогресс успешно обновлён",
     "failedToUpdateProgress": "Не удалось обновить прогресс",
+    "noteAdded": "Заметка успешно добавлена",
+    "noteUpdated": "Заметка успешно обновлена",
+    "noteDeleted": "Заметка успешно удалена",
+    "failedToAddNote": "Не удалось добавить заметку",
+    "failedToUpdateNote": "Не удалось обновить заметку",
+    "failedToDeleteNote": "Не удалось удалить заметку",
+    "notes": "Заметки",
     "goalArchived": "Цель архивирована",
     "goalUnarchived": "Цель разархивирована",
     "failedToUpdateArchiveStatus": "Не удалось обновить статус архива",
@@ -445,6 +452,30 @@
     "progressHistory": "История прогресса",
     "relatedGoals": "Связанные цели",
     "progress": "Прогресс"
+  },
+  "note": {
+    "title": {
+      "add": "Добавить заметку",
+      "edit": "Редактировать заметку"
+    },
+    "placeholder": {
+      "content": "Напишите заметку здесь...",
+      "tag": "Добавить тег"
+    },
+    "labels": {
+      "tags": "Теги"
+    },
+    "actions": {
+      "addTag": "Добавить",
+      "save": "Сохранить заметку",
+      "update": "Обновить заметку",
+      "delete": "Удалить заметку",
+      "edit": "Редактировать"
+    },
+    "validation": {
+      "contentRequired": "Содержание заметки обязательно"
+    },
+    "confirmDelete": "Вы уверены, что хотите удалить эту заметку?"
   },
   "completeDialog": {
     "readyToComplete": "Готово к завершению",

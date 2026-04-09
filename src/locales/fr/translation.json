@@ -115,6 +115,13 @@
     "failedToDeleteGoal": "Échec de la suppression de l'objectif",
     "progressUpdatedSuccessfully": "Progression mise à jour avec succès",
     "failedToUpdateProgress": "Échec de la mise à jour de la progression",
+    "noteAdded": "Note ajoutée avec succès",
+    "noteUpdated": "Note mise à jour avec succès",
+    "noteDeleted": "Note supprimée avec succès",
+    "failedToAddNote": "Échec de l'ajout de la note",
+    "failedToUpdateNote": "Échec de la mise à jour de la note",
+    "failedToDeleteNote": "Échec de la suppression de la note",
+    "notes": "Notes",
     "goalArchived": "Objectif archivé",
     "goalUnarchived": "Objectif désarchivé",
     "failedToUpdateArchiveStatus": "Échec de la mise à jour du statut d'archivage",
@@ -445,6 +452,30 @@
     "progressHistory": "Historique de progression",
     "relatedGoals": "Objectifs liés",
     "progress": "Progression"
+  },
+  "note": {
+    "title": {
+      "add": "Ajouter une note",
+      "edit": "Modifier la note"
+    },
+    "placeholder": {
+      "content": "Écrivez votre note ici...",
+      "tag": "Ajouter une étiquette"
+    },
+    "labels": {
+      "tags": "Étiquettes"
+    },
+    "actions": {
+      "addTag": "Ajouter",
+      "save": "Enregistrer la note",
+      "update": "Mettre à jour la note",
+      "delete": "Supprimer la note",
+      "edit": "Modifier"
+    },
+    "validation": {
+      "contentRequired": "Le contenu de la note est requis"
+    },
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette note ?"
   },
   "completeDialog": {
     "readyToComplete": "Prêt à être terminé",

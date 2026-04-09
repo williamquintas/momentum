@@ -115,6 +115,13 @@
     "failedToDeleteGoal": "लक्ष्य हटाने में विफल",
     "progressUpdatedSuccessfully": "प्रगति सफलतापूर्वक अपडेट की गई",
     "failedToUpdateProgress": "प्रगति अपडेट करने में विफल",
+    "noteAdded": "नोट सफलतापूर्वक जोड़ा गया",
+    "noteUpdated": "नोट सफलतापूर्वक अपडेट किया गया",
+    "noteDeleted": "नोट सफलतापूर्वक हटाया गया",
+    "failedToAddNote": "नोट जोड़ने में विफल",
+    "failedToUpdateNote": "नोट अपडेट करने में विफल",
+    "failedToDeleteNote": "नोट हटाने में विफल",
+    "notes": "नोट्स",
     "goalArchived": "लक्ष्य संग्रहित किया गया",
     "goalUnarchived": "लक्ष्य संग्रह से हटाया गया",
     "failedToUpdateArchiveStatus": "संग्रह स्थिति अपडेट करने में विफल",
@@ -445,6 +452,30 @@
     "progressHistory": "प्रगति इतिहास",
     "relatedGoals": "संबंधित लक्ष्य",
     "progress": "प्रगति"
+  },
+  "note": {
+    "title": {
+      "add": "नोट जोड़ें",
+      "edit": "नोट संपादित करें"
+    },
+    "placeholder": {
+      "content": "अपना नोट यहाँ लिखें...",
+      "tag": "टैग जोड़ें"
+    },
+    "labels": {
+      "tags": "टैग्स"
+    },
+    "actions": {
+      "addTag": "जोड़ें",
+      "save": "नोट सहेजें",
+      "update": "नोट अपडेट करें",
+      "delete": "नोट हटाएं",
+      "edit": "संपादित करें"
+    },
+    "validation": {
+      "contentRequired": "नोट सामग्री आवश्यक है"
+    },
+    "confirmDelete": "क्या आप वाकई इस नोट को हटाना चाहते हैं?"
   },
   "completeDialog": {
     "readyToComplete": "पूरा करने के लिए तैयार",

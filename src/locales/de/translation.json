@@ -107,6 +107,13 @@
     "removedFromFavorites": "Aus Favoriten entfernt",
     "addedToFavorites": "Zu Favoriten hinzugefügt",
     "failedToUpdateFavorite": "Aktualisierung des Favoritenstatus fehlgeschlagen",
+    "noteAdded": "Notiz erfolgreich hinzugefügt",
+    "noteUpdated": "Notiz erfolgreich aktualisiert",
+    "noteDeleted": "Notiz erfolgreich gelöscht",
+    "failedToAddNote": "Fehler beim Hinzufügen der Notiz",
+    "failedToUpdateNote": "Fehler beim Aktualisieren der Notiz",
+    "failedToDeleteNote": "Fehler beim Löschen der Notiz",
+    "notes": "Notizen",
     "goalCreatedSuccessfully": "Ziel erfolgreich erstellt!",
     "failedToCreateGoal": "Ziel konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
     "goalUpdatedSuccessfully": "Ziel erfolgreich aktualisiert",
@@ -445,6 +452,30 @@
     "progressHistory": "Fortschrittsverlauf",
     "relatedGoals": "Verwandte Ziele",
     "progress": "Fortschritt"
+  },
+  "note": {
+    "title": {
+      "add": "Notiz hinzufügen",
+      "edit": "Notiz bearbeiten"
+    },
+    "placeholder": {
+      "content": "Schreiben Sie hier Ihre Notiz...",
+      "tag": "Tag hinzufügen"
+    },
+    "labels": {
+      "tags": "Tags"
+    },
+    "actions": {
+      "addTag": "Hinzufügen",
+      "save": "Notiz speichern",
+      "update": "Notiz aktualisieren",
+      "delete": "Notiz löschen",
+      "edit": "Bearbeiten"
+    },
+    "validation": {
+      "contentRequired": "Notizinhalt ist erforderlich"
+    },
+    "confirmDelete": "Sind Sie sicher, dass Sie diese Notiz löschen möchten?"
   },
   "completeDialog": {
     "readyToComplete": "Bereit zum Abschließen",

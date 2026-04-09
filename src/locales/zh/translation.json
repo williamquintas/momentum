@@ -115,6 +115,13 @@
     "failedToDeleteGoal": "删除目标失败",
     "progressUpdatedSuccessfully": "进度更新成功",
     "failedToUpdateProgress": "更新进度失败",
+    "noteAdded": "笔记添加成功",
+    "noteUpdated": "笔记更新成功",
+    "noteDeleted": "笔记删除成功",
+    "failedToAddNote": "添加笔记失败",
+    "failedToUpdateNote": "更新笔记失败",
+    "failedToDeleteNote": "删除笔记失败",
+    "notes": "笔记",
     "goalArchived": "目标已归档",
     "goalUnarchived": "目标已取消归档",
     "failedToUpdateArchiveStatus": "更新归档状态失败",
@@ -445,6 +452,30 @@
     "progressHistory": "进度历史",
     "relatedGoals": "相关目标",
     "progress": "进度"
+  },
+  "note": {
+    "title": {
+      "add": "添加笔记",
+      "edit": "编辑笔记"
+    },
+    "placeholder": {
+      "content": "在这里写下你的笔记...",
+      "tag": "添加标签"
+    },
+    "labels": {
+      "tags": "标签"
+    },
+    "actions": {
+      "addTag": "添加",
+      "save": "保存笔记",
+      "update": "更新笔记",
+      "delete": "删除笔记",
+      "edit": "编辑"
+    },
+    "validation": {
+      "contentRequired": "笔记内容是必填项"
+    },
+    "confirmDelete": "确定要删除这条笔记吗？"
   },
   "completeDialog": {
     "readyToComplete": "准备完成",

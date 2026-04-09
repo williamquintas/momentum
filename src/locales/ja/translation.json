@@ -115,6 +115,13 @@
     "failedToDeleteGoal": "目標の削除に失敗しました",
     "progressUpdatedSuccessfully": "進捗を更新しました",
     "failedToUpdateProgress": "進捗の更新に失敗しました",
+    "noteAdded": "ノートを追加しました",
+    "noteUpdated": "ノートを更新しました",
+    "noteDeleted": "ノートを削除しました",
+    "failedToAddNote": "ノートの追加に失敗しました",
+    "failedToUpdateNote": "ノートの更新に失敗しました",
+    "failedToDeleteNote": "ノートの削除に失敗しました",
+    "notes": "ノート",
     "goalArchived": "目標をアーカイブしました",
     "goalUnarchived": "目標のアーカイブを解除しました",
     "failedToUpdateArchiveStatus": "アーカイブ状態の更新に失敗しました",
@@ -445,6 +452,30 @@
     "progressHistory": "進捗履歴",
     "relatedGoals": "関連目標",
     "progress": "進捗"
+  },
+  "note": {
+    "title": {
+      "add": "ノートを追加",
+      "edit": "ノートを編集"
+    },
+    "placeholder": {
+      "content": "ここにノートを書いてください...",
+      "tag": "タグを追加"
+    },
+    "labels": {
+      "tags": "タグ"
+    },
+    "actions": {
+      "addTag": "追加",
+      "save": "ノートを保存",
+      "update": "ノートを更新",
+      "delete": "ノートを削除",
+      "edit": "編集"
+    },
+    "validation": {
+      "contentRequired": "ノートの内容は必須です"
+    },
+    "confirmDelete": "このノートを削除してもよろしいですか？"
   },
   "completeDialog": {
     "readyToComplete": "完了準備完了",

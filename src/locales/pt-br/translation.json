@@ -115,6 +115,13 @@
     "goalArchived": "Meta arquivada",
     "goalUnarchived": "Meta desarquivada",
     "failedToUpdateArchiveStatus": "Falha ao atualizar status de arquivo",
+    "noteAdded": "Nota adicionada com sucesso",
+    "noteUpdated": "Nota atualizada com sucesso",
+    "noteDeleted": "Nota excluída com sucesso",
+    "failedToAddNote": "Falha ao adicionar nota",
+    "failedToUpdateNote": "Falha ao atualizar nota",
+    "failedToDeleteNote": "Falha ao excluir nota",
+    "notes": "Notas",
     "goalCompletedSuccessfully": "Meta concluída com sucesso!",
     "failedToCompleteGoal": "Falha ao completar meta",
     "goalIdMissing": "ID da meta ausente",
@@ -445,6 +452,30 @@
     "progressHistory": "Histórico de Progresso",
     "relatedGoals": "Metas Relacionadas",
     "progress": "Progresso"
+  },
+  "note": {
+    "title": {
+      "add": "Adicionar nota",
+      "edit": "Editar nota"
+    },
+    "placeholder": {
+      "content": "Escreva sua nota aqui...",
+      "tag": "Adicionar tag"
+    },
+    "labels": {
+      "tags": "Tags"
+    },
+    "actions": {
+      "addTag": "Adicionar",
+      "save": "Salvar nota",
+      "update": "Atualizar nota",
+      "delete": "Excluir nota",
+      "edit": "Editar"
+    },
+    "validation": {
+      "contentRequired": "O conteúdo da nota é obrigatório"
+    },
+    "confirmDelete": "Tem certeza de que deseja excluir esta nota?"
   },
   "completeDialog": {
     "readyToComplete": "Pronto para Concluir",
