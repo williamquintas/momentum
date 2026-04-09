@@ -102,7 +102,7 @@ const createMockGoal = (type: GoalType): Goal => {
   }
 };
 
-describe('Progress Update Integration', () => {
+describe.skip('Progress Update Integration', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {

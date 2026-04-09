@@ -8,18 +8,18 @@
 import React, { useEffect, useState } from 'react';
 
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Form, Input, Select, DatePicker, InputNumber, Switch, Button, Space, Row, Col, Tooltip, Modal } from 'antd';
 import type { FormInstance } from 'antd';
+import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, Space, Switch, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 import type { CreateGoalInput } from '@/features/goals/types';
-import { GoalType, GoalStatus, Priority, QualitativeStatus } from '@/features/goals/types';
+import { GoalStatus, GoalType, Priority, QualitativeStatus } from '@/features/goals/types';
 import { goalTypeTooltips } from '@/features/goals/utils/goalTypeTooltips';
 import { CreateGoalInputSchema, applyZodErrorsToForm } from '@/features/goals/utils/validation';
 import { getAvailableGoalTypes } from '@/utils/featureFlags';
 
-import { MilestoneGoalFields, RecurringGoalFields, HabitGoalFields } from './index';
+import { HabitGoalFields, MilestoneGoalFields, RecurringGoalFields } from './index';
 
 const { TextArea } = Input;
 const { Option } = Select;

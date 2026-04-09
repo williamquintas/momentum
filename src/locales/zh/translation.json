@@ -20,11 +20,13 @@
     "no": "否",
     "optional": "可选",
     "ok": "确定",
-    "and": "和"
+    "and": "和",
+    "apply": "应用"
   },
   "nav": {
     "home": "首页",
     "goals": "目标",
+    "notifications": "通知",
     "settings": "设置"
   },
   "goals": {
@@ -285,6 +287,10 @@
   },
   "settings": {
     "title": "设置",
+    "preferences": "偏好设置",
+    "data": "数据",
+    "about": "关于",
+    "version": "版本",
     "language": "语言",
     "selectLanguage": "选择您的语言：",
     "theme": "主题",

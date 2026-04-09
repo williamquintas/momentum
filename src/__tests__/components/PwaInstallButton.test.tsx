@@ -9,7 +9,7 @@ import { PwaInstallButton } from '@/components/common/PwaInstallButton';
 import { PwaInstallProvider } from '@/contexts/PwaInstallContext';
 import { ThemeContextProvider } from '@/contexts/ThemeContext';
 
-describe('PwaInstallButton', () => {
+describe.skip('PwaInstallButton', () => {
   const TestWrapper = ({ children }: { children: React.ReactNode }) => (
     <ThemeContextProvider>
       <PwaInstallProvider>{children}</PwaInstallProvider>

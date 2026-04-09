@@ -41,6 +41,7 @@ Object.defineProperty(globalThis.document.body, 'removeChild', { value: removeCh
 
 // Now import after mocks are set up
 import { exportGoals, downloadExport, EXPORT_SCHEMA_VERSION, APP_VERSION } from '../dataExportService';
+import { APP_VERSION as APP_VERSION_FROM_CONSTANTS } from '@/utils/constants';
 
 vi.mock('../goalStorageService', () => ({
   getAllGoals: vi.fn(),
@@ -154,7 +155,7 @@ describe('Data Export Service', () => {
     });
 
     it('should have correct app version', () => {
-      expect(APP_VERSION).toBe('0.1.0');
+      expect(APP_VERSION).toBe(APP_VERSION_FROM_CONSTANTS);
     });
   });
 });

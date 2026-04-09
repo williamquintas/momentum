@@ -6,13 +6,14 @@
  */
 
 import type { Goal } from '@/types/goal.types';
+import { APP_VERSION } from '@/utils/constants';
 
 import { getAllGoals } from './goalStorageService';
 import type {
   SerializedGoal,
-  SerializedProgressEntry,
-  SerializedMilestone,
   SerializedHabitEntry,
+  SerializedMilestone,
+  SerializedProgressEntry,
 } from './storageTypes';
 
 /**
@@ -23,7 +24,7 @@ export const EXPORT_SCHEMA_VERSION = '1.0';
 /**
  * App version for export metadata
  */
-export const APP_VERSION = '0.1.0';
+export { APP_VERSION };
 
 /**
  * Export data structure with schema versioning
