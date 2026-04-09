@@ -11,56 +11,56 @@ import React, { useState } from 'react';
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
   FileTextOutlined,
   PaperClipOutlined,
-  StarOutlined,
-  StarFilled,
   PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
+  StarFilled,
+  StarOutlined,
 } from '@ant-design/icons';
 import {
-  Card,
-  Descriptions,
-  Progress,
-  Tag,
-  Space,
-  Typography,
-  Divider,
-  Steps,
-  Timeline,
-  List,
-  Empty,
-  Row,
-  Col,
-  Statistic,
   Button,
+  Card,
+  Col,
+  Descriptions,
+  Divider,
   Dropdown,
-  Modal,
+  Empty,
+  List,
   message,
+  Modal,
+  Progress,
+  Row,
+  Space,
+  Statistic,
+  Steps,
+  Tag,
+  Timeline,
+  Typography,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
-import { useAddNote, useUpdateNote, useDeleteNote } from '@/features/goals/hooks/useNoteMutations';
+import { useAddNote, useDeleteNote, useUpdateNote } from '@/features/goals/hooks/useNoteMutations';
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 import type { Goal, Note } from '@/features/goals/types';
 import {
-  isQuantitativeGoal,
-  isQualitativeGoal,
   isBinaryGoal,
-  isMilestoneGoal,
-  isRecurringGoal,
   isHabitGoal,
+  isMilestoneGoal,
+  isQualitativeGoal,
+  isQuantitativeGoal,
+  isRecurringGoal,
   QualitativeStatus,
 } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
-import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
+import { getPriorityColor, getStatusColor } from '@/features/goals/utils/colorUtils';
 import {
   formatDate,
-  isOverdue,
-  isDueSoon,
-  getDeadlineStatusText,
   getDaysUntilDeadline,
+  getDeadlineStatusText,
+  isDueSoon,
+  isOverdue,
 } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
 import { isFeatureEnabled } from '@/utils/featureFlags';
