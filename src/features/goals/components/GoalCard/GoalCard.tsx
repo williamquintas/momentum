@@ -7,8 +7,8 @@
 
 import React from 'react';
 
-import { StarFilled, StarOutlined } from '@ant-design/icons';
-import { Card, Progress, Tag, Space, Typography, Avatar } from 'antd';
+import { PlusOutlined, StarFilled, StarOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Progress, Space, Tag, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import type { Goal } from '@/features/goals/types';
@@ -36,6 +36,11 @@ export interface GoalCardProps {
    * Callback when favorite is toggled
    */
   onToggleFavorite?: (goalId: string) => void;
+
+  /**
+   * Callback when progress update button is clicked
+   */
+  onProgressUpdate?: (goal: Goal) => void;
 
   /**
    * Additional CSS class name
@@ -66,7 +71,7 @@ const getProgressStatus = (progress: number): 'success' | 'exception' | 'active'
 /**
  * GoalCard Component
  */
-export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavorite, className }) => {
+export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavorite, onProgressUpdate, className }) => {
   const { t } = useTranslation();
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
@@ -81,6 +86,13 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
     e.stopPropagation();
     if (onToggleFavorite) {
       onToggleFavorite(goal.id);
+    }
+  };
+
+  const handleProgressUpdateClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onProgressUpdate) {
+      onProgressUpdate(goal);
     }
   };
 
@@ -131,8 +143,18 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
         )}
 
         {/* Progress Bar */}
-        <div>
-          <Progress percent={progress} status={progressStatus} format={() => formatProgress(goal)} showInfo />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ flex: 1 }}>
+            <Progress percent={progress} status={progressStatus} format={() => formatProgress(goal)} showInfo />
+          </div>
+          {onProgressUpdate && (
+            <Button
+              type="text"
+              icon={<PlusOutlined />}
+              onClick={handleProgressUpdateClick}
+              style={{ minWidth: 44, minHeight: 44 }}
+            />
+          )}
         </div>
 
         {/* Deadline and Assignee */}
