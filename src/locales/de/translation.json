@@ -121,6 +121,7 @@
     "goalDeletedSuccessfully": "Ziel erfolgreich gelöscht",
     "failedToDeleteGoal": "Löschen des Ziels fehlgeschlagen",
     "progressUpdatedSuccessfully": "Fortschritt erfolgreich aktualisiert",
+    "progressUpdated": "Fortschritt erfolgreich aktualisiert",
     "failedToUpdateProgress": "Aktualisierung des Fortschritts fehlgeschlagen",
     "goalArchived": "Ziel archiviert",
     "goalUnarchived": "Ziel aus dem Archiv entfernt",
@@ -572,7 +573,14 @@
     "noteOptional": "Notiz (Optional)",
     "notePlaceholder": "Fügen Sie eine Notiz zu diesem Fortschrittsupdate hinzu...",
     "cancel": "Abbrechen",
-    "updateProgress": "Fortschritt aktualisieren"
+    "updateProgress": "Fortschritt aktualisieren",
+    "qualitativeRequiresDetail": "Qualitative Ziele erfordern die Detailseite zum Aktualisieren"
+  },
+  "quickProgressModal": {
+    "title": "Fortschritt aktualisieren",
+    "save": "Speichern",
+    "complexGoal": "Komplexes Ziel",
+    "useDetailPage": "Verwenden Sie die Zieldetailseite für vollständige Fortschrittsoptionen"
   },
   "createGoalModal": {
     "title": "Neues Ziel erstellen"

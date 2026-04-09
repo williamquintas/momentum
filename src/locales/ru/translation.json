@@ -114,6 +114,7 @@
     "goalDeletedSuccessfully": "Цель успешно удалена",
     "failedToDeleteGoal": "Не удалось удалить цель",
     "progressUpdatedSuccessfully": "Прогресс успешно обновлён",
+    "progressUpdated": "Прогресс успешно обновлён",
     "failedToUpdateProgress": "Не удалось обновить прогресс",
     "noteAdded": "Заметка успешно добавлена",
     "noteUpdated": "Заметка успешно обновлена",
@@ -572,7 +573,14 @@
     "noteOptional": "Заметка (необязательно)",
     "notePlaceholder": "Добавьте заметку об этом обновлении...",
     "cancel": "Отмена",
-    "updateProgress": "Обновить прогресс"
+    "updateProgress": "Обновить прогресс",
+    "qualitativeRequiresDetail": "Качественные цели требуют страницу деталей для обновления"
+  },
+  "quickProgressModal": {
+    "title": "Обновить прогресс",
+    "save": "Сохранить",
+    "complexGoal": "Сложная цель",
+    "useDetailPage": "Используйте страницу деталей цели для полных опций прогресса"
   },
   "createGoalModal": {
     "title": "Создать новую цель"

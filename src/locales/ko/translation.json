@@ -114,6 +114,7 @@
     "goalDeletedSuccessfully": "목표가 성공적으로 삭제되었습니다",
     "failedToDeleteGoal": "목표 삭제에 실패했습니다",
     "progressUpdatedSuccessfully": "진행률이 성공적으로 업데이트되었습니다",
+    "progressUpdated": "진행률이 성공적으로 업데이트되었습니다",
     "failedToUpdateProgress": "진행률 업데이트에 실패했습니다",
     "noteAdded": "노트가 추가되었습니다",
     "noteUpdated": "노트가 업데이트되었습니다",
@@ -572,7 +573,14 @@
     "noteOptional": "메모 (선택사항)",
     "notePlaceholder": "이 진행률 업데이트에 대한 메모를 추가하세요...",
     "cancel": "취소",
-    "updateProgress": "진행률 업데이트"
+    "updateProgress": "진행률 업데이트",
+    "qualitativeRequiresDetail": "정성적 목표는 세부 페이지에서 업데이트해야 합니다"
+  },
+  "quickProgressModal": {
+    "title": "진행률 업데이트",
+    "save": "저장",
+    "complexGoal": "복잡한 목표",
+    "useDetailPage": "전체 진행률 옵션은 목표 세부 페이지에서 확인하세요"
   },
   "createGoalModal": {
     "title": "새 목표 생성"

@@ -114,6 +114,7 @@
     "goalDeletedSuccessfully": "Objectif supprimé avec succès",
     "failedToDeleteGoal": "Échec de la suppression de l'objectif",
     "progressUpdatedSuccessfully": "Progression mise à jour avec succès",
+    "progressUpdated": "Progression mise à jour avec succès",
     "failedToUpdateProgress": "Échec de la mise à jour de la progression",
     "noteAdded": "Note ajoutée avec succès",
     "noteUpdated": "Note mise à jour avec succès",
@@ -572,7 +573,14 @@
     "noteOptional": "Note (optionnel)",
     "notePlaceholder": "Ajouter une note sur cette mise à jour de progression...",
     "cancel": "Annuler",
-    "updateProgress": "Mettre à jour la progression"
+    "updateProgress": "Mettre à jour la progression",
+    "qualitativeRequiresDetail": "Les objectifs qualitatifs nécessitent la page de détails pour mettre à jour"
+  },
+  "quickProgressModal": {
+    "title": "Mettre à jour la progression",
+    "save": "Enregistrer",
+    "complexGoal": "Objectif complexe",
+    "useDetailPage": "Utilisez la page de détails de l'objectif pour les options complètes de progression"
   },
   "createGoalModal": {
     "title": "Créer un nouvel objectif"

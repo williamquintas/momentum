@@ -111,6 +111,7 @@
     "goalDeletedSuccessfully": "Meta eliminada exitosamente",
     "failedToDeleteGoal": "Error al eliminar meta",
     "progressUpdatedSuccessfully": "Progreso actualizado exitosamente",
+    "progressUpdated": "Progreso actualizado exitosamente",
     "failedToUpdateProgress": "Error al actualizar progreso",
     "goalArchived": "Meta archivada",
     "goalUnarchived": "Meta desarchivada",
@@ -572,7 +573,14 @@
     "noteOptional": "Nota (Opcional)",
     "notePlaceholder": "Añada una nota sobre esta actualización de progreso...",
     "cancel": "Cancelar",
-    "updateProgress": "Actualizar Progreso"
+    "updateProgress": "Actualizar Progreso",
+    "qualitativeRequiresDetail": "Las metas cualitativas requieren la página de detalles para actualizar"
+  },
+  "quickProgressModal": {
+    "title": "Actualizar Progreso",
+    "save": "Guardar",
+    "complexGoal": "Meta Compleja",
+    "useDetailPage": "Use la página de detalles de la meta para opciones completas de progreso"
   },
   "createGoalModal": {
     "title": "Crear Nueva Meta"

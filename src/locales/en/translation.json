@@ -82,6 +82,7 @@
     "goalDeletedSuccessfully": "Goal deleted successfully",
     "failedToDeleteGoal": "Failed to delete goal",
     "progressUpdatedSuccessfully": "Progress updated successfully",
+    "progressUpdated": "Progress updated successfully",
     "failedToUpdateProgress": "Failed to update progress",
     "goalArchived": "Goal archived",
     "goalUnarchived": "Goal unarchived",
@@ -547,15 +548,13 @@
     "previousAssessments": "Previous Assessments",
     "rating": "Rating: {{rating}}/10",
     "selectMilestone": "Select Milestone",
-    "selectMilestoneRequired": "Please select a milestone",
     "chooseMilestone": "Choose a milestone to update",
-    "blocked": "Blocked: {{reason}}",
+    "blocked": "Blocked",
     "dependenciesNotMet": "Dependencies not met",
-    "dependencies": "Dependencies",
-    "cannotCompleteDeps": "Cannot complete: Complete these milestones first: {{titles}}",
+    "cannotCompleteDeps": "Cannot complete: blocked by {{titles}}",
     "markAsCompleted": "Mark as Completed",
     "completeThisMilestone": "Complete this milestone",
-    "milestonesCompleted": "{{completed}} / {{total}} milestones completed",
+    "milestonesCompleted": "{{completed}} of {{total}} milestones completed",
     "selectOccurrence": "Select Occurrence",
     "selectOccurrenceRequired": "Please select an occurrence",
     "chooseOccurrence": "Choose an occurrence to update",
@@ -572,7 +571,14 @@
     "noteOptional": "Note (Optional)",
     "notePlaceholder": "Add a note about this progress update...",
     "cancel": "Cancel",
-    "updateProgress": "Update Progress"
+    "updateProgress": "Update Progress",
+    "qualitativeRequiresDetail": "Qualitative goals require the detail page to update"
+  },
+  "quickProgressModal": {
+    "title": "Update Progress",
+    "save": "Save",
+    "complexGoal": "Complex Goal",
+    "useDetailPage": "Use the goal detail page for full progress options"
   },
   "createGoalModal": {
     "title": "Create New Goal"
