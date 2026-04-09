@@ -174,7 +174,7 @@ export const GoalList: React.FC<GoalListProps> = ({
                     e.stopPropagation();
                     onProgressUpdate(goal);
                   }}
-                  style={{ minWidth: 32, minHeight: 32 }}
+                  style={{ minWidth: 32, padding: '2px 6px' }}
                   size="small"
                 />
               )}

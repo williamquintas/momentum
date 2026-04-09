@@ -152,7 +152,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onClick, onToggleFavor
               type="text"
               icon={<PlusOutlined />}
               onClick={handleProgressUpdateClick}
-              style={{ minWidth: 44, minHeight: 44 }}
+              style={{ minWidth: 44, padding: '4px 8px' }}
             />
           )}
         </div>
