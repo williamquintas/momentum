@@ -3,7 +3,7 @@
  *
  * Custom hook for managing release notifications with React Query.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -60,9 +60,6 @@ export const useReleaseNotifications = ({
   // Load initial notification state
   const initialState = useMemo(() => loadNotifications(), []);
 
-  // State for tracking notifications to force re-render
-  const [notificationVersion, setNotificationVersion] = useState(0);
-
   // Query for fetching releases from GitHub
   const {
     data: releases = [],
@@ -118,7 +115,7 @@ export const useReleaseNotifications = ({
   const notifications = useMemo(() => {
     const cached = queryClient.getQueryData<ReleaseNotification[]>(['notifications']);
     return cached || initialState.notifications;
-  }, [queryClient, initialState.notifications, notificationVersion]);
+  }, [queryClient, initialState.notifications]);
 
   // Calculate unread count
   const unreadCount = useMemo(() => {
@@ -143,7 +140,6 @@ export const useReleaseNotifications = ({
       const updatedNotifications = markAsReadStorage(currentNotifications, id);
       saveNotifications(updatedNotifications);
       queryClient.setQueryData(['notifications'], updatedNotifications);
-      setNotificationVersion((prev) => prev + 1);
     },
     [queryClient]
   );
@@ -154,7 +150,6 @@ export const useReleaseNotifications = ({
     const updatedNotifications = markAllAsReadStorage(currentNotifications);
     saveNotifications(updatedNotifications);
     queryClient.setQueryData(['notifications'], updatedNotifications);
-    setNotificationVersion((prev) => prev + 1);
   }, [queryClient]);
 
   // Dismiss a notification (remove it) - get fresh notifications from cache
