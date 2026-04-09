@@ -110,7 +110,7 @@ export const featureFlags: FeatureFlags = {
   enableRecurring: getFeatureFlag('VITE_ENABLE_RECURRING', false),
   enableHabit: getFeatureFlag('VITE_ENABLE_HABIT', false),
   enableAttachments: getFeatureFlag('VITE_ENABLE_ATTACHMENTS', false),
-  enableNotes: getFeatureFlag('VITE_ENABLE_NOTES', false),
+  enableNotes: getFeatureFlag('VITE_ENABLE_NOTES', true),
 };
 
 /**

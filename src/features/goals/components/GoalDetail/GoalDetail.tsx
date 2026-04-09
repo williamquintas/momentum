@@ -15,6 +15,9 @@ import {
   PaperClipOutlined,
   StarOutlined,
   StarFilled,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import {
   Card,
@@ -31,11 +34,16 @@ import {
   Row,
   Col,
   Statistic,
+  Button,
+  Dropdown,
+  Modal,
+  message,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { useAddNote, useUpdateNote, useDeleteNote } from '@/features/goals/hooks/useNoteMutations';
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
-import type { Goal } from '@/features/goals/types';
+import type { Goal, Note } from '@/features/goals/types';
 import {
   isQuantitativeGoal,
   isQualitativeGoal,
@@ -57,6 +65,7 @@ import {
 import { formatProgress } from '@/features/goals/utils/progressUtils';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 
+import { NoteEditor } from '../NoteEditor/NoteEditor';
 import { UpdateProgressModal } from '../UpdateProgressModal';
 
 const { Title, Paragraph, Text } = Typography;
@@ -155,8 +164,14 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
 }) => {
   const { t } = useTranslation();
   const [internalProgressModalOpen, setInternalProgressModalOpen] = useState(false);
+  const [noteEditorOpen, setNoteEditorOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | undefined>(undefined);
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
+
+  const addNoteMutation = useAddNote();
+  const updateNoteMutation = useUpdateNote();
+  const deleteNoteMutation = useDeleteNote();
 
   const isProgressModalOpen =
     externalProgressModalOpen !== undefined ? externalProgressModalOpen : internalProgressModalOpen;
@@ -509,6 +524,19 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               {goal.notes.length > 0 && <Tag>{goal.notes.length}</Tag>}
             </Space>
           }
+          extra={
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setEditingNote(undefined);
+                setNoteEditorOpen(true);
+              }}
+              size="small"
+            >
+              {t('note.title.add')}
+            </Button>
+          }
           style={{ marginBottom: 24 }}
         >
           {goal.notes && goal.notes.length > 0 ? (
@@ -516,20 +544,110 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               items={goal.notes.map((note) => ({
                 children: (
                   <div>
-                    <Paragraph>{note.content}</Paragraph>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      {formatDate(note.createdAt)}
-                      {note.createdBy && ` by ${note.createdBy}`}
-                    </Text>
+                    <Paragraph style={{ marginBottom: 4 }}>{note.content}</Paragraph>
+                    {note.tags && note.tags.length > 0 && (
+                      <Space size={4} style={{ marginBottom: 4 }}>
+                        {note.tags.map((tag) => (
+                          <Tag key={tag} color="blue" style={{ fontSize: '11px' }}>
+                            {tag}
+                          </Tag>
+                        ))}
+                      </Space>
+                    )}
+                    <Space>
+                      <Text type="secondary" style={{ fontSize: '12px' }}>
+                        {formatDate(note.createdAt)}
+                        {note.createdBy && ` by ${note.createdBy}`}
+                      </Text>
+                      <Dropdown
+                        menu={{
+                          items: [
+                            {
+                              key: 'edit',
+                              icon: <EditOutlined />,
+                              label: t('note.actions.edit'),
+                              onClick: () => {
+                                setEditingNote(note);
+                                setNoteEditorOpen(true);
+                              },
+                            },
+                            {
+                              key: 'delete',
+                              icon: <DeleteOutlined />,
+                              label: t('note.actions.delete'),
+                              danger: true,
+                              onClick: () => {
+                                Modal.confirm({
+                                  title: t('note.confirmDelete'),
+                                  onOk: () => {
+                                    deleteNoteMutation.mutate(
+                                      { goalId: goal.id, noteId: note.id },
+                                      {
+                                        onSuccess: () => {
+                                          message.success(t('goals.noteDeleted') || 'Note deleted');
+                                        },
+                                      }
+                                    );
+                                  },
+                                });
+                              },
+                            },
+                          ],
+                        }}
+                      >
+                        <Button type="text" size="small" icon={<EditOutlined />} />
+                      </Dropdown>
+                    </Space>
                   </div>
                 ),
               }))}
             />
           ) : (
-            <Empty description={t('goalDetail.noNotesYet')} />
+            <Empty description={t('goalDetail.noNotesYet')} image={Empty.PRESENTED_IMAGE_SIMPLE}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setEditingNote(undefined);
+                  setNoteEditorOpen(true);
+                }}
+              >
+                {t('note.title.add')}
+              </Button>
+            </Empty>
           )}
         </Card>
       )}
+
+      {/* Note Editor Modal */}
+      <NoteEditor
+        note={editingNote}
+        open={noteEditorOpen}
+        onSave={async (noteData) => {
+          if (editingNote) {
+            await updateNoteMutation.mutateAsync({
+              goalId: goal.id,
+              noteId: editingNote.id,
+              content: noteData.content,
+              tags: noteData.tags,
+            });
+            message.success(t('goals.noteUpdated') || 'Note updated');
+          } else {
+            await addNoteMutation.mutateAsync({
+              goalId: goal.id,
+              content: noteData.content,
+              tags: noteData.tags,
+            });
+            message.success(t('goals.noteAdded') || 'Note added');
+          }
+          setNoteEditorOpen(false);
+          setEditingNote(undefined);
+        }}
+        onCancel={() => {
+          setNoteEditorOpen(false);
+          setEditingNote(undefined);
+        }}
+        loading={addNoteMutation.isPending || updateNoteMutation.isPending || deleteNoteMutation.isPending}
+      />
 
       {/* Attachments Section */}
       {isFeatureEnabled('attachments') && (
