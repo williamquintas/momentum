@@ -1,8 +1,9 @@
 version: 2
 updates:
-  # Enable version updates for npm
+  # Ordinary updates are validated on the integration branch.
   - package-ecosystem: 'npm'
     directory: '/'
+    target-branch: 'develop'
     schedule:
       interval: 'weekly'
       day: 'monday'
@@ -17,20 +18,55 @@ updates:
       prefix: 'chore'
       prefix-development: 'chore'
       include: 'scope'
-    # Group updates to reduce PR noise
     groups:
+      vitest:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+        update-types: ['minor', 'patch']
+      typescript-eslint:
+        patterns:
+          - '@typescript-eslint/*'
+        update-types: ['minor', 'patch']
       production-dependencies:
         dependency-type: 'production'
+        update-types: ['minor', 'patch']
       development-dependencies:
         dependency-type: 'development'
-    # Ignore major version updates for specific packages (uncomment if needed)
-    # ignore:
-    #   - dependency-name: "package-name"
-    #     update-types: ["version-update:semver-major"]
+        update-types: ['minor', 'patch']
 
-  # Enable version updates for GitHub Actions
+  # Security updates always target the default branch. Limit 0 disables only
+  # ordinary version PRs in this entry; it does not disable security PRs.
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+    open-pull-requests-limit: 0
+    reviewers:
+      - 'williamquintas'
+    labels:
+      - 'dependencies'
+      - 'javascript'
+    commit-message:
+      prefix: 'chore'
+      prefix-development: 'chore'
+      include: 'scope'
+    groups:
+      vitest-security:
+        applies-to: 'security-updates'
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+      typescript-eslint-security:
+        applies-to: 'security-updates'
+        patterns:
+          - '@typescript-eslint/*'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
+    target-branch: 'develop'
     schedule:
       interval: 'weekly'
       day: 'monday'

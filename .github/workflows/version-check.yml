@@ -21,18 +21,11 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
-      - name: Validate semantic version format
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "Current version: $VERSION"
+      - name: Validate package and lockfile versions
+        run: node scripts/check-version.js maintenance
 
-          # Check if version matches semantic versioning pattern
-          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'; then
-            echo "❌ Version '$VERSION' does not follow semantic versioning (MAJOR.MINOR.PATCH)"
-            exit 1
-          fi
-
-          echo "✅ Version format is valid"
+      - name: Test maintenance and release version policy
+        run: node --test scripts/check-version.node-test.js
 
       - name: Check version in CHANGELOG
         run: |
@@ -45,28 +38,3 @@ jobs:
           else
             echo "✅ Version $VERSION found in CHANGELOG.md"
           fi
-
-      - name: Check for version conflicts
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-
-          # Check if tag already exists
-          if git ls-remote --tags origin | grep -q "refs/tags/v$VERSION$"; then
-            echo "❌ Error: Tag v$VERSION already exists"
-            echo "Please bump the version in package.json before creating a release"
-            exit 1
-          fi
-
-          echo "✅ No conflicting tags found"
-
-      - name: Validate package.json version format
-        run: |
-          node -e "
-            const pkg = require('./package.json');
-            const semver = /^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$/;
-            if (!semver.test(pkg.version)) {
-              console.error('❌ Invalid version format in package.json:', pkg.version);
-              process.exit(1);
-            }
-            console.log('✅ package.json version is valid:', pkg.version);
-          "
