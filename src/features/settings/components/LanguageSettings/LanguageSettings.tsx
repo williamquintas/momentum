@@ -23,7 +23,7 @@ export const LanguageSettings = (): React.ReactElement => {
 
   return (
     <Card title={t('settings.language')} size="small" style={{ marginBottom: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'space-between' }}>
         <Text>{t('settings.selectLanguage')}</Text>
         <LanguageSwitcher />
       </div>

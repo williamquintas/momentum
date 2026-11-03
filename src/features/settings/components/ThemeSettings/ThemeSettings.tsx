@@ -7,7 +7,7 @@
 import React from 'react';
 
 import { MoonOutlined, SunOutlined } from '@ant-design/icons';
-import { Card, Switch, Tooltip, Typography } from 'antd';
+import { Card, Space, Switch, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 
 import { useTheme } from '@/hooks/useTheme';
@@ -27,18 +27,17 @@ export const ThemeSettings = (): React.ReactElement => {
 
   return (
     <Card title={t('settings.theme')} size="small" style={{ marginBottom: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-        <Text>
-          {t('settings.chooseTheme')}: {isDark ? t('settings.darkMode') : t('settings.lightMode')}
-        </Text>
-        <Tooltip title={isDark ? t('theme.toggleLight') : t('theme.toggleDark')}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'space-between' }}>
+        <Text>{t('settings.chooseTheme')}:</Text>
+        <Space>
+          <Text>{isDark ? t('settings.darkMode') : t('settings.lightMode')}</Text>
           <Switch
             checked={isDark}
             onChange={toggleTheme}
             checkedChildren={<MoonOutlined />}
             unCheckedChildren={<SunOutlined />}
           />
-        </Tooltip>
+        </Space>
       </div>
     </Card>
   );

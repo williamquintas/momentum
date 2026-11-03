@@ -20,11 +20,13 @@
     "no": "No",
     "optional": "Opcional",
     "ok": "Aceptar",
-    "and": "Y"
+    "and": "Y",
+    "apply": "Aplicar"
   },
   "nav": {
     "home": "Inicio",
     "goals": "Metas",
+    "notifications": "Notificaciones",
     "settings": "Configuración"
   },
   "goals": {
@@ -52,7 +54,6 @@
     "notStarted": "Sin Iniciar",
     "archived": "Archivada",
     "favorites": "Favoritas",
-    "updateProgressBtn": "Actualizar Progreso",
     "updateProgress": {
       "title": "Actualizar Progreso",
       "currentValueLabel": "Valor Actual",
@@ -74,17 +75,17 @@
       "cannotCompleteDeps": "No se puede completar: Complete estos hitos primero: {{titles}}",
       "markAsCompleted": "Marcar como Completado",
       "completeThisMilestone": "Completar este hito",
-      "selectOccurrence": "Seleccionar Occurrencia",
+      "selectOccurrence": "Seleccionar Ocurrencia",
       "selectOccurrenceRequired": "Por favor seleccione una ocurrencia",
       "chooseOccurrence": "Elija una ocurrencia para actualizar",
       "pending": "Pendiente",
-      "missed": "Perdido",
+      "missed": "Perdida",
       "dateLabel": "Fecha",
       "dateRequired": "Por favor seleccione una fecha",
       "completionStatus": "Estado de Completado",
       "markAsCompletedLabel": "Marcar como completado",
       "noteOptional": "Nota (Opcional)",
-      "notePlaceholder": "Agregue una nota sobre esta actualización de progreso..."
+      "notePlaceholder": "Añada una nota sobre esta actualización de progreso..."
     },
     "markComplete": "Marcar como Completada",
     "searchPlaceholder": "Buscar metas...",
@@ -114,6 +115,13 @@
     "goalArchived": "Meta archivada",
     "goalUnarchived": "Meta desarchivada",
     "failedToUpdateArchiveStatus": "Error al actualizar estado de archivo",
+    "noteAdded": "Nota añadida exitosamente",
+    "noteUpdated": "Nota actualizada exitosamente",
+    "noteDeleted": "Nota eliminada exitosamente",
+    "failedToAddNote": "Error al añadir nota",
+    "failedToUpdateNote": "Error al actualizar nota",
+    "failedToDeleteNote": "Error al eliminar nota",
+    "notes": "Notas",
     "goalCompletedSuccessfully": "¡Meta completada exitosamente!",
     "failedToCompleteGoal": "Error al completar meta",
     "goalIdMissing": "Falta el ID de la meta",
@@ -286,6 +294,10 @@
   },
   "settings": {
     "title": "Configuración",
+    "preferences": "Preferencias",
+    "data": "Datos",
+    "about": "Acerca de",
+    "version": "Versión",
     "language": "Idioma",
     "selectLanguage": "Selecciona tu idioma:",
     "theme": "Tema",
@@ -440,6 +452,30 @@
     "progressHistory": "Historial de Progreso",
     "relatedGoals": "Metas Relacionadas",
     "progress": "Progreso"
+  },
+  "note": {
+    "title": {
+      "add": "Añadir nota",
+      "edit": "Editar nota"
+    },
+    "placeholder": {
+      "content": "Escribe tu nota aquí...",
+      "tag": "Añadir etiqueta"
+    },
+    "labels": {
+      "tags": "Etiquetas"
+    },
+    "actions": {
+      "addTag": "Añadir",
+      "save": "Guardar nota",
+      "update": "Actualizar nota",
+      "delete": "Eliminar nota",
+      "edit": "Editar"
+    },
+    "validation": {
+      "contentRequired": "El contenido de la nota es requerido"
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar esta nota?"
   },
   "completeDialog": {
     "readyToComplete": "Listo para Completar",

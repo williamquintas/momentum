@@ -49,6 +49,36 @@ h6.ant-typography {
   font-family: var(--font-heading) !important;
 }
 
+/* Settings Page - List header styling */
+.settings-page .ant-list-header {
+  padding: 0 0 8px 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.settings-page .ant-divider {
+  margin: 8px 0;
+}
+
+/* Mobile Tabs - Remove margin and set background */
+.ant-tabs-nav {
+  margin-bottom: 0 !important;
+}
+
+.mobile-bottom-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--ant-color-bg-container);
+  border-top: 1px solid var(--ant-color-border);
+  z-index: 100;
+}
+
+.mobile-bottom-tabs .ant-tabs-nav-container {
+  background-color: var(--ant-color-bg-container) !important;
+}
+
 /* Apply Space Grotesk to Ant Design Title components */
 .ant-typography-title {
   font-family: var(--font-heading) !important;
@@ -109,4 +139,3 @@ h6.ant-typography {
     width: 100%;
   }
 }
-

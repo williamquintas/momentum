@@ -9,60 +9,63 @@
 import React, { useState } from 'react';
 
 import {
-  EditOutlined,
-  DeleteOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
   FileTextOutlined,
   PaperClipOutlined,
-  RiseOutlined,
-  StarOutlined,
+  PlusOutlined,
   StarFilled,
-  InboxOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 import {
-  Card,
-  Descriptions,
-  Progress,
-  Tag,
-  Space,
-  Typography,
   Button,
-  Divider,
-  Steps,
-  Timeline,
-  List,
-  Empty,
-  Popconfirm,
-  Row,
+  Card,
   Col,
+  Descriptions,
+  Divider,
+  Dropdown,
+  Empty,
+  List,
+  message,
+  Modal,
+  Progress,
+  Row,
+  Space,
   Statistic,
+  Steps,
+  Tag,
+  Timeline,
+  Typography,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 
+import { useAddNote, useDeleteNote, useUpdateNote } from '@/features/goals/hooks/useNoteMutations';
 import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
-import type { Goal } from '@/features/goals/types';
+import type { Goal, Note } from '@/features/goals/types';
 import {
-  isQuantitativeGoal,
-  isQualitativeGoal,
   isBinaryGoal,
-  isMilestoneGoal,
-  isRecurringGoal,
   isHabitGoal,
+  isMilestoneGoal,
+  isQualitativeGoal,
+  isQuantitativeGoal,
+  isRecurringGoal,
   QualitativeStatus,
 } from '@/features/goals/types';
 import { calculateProgress } from '@/features/goals/utils/calculateProgress';
-import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
+import { getPriorityColor, getStatusColor } from '@/features/goals/utils/colorUtils';
 import {
   formatDate,
-  isOverdue,
-  isDueSoon,
-  getDeadlineStatusText,
   getDaysUntilDeadline,
+  getDeadlineStatusText,
+  isDueSoon,
+  isOverdue,
 } from '@/features/goals/utils/dateUtils';
 import { formatProgress } from '@/features/goals/utils/progressUtils';
 import { isFeatureEnabled } from '@/utils/featureFlags';
 
+import { NoteEditor } from '../NoteEditor/NoteEditor';
 import { UpdateProgressModal } from '../UpdateProgressModal';
 
 const { Title, Paragraph, Text } = Typography;
@@ -112,6 +115,16 @@ export interface GoalDetailProps {
    * Loading state for progress update operation
    */
   updatingProgress?: boolean;
+
+  /**
+   * Show progress modal (controlled)
+   */
+  showProgressModal?: boolean;
+
+  /**
+   * Callback to close progress modal
+   */
+  onProgressModalClose?: () => void;
 }
 
 /**
@@ -142,23 +155,32 @@ const formatGoalType = (type: string): string => {
  */
 export const GoalDetail: React.FC<GoalDetailProps> = ({
   goal,
-  onEdit,
-  onDelete,
   onUpdateProgress,
   onToggleFavorite,
-  onToggleArchive,
   relatedGoals,
-  deleting = false,
   updatingProgress = false,
+  showProgressModal: externalProgressModalOpen,
+  onProgressModalClose,
 }) => {
   const { t } = useTranslation();
-  const [progressModalOpen, setProgressModalOpen] = useState(false);
+  const [internalProgressModalOpen, setInternalProgressModalOpen] = useState(false);
+  const [noteEditorOpen, setNoteEditorOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | undefined>(undefined);
   const progress = calculateProgress(goal);
   const progressStatus = getProgressStatus(progress);
 
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete(goal.id);
+  const addNoteMutation = useAddNote();
+  const updateNoteMutation = useUpdateNote();
+  const deleteNoteMutation = useDeleteNote();
+
+  const isProgressModalOpen =
+    externalProgressModalOpen !== undefined ? externalProgressModalOpen : internalProgressModalOpen;
+
+  const handleProgressModalClose = () => {
+    if (onProgressModalClose) {
+      onProgressModalClose();
+    } else {
+      setInternalProgressModalOpen(false);
     }
   };
 
@@ -168,20 +190,10 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
     }
   };
 
-  const handleToggleArchive = () => {
-    if (onToggleArchive) {
-      void onToggleArchive(goal.id);
-    }
-  };
-
-  const handleUpdateProgress = () => {
-    setProgressModalOpen(true);
-  };
-
   const handleProgressSubmit = async (input: UpdateProgressInput) => {
     if (onUpdateProgress) {
       await onUpdateProgress(input);
-      setProgressModalOpen(false);
+      handleProgressModalClose();
     }
   };
 
@@ -197,9 +209,6 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               <div>
                 <Space align="start">
-                  <Title level={2} style={{ margin: 0 }}>
-                    {goal.title}
-                  </Title>
                   {onToggleFavorite && (
                     <span
                       onClick={handleToggleFavorite}
@@ -215,6 +224,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
                       {goal.favorite ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
                     </span>
                   )}
+                  <Title level={2} style={{ margin: 0 }}>
+                    {goal.title}
+                  </Title>
                 </Space>
                 {goal.description && (
                   <Paragraph style={{ marginTop: 8, marginBottom: 0 }}>{goal.description}</Paragraph>
@@ -248,63 +260,6 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
                     )}
                   </Space>
                 </div>
-              )}
-
-              {/* Action Buttons */}
-              <Space wrap style={{ width: '100%' }}>
-                {onUpdateProgress && (
-                  <Button type="primary" icon={<RiseOutlined />} onClick={handleUpdateProgress}>
-                    {t('goals.updateProgressBtn')}
-                  </Button>
-                )}
-                {onEdit && (
-                  <Button icon={<EditOutlined />} onClick={() => onEdit(goal)}>
-                    {t('goals.editGoal')}
-                  </Button>
-                )}
-                {onToggleArchive && (
-                  <Button icon={<InboxOutlined />} onClick={handleToggleArchive}>
-                    {goal.archived ? t('goals.unarchive') : t('goals.archive')}
-                  </Button>
-                )}
-                {onDelete && (
-                  <Popconfirm
-                    title={t('goals.deleteGoal')}
-                    description={t('goals.deleteGoalConfirm')}
-                    onConfirm={handleDelete}
-                    okText={t('goals.yesDelete')}
-                    cancelText={t('common.cancel')}
-                    okButtonProps={{ danger: true }}
-                  >
-                    <Button danger icon={<DeleteOutlined />} loading={deleting}>
-                      {t('goals.deleteGoal')}
-                    </Button>
-                  </Popconfirm>
-                )}
-              </Space>
-            </Space>
-          </Col>
-          <Col xs={24} md={8}>
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-              {/* Quick Stats */}
-              <Card size="small">
-                <Statistic
-                  title={t('goals.goalStatus')}
-                  value={t(`goals.status.${goal.status}`)}
-                  valueStyle={{ textTransform: 'capitalize' }}
-                />
-              </Card>
-              <Card size="small">
-                <Statistic
-                  title={t('goals.priority')}
-                  value={t(`goals.priorities.${goal.priority}`)}
-                  valueStyle={{ textTransform: 'capitalize' }}
-                />
-              </Card>
-              {goal.category && (
-                <Card size="small">
-                  <Statistic title={t('goals.categories')} value={goal.category} />
-                </Card>
               )}
             </Space>
           </Col>
@@ -569,6 +524,19 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               {goal.notes.length > 0 && <Tag>{goal.notes.length}</Tag>}
             </Space>
           }
+          extra={
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setEditingNote(undefined);
+                setNoteEditorOpen(true);
+              }}
+              size="small"
+            >
+              {t('note.title.add')}
+            </Button>
+          }
           style={{ marginBottom: 24 }}
         >
           {goal.notes && goal.notes.length > 0 ? (
@@ -576,20 +544,110 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
               items={goal.notes.map((note) => ({
                 children: (
                   <div>
-                    <Paragraph>{note.content}</Paragraph>
-                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                      {formatDate(note.createdAt)}
-                      {note.createdBy && ` by ${note.createdBy}`}
-                    </Text>
+                    <Paragraph style={{ marginBottom: 4 }}>{note.content}</Paragraph>
+                    {note.tags && note.tags.length > 0 && (
+                      <Space size={4} style={{ marginBottom: 4 }}>
+                        {note.tags.map((tag) => (
+                          <Tag key={tag} color="blue" style={{ fontSize: '11px' }}>
+                            {tag}
+                          </Tag>
+                        ))}
+                      </Space>
+                    )}
+                    <Space>
+                      <Text type="secondary" style={{ fontSize: '12px' }}>
+                        {formatDate(note.createdAt)}
+                        {note.createdBy && ` by ${note.createdBy}`}
+                      </Text>
+                      <Dropdown
+                        menu={{
+                          items: [
+                            {
+                              key: 'edit',
+                              icon: <EditOutlined />,
+                              label: t('note.actions.edit'),
+                              onClick: () => {
+                                setEditingNote(note);
+                                setNoteEditorOpen(true);
+                              },
+                            },
+                            {
+                              key: 'delete',
+                              icon: <DeleteOutlined />,
+                              label: t('note.actions.delete'),
+                              danger: true,
+                              onClick: () => {
+                                Modal.confirm({
+                                  title: t('note.confirmDelete'),
+                                  onOk: () => {
+                                    deleteNoteMutation.mutate(
+                                      { goalId: goal.id, noteId: note.id },
+                                      {
+                                        onSuccess: () => {
+                                          message.success(t('goals.noteDeleted') || 'Note deleted');
+                                        },
+                                      }
+                                    );
+                                  },
+                                });
+                              },
+                            },
+                          ],
+                        }}
+                      >
+                        <Button type="text" size="small" icon={<EditOutlined />} />
+                      </Dropdown>
+                    </Space>
                   </div>
                 ),
               }))}
             />
           ) : (
-            <Empty description={t('goalDetail.noNotesYet')} />
+            <Empty description={t('goalDetail.noNotesYet')} image={Empty.PRESENTED_IMAGE_SIMPLE}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  setEditingNote(undefined);
+                  setNoteEditorOpen(true);
+                }}
+              >
+                {t('note.title.add')}
+              </Button>
+            </Empty>
           )}
         </Card>
       )}
+
+      {/* Note Editor Modal */}
+      <NoteEditor
+        note={editingNote}
+        open={noteEditorOpen}
+        onSave={async (noteData) => {
+          if (editingNote) {
+            await updateNoteMutation.mutateAsync({
+              goalId: goal.id,
+              noteId: editingNote.id,
+              content: noteData.content,
+              tags: noteData.tags,
+            });
+            message.success(t('goals.noteUpdated') || 'Note updated');
+          } else {
+            await addNoteMutation.mutateAsync({
+              goalId: goal.id,
+              content: noteData.content,
+              tags: noteData.tags,
+            });
+            message.success(t('goals.noteAdded') || 'Note added');
+          }
+          setNoteEditorOpen(false);
+          setEditingNote(undefined);
+        }}
+        onCancel={() => {
+          setNoteEditorOpen(false);
+          setEditingNote(undefined);
+        }}
+        loading={addNoteMutation.isPending || updateNoteMutation.isPending || deleteNoteMutation.isPending}
+      />
 
       {/* Attachments Section */}
       {isFeatureEnabled('attachments') && (
@@ -672,9 +730,9 @@ export const GoalDetail: React.FC<GoalDetailProps> = ({
       {/* Update Progress Modal */}
       {onUpdateProgress && (
         <UpdateProgressModal
-          open={progressModalOpen}
+          open={isProgressModalOpen}
           goal={goal}
-          onCancel={() => setProgressModalOpen(false)}
+          onCancel={handleProgressModalClose}
           onSubmit={handleProgressSubmit}
           loading={updatingProgress}
         />

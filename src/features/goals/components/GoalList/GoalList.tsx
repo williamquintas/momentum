@@ -5,16 +5,16 @@
  * Supports loading states, empty states, click handlers, sorting, and filtering.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
-import { List, Empty, Spin, Table, Tag, Progress, Typography } from 'antd';
+import { Col, Empty, Grid, List, Progress, Row, Spin, Table, Tag, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 
 import type { Goal } from '@/features/goals/types';
 import { GoalStatus, Priority } from '@/features/goals/types';
-import { getStatusColor, getPriorityColor } from '@/features/goals/utils/colorUtils';
-import { formatDate, isOverdue, isDueSoon, getDeadlineStatusText } from '@/features/goals/utils/dateUtils';
+import { getPriorityColor, getStatusColor } from '@/features/goals/utils/colorUtils';
+import { formatDate, getDeadlineStatusText, isDueSoon, isOverdue } from '@/features/goals/utils/dateUtils';
 import { formatProgress, getProgressValue } from '@/features/goals/utils/progressUtils';
 
 import { GoalCard } from '../GoalCard';
@@ -66,6 +66,8 @@ export const GoalList: React.FC<GoalListProps> = ({
 }) => {
   const { t } = useTranslation();
   const [pageSize, setPageSize] = useState(10);
+  const screens = Grid.useBreakpoint();
+  const isDesktop = screens.lg;
 
   // Sort goals by favorite first (favorites appear at top by default)
   const sortedGoals = useMemo(() => {
@@ -85,7 +87,7 @@ export const GoalList: React.FC<GoalListProps> = ({
     );
   }
 
-  if (goals.length === 0) {
+  if (sortedGoals.length === 0) {
     return (
       <Empty
         description={t('goalList.noGoalsFound')}
@@ -95,6 +97,7 @@ export const GoalList: React.FC<GoalListProps> = ({
     );
   }
 
+  // Table view (default)
   if (viewMode === 'table') {
     const columns: ColumnsType<Goal> = [
       {
@@ -129,7 +132,9 @@ export const GoalList: React.FC<GoalListProps> = ({
           value: status,
         })),
         onFilter: (value, record) => record.status === value,
-        render: (status: GoalStatus) => <Tag color={getStatusColor(status)}>{t(`goals.status.${status}`)}</Tag>,
+        render: (status: GoalStatus) => (
+          <Tag color={getStatusColor(status)}>{t(`goals.status.${status.toLowerCase()}`)}</Tag>
+        ),
       },
       {
         title: t('goalList.priority'),
@@ -199,6 +204,7 @@ export const GoalList: React.FC<GoalListProps> = ({
           dataSource={sortedGoals}
           rowKey="id"
           loading={loading}
+          size="small"
           onRow={(record) => ({
             onClick: () => onGoalClick?.(record),
             style: { cursor: onGoalClick ? 'pointer' : 'default' },
@@ -212,17 +218,29 @@ export const GoalList: React.FC<GoalListProps> = ({
               setPageSize(size);
             },
           }}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: 'max-content', y: 400 }}
         />
       </div>
     );
   }
 
-  // List view (card-based)
+  // List view (card-based) - 2-column grid on desktop
+  if (isDesktop) {
+    return (
+      <Row gutter={[16, 16]} className={className}>
+        {sortedGoals.map((goal) => (
+          <Col key={goal.id} xs={24} sm={12} lg={12}>
+            <GoalCard goal={goal} onClick={onGoalClick} onToggleFavorite={onToggleFavorite} />
+          </Col>
+        ))}
+      </Row>
+    );
+  }
+
   return (
     <List
       className={className}
-      dataSource={sortedGoals}
+      dataSource={goals}
       split={false}
       renderItem={(goal) => (
         <List.Item key={goal.id} style={{ padding: 0 }}>

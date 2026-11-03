@@ -20,6 +20,9 @@ export const darkTheme = {
     fontFamily: 'Inter, system-ui, sans-serif',
     fontFamilyCode: 'Inter, system-ui, sans-serif',
   },
+  cssVar: {
+    key: 'ant',
+  },
   components: {
     Typography: {
       fontFamily: 'Inter, system-ui, sans-serif',

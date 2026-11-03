@@ -11,15 +11,19 @@ import { APP_VERSION } from '@/utils/constants';
 import { getAllGoals } from './goalStorageService';
 import type {
   SerializedGoal,
-  SerializedProgressEntry,
-  SerializedMilestone,
   SerializedHabitEntry,
+  SerializedMilestone,
+  SerializedProgressEntry,
 } from './storageTypes';
 
 /**
  * Current schema version for export format
  */
 export const EXPORT_SCHEMA_VERSION = '1.0';
+
+/**
+ * App version for export metadata
+ */
 export { APP_VERSION };
 
 /**

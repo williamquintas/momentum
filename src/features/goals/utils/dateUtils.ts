@@ -6,25 +6,29 @@
  */
 
 import { format, type Locale } from 'date-fns';
-import { enUS, es, ptBR, de, fr, hi, ja, ko, ru, zhCN } from 'date-fns/locale';
+import { de, enUS, es, fr, hi, ja, ko, ptBR, ru, zhCN } from 'date-fns/locale';
 
 import i18n from '@/i18n';
 
-type DateFnsLocale = typeof enUS;
-
-const localeMap: Record<string, DateFnsLocale> = {
+/**
+ * Map of i18n language codes to date-fns locales
+ */
+const localeMap: Record<string, Locale> = {
   en: enUS,
   es: es,
-  'pt-BR': ptBR,
-  de: de,
+  'pt-br': ptBR,
   fr: fr,
-  hi: hi,
+  de: de,
   ja: ja,
   ko: ko,
-  ru: ru,
   zh: zhCN,
+  hi: hi,
+  ru: ru,
 };
 
+/**
+ * Gets the current locale for date-fns based on i18n language
+ */
 const getDateFnsLocale = (): Locale => {
   const lang = i18n.language || 'en';
   return localeMap[lang] || enUS;
@@ -32,13 +36,13 @@ const getDateFnsLocale = (): Locale => {
 
 /**
  * Format date for display (e.g., "Aug 30, 2022")
- * Matches mockup format requirements, but locale-aware
+ * Matches mockup format requirements
  */
 export const formatDate = (date: Date | undefined | null): string => {
   if (!date) {
     return '';
   }
-  return format(date, 'MMM d, yyyy', { locale: getDateFnsLocale() });
+  return format(date, 'PP', { locale: getDateFnsLocale() });
 };
 
 /**
@@ -49,7 +53,8 @@ export const formatDateShort = (date: Date | undefined | null): string => {
   if (!date) {
     return '';
   }
-  return format(date, 'MMM d');
+
+  return format(date, 'MMM d', { locale: getDateFnsLocale() });
 };
 
 /**

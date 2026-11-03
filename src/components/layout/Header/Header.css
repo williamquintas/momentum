@@ -7,7 +7,8 @@
   border-radius: 12px;
   padding: 4px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid;
+  border: 2px solid var(--ant-color-border);
+  background-color: var(--ant-color-bg-container);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 

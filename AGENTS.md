@@ -155,6 +155,98 @@ Detailed guidelines available in:
 - `.ai-assistant/rules/` - Comprehensive development guidelines
 - `specs/` - Business rules, data flows, feature specs, and test specs
 
+## Mobile UX Guidelines (Phase 0 - 025-mobile-ux)
+
+These guidelines apply to mobile-first design.
+
+### Navigation
+
+- **Bottom Tab Bar**: Use for Goals, Notifications, Settings (mobile only, show on lg+ breakpoints)
+- Hide bottom tabs on Goal Detail (use back navigation instead)
+- Remove breadcrumbs when bottom tabs are used (redundant)
+
+### UI Patterns
+
+- **Filter Drawer**: Use `Drawer` with `placement="bottom"` for filters
+- **FAB**: Use `FloatButton` for primary create action
+- **Single Primary Action**: Only one primary button visible per screen; secondary actions in `Dropdown`
+- **Sticky Bottom CTA**: Use `Affix` for primary action on Goal Detail
+- **Infinite Scroll**: Replace pagination with `List` loadMore pattern
+
+### Progress Formatting
+
+- Always use integer percentages: `Math.round(progress)` not `13.3333333%`
+
+### Tag Colors (Status/Priority)
+
+- **Status**:
+  - Active: green
+  - Completed: blue
+  - Paused: gray
+  - Cancelled: red
+- **Priority**:
+  - High: red
+  - Medium: orange
+  - Low: blue
+
+### Data Management
+
+- Centralize Export/Import in Settings page only (remove from Goals page)
+
+### Accessibility
+
+- Minimum 44px touch targets
+- Use `token.colorTextSecondary` for muted text
+- WCAG AA contrast in dark mode
+
+## Desktop UX Guidelines (Phase 1 - 026-desktop-ux)
+
+These guidelines apply to desktop design (lg+ breakpoints). Desktop enhances mobile patterns.
+
+### Global Layout
+
+- **Max-width containers**: Main content 1200px, Settings/Notifications 800px, centered
+- **Header**: Logo + App name left; grouped actions right (Notifications, Settings, Language, Theme)
+- **Footer**: Reduce prominence (smaller text, lower contrast)
+- **No breadcrumbs**: Redundant with navigation
+
+### Goals List (Desktop)
+
+- **Structured Header**: Title left; right: Segmented (Table/List) + Export (ghost) + Create (primary)
+- **Filter Bar**: Single row with wrap, consistent width selects, active filters as removable Tags
+- **List View**: 2-column responsive grid (Col span=12 on >=1024px), card hover states (shadow + border)
+- **Table View**: `size="small"` for density, sticky header `scroll={{ y: 400 }}`, row hover highlight
+
+### Goal Detail (Desktop)
+
+- **2-Column Layout**: Left (span=16) main content, Right (span=8) metadata panel
+- **Sticky Sidebar**: Right column with `position: sticky; top: 24px`
+- **Single Primary Action**: "Update Progress" button
+- **Secondary Actions**: Dropdown menu (Edit, Archive, Delete)
+
+### Settings (Desktop)
+
+- **Centered Container**: max-width 800px
+- **Section Cards**: Grouped as Preferences, Data, About
+
+### Notifications (Desktop)
+
+- **Timeline Structure**: Group by date (Today, Yesterday, This Week, Earlier)
+- Use `Timeline` component, version tag prominent per item
+
+### Interaction & States
+
+- **Hover States**: Cards (shadow + border highlight), Buttons (brightness), Table rows (background)
+- **Loading States**: Use `Skeleton` for list/table content
+- **Empty States**: Use `Empty` component
+- **View Mode**: Persist Table/List choice in localStorage
+
+### Component States
+
+- Hover: Cards `shadow-lg` + border highlight; Buttons brightness increase; Segmented filled background
+- Active: Segmented shows selected state
+- Disabled: 40% opacity
+
 ## Active Technologies
 
 - TypeScript 5.3.3 + React 18.2.0, Vite 6.1.6, vite-plugin-pwa (to be added) (020-pwa-support)
@@ -162,7 +254,7 @@ Detailed guidelines available in:
 
 - TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9, Zod 3.22.4 (019-goal-type-tooltips)
 
-- TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9 (018-fix-milestone-goal-creation)
+- TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9 (018_fix-milestone-goal-creation)
 
 - TypeScript 5.3.3, React 18.2.0 + React Query 5.17.9, Zustand 4.4.7, Ant Design 5.12.8 (017-fix-duplicate-progress-error)
 - IndexedDB (via storage service layer) (017-fix-duplicate-progress-error)

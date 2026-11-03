@@ -5,9 +5,7 @@ import { Button, Dropdown, Layout, Space, Tooltip, Typography, theme, Grid } fro
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 import { NotificationBell } from '@/components/common/NotificationBell';
-import { ThemeToggle } from '@/components/common/ThemeToggle';
 import { usePwaInstall } from '@/hooks/usePwaInstall';
 import { APP_NAME } from '@/utils/constants';
 
@@ -85,7 +83,6 @@ export const Header = () => {
   }));
 
   const headerRightItems = [
-    <LanguageSwitcher key="language" />,
     canInstall && dismissed ? (
       <Tooltip key="install" title={t('header.installApp')}>
         <Button
@@ -105,7 +102,6 @@ export const Header = () => {
       />
     </Tooltip>,
     <NotificationBell key="notifications" />,
-    <ThemeToggle key="theme" />,
   ].filter(Boolean);
 
   return (
@@ -133,13 +129,7 @@ export const Header = () => {
         role="button"
         aria-label={t('header.navigateToHome')}
       >
-        <div
-          className="logo-container"
-          style={{
-            borderColor: token.colorBorder,
-            backgroundColor: '#fff',
-          }}
-        >
+        <div className="logo-container">
           <img src="/logo.png" alt={`${APP_NAME} Logo`} />
         </div>
         {!isMobile && (

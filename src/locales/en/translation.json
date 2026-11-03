@@ -20,11 +20,13 @@
     "no": "No",
     "optional": "Optional",
     "ok": "OK",
-    "and": "And"
+    "and": "And",
+    "apply": "Apply"
   },
   "nav": {
     "home": "Home",
     "goals": "Goals",
+    "notifications": "Notifications",
     "settings": "Settings"
   },
   "goals": {
@@ -52,7 +54,7 @@
     "notStarted": "Not Started",
     "archived": "Archived",
     "favorites": "Favorites",
-    "updateProgressBtn": "Update Progress",
+    "updateProgress": "Update Progress",
     "markComplete": "Mark Complete",
     "tooltips": {
       "goalTypeHelp": "Click for help choosing the right goal type"
@@ -86,6 +88,12 @@
     "failedToUpdateArchiveStatus": "Failed to update archive status",
     "goalCompletedSuccessfully": "Goal completed successfully!",
     "failedToCompleteGoal": "Failed to complete goal",
+    "noteAdded": "Note added successfully",
+    "noteUpdated": "Note updated successfully",
+    "noteDeleted": "Note deleted successfully",
+    "failedToAddNote": "Failed to add note",
+    "failedToUpdateNote": "Failed to update note",
+    "failedToDeleteNote": "Failed to delete note",
     "goalIdMissing": "Goal ID is missing",
     "loadingGoalDetails": "Loading goal details...",
     "goalNotFound": "Goal Not Found",
@@ -286,6 +294,10 @@
   },
   "settings": {
     "title": "Settings",
+    "preferences": "Preferences",
+    "data": "Data",
+    "about": "About",
+    "version": "Version",
     "language": "Language",
     "selectLanguage": "Select your language:",
     "theme": "Theme",
@@ -440,6 +452,30 @@
     "progressHistory": "Progress History",
     "relatedGoals": "Related Goals",
     "progress": "Progress"
+  },
+  "note": {
+    "title": {
+      "add": "Add Note",
+      "edit": "Edit Note"
+    },
+    "placeholder": {
+      "content": "Write your note here...",
+      "tag": "Add a tag"
+    },
+    "labels": {
+      "tags": "Tags"
+    },
+    "actions": {
+      "addTag": "Add",
+      "save": "Save Note",
+      "update": "Update Note",
+      "delete": "Delete Note",
+      "edit": "Edit"
+    },
+    "validation": {
+      "contentRequired": "Note content is required"
+    },
+    "confirmDelete": "Are you sure you want to delete this note?"
   },
   "completeDialog": {
     "readyToComplete": "Ready to Complete",
