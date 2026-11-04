@@ -4,8 +4,11 @@ This file provides essential guidelines for AI coding assistants working in this
 
 ## Project Tech Stack
 
-- React 18.2.0, TypeScript 5.3.3, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9, React Router 6.21.1
-- Vitest for testing, Vite for build tooling
+- React 18.2.0, TypeScript 5.3.3, Ant Design 5.12.8; Zustand 4, React Query 5, React Router 6, Zod 3
+- Vite 6 with vite-plugin-pwa, Vitest 4 and Testing Library
+- Node.js >=24 and npm >=10; use the approved personal installation described in `docs/dependency-maintenance.md`
+- `package.json` is authoritative for declared versions and commands; `package-lock.json` records resolved versions when present. Do not treat historical specs as installed-version evidence.
+- Goal hooks use React Query through `src/services/api/goalService.ts`, backed by localStorage services. Zustand stores live in `src/stores/`; do not assume a backend API or IndexedDB implementation.
 
 ## Commands
 
@@ -20,13 +23,13 @@ npm run preview      # Preview production build
 ### Testing
 
 ```bash
-npm test             # Run all tests (Vitest)
+npm test -- --run     # Run all tests once (Vitest)
 npm run test:watch   # Watch mode for development
 npm run test:ui      # Vitest UI browser
-npm run test:coverage # With coverage report
+npm run test:coverage -- --run # Run once with coverage report
 
 # Run a single test file
-npx vitest run src/features/goals/components/GoalCard.test.tsx
+npx vitest run src/features/goals/utils/__tests__/completionValidation.test.ts
 
 # Run tests matching a pattern
 npx vitest run -t "should display"
@@ -41,6 +44,7 @@ npm run format       # Prettier format (write)
 npm run format:check # Check formatting only
 npm run type-check   # TypeScript compile check
 npm run validate     # type-check + lint + format:check
+npm run validate:translations # Validate locale keys
 ```
 
 ### Versioning & Release
@@ -49,7 +53,11 @@ npm run validate     # type-check + lint + format:check
 npm run version:patch # Patch release
 npm run version:minor # Minor release
 npm run version:major # Major release
+node scripts/check-version.js maintenance # Validate package/lockfile version consistency
+node --test scripts/check-version.node-test.js # Test version policy without dependencies
 ```
+
+Version commands modify files and may create commits/tags. Prepare and verify a release before obtaining authorization for publication; see `docs/dependency-maintenance.md` and the release-readiness skill below. Do not use `npm run release` as a validation command.
 
 ## Code Style Guidelines
 
@@ -89,11 +97,11 @@ import { useQuery } from '@tanstack/react-query';
 
 // 2. External libraries
 import { Card, Button } from 'antd';
-import dayjs from 'date-fns';
+import { format } from 'date-fns';
 
 // 3. Internal absolute imports (@/)
-import { useGoals } from '@/hooks/useGoals';
-import { GoalCard } from '@/features/goals';
+import { useGoals } from '@/features/goals/hooks/useGoals';
+import { GoalCard } from '@/features/goals/components/GoalCard';
 
 // 4. Relative imports
 import { calculateProgress } from './utils';
@@ -113,7 +121,7 @@ src/
   pages/                    # Route-level components
   hooks/                    # Global custom hooks
   utils/                    # Global utilities
-  store/                    # Zustand stores
+  stores/                   # Zustand stores
   services/                 # API services
   types/                    # Global types
   constants/                # Constants and enums
@@ -129,7 +137,7 @@ src/
 
 ### Testing Patterns
 
-- Test files co-located: `GoalCard.test.tsx` next to `GoalCard.tsx`
+- Prefer co-located tests for new coverage; preserve existing suites in `src/__tests__/` and feature/service `__tests__/` directories.
 - Follow AAA pattern: Arrange, Act, Assert
 - Test user behavior, not implementation details
 - Use `screen.getByRole()` over test IDs
@@ -154,6 +162,20 @@ Detailed guidelines available in:
 
 - `.ai-assistant/rules/` - Comprehensive development guidelines
 - `specs/` - Business rules, data flows, feature specs, and test specs
+- `.specify/memory/constitution.md` and `.specify/adr/` - Engineering principles and architectural decisions
+
+## Codex Workflows
+
+Load only the skill relevant to the task; avoid loading the whole catalog or duplicating existing rules:
+
+- [Context and impact](.agents/skills/momentum-context/SKILL.md): establish applicable rules, affected layers and acceptance criteria.
+- [Verification](.agents/skills/momentum-verify/SKILL.md): select checks and report evidence for the current revision.
+- [Release readiness](.agents/skills/momentum-release-readiness/SKILL.md): prepare a release and identify publication blockers.
+- [Specification delivery](.agents/skills/momentum-spec-delivery/SKILL.md): reuse Spec Kit templates and connect requirements to implementation and tests.
+- [UI acceptance](.agents/skills/momentum-ui-acceptance/SKILL.md): check responsive UX, accessibility, locales and PWA behavior when affected.
+- [Dependency triage](.agents/skills/momentum-dependency-triage/SKILL.md): assess existing update PRs and compatible maintenance batches.
+
+Use [agent governance](docs/agent-system/governance.md) for specialist responsibilities, autonomy limits, human approvals and effectiveness metrics. Reuse `.opencode` guidance selectively; its agent definitions and permissions are not automatically Codex registrations.
 
 ## Mobile UX Guidelines (Phase 0 - 025-mobile-ux)
 
@@ -161,7 +183,7 @@ These guidelines apply to mobile-first design.
 
 ### Navigation
 
-- **Bottom Tab Bar**: Use for Goals, Notifications, Settings (mobile only, show on lg+ breakpoints)
+- **Bottom Tab Bar**: Use for Goals, Notifications, Settings on mobile; hide at lg+ breakpoints.
 - Hide bottom tabs on Goal Detail (use back navigation instead)
 - Remove breadcrumbs when bottom tabs are used (redundant)
 
@@ -191,7 +213,7 @@ These guidelines apply to mobile-first design.
 
 ### Data Management
 
-- Centralize Export/Import in Settings page only (remove from Goals page)
+- Centralize Export/Import in Settings page only on both mobile and desktop (remove from Goals page).
 
 ### Accessibility
 
@@ -212,7 +234,7 @@ These guidelines apply to desktop design (lg+ breakpoints). Desktop enhances mob
 
 ### Goals List (Desktop)
 
-- **Structured Header**: Title left; right: Segmented (Table/List) + Export (ghost) + Create (primary)
+- **Structured Header**: Title left; right: Segmented (Table/List) + Create (primary). Export/Import stays in Settings.
 - **Filter Bar**: Single row with wrap, consistent width selects, active filters as removable Tags
 - **List View**: 2-column responsive grid (Col span=12 on >=1024px), card hover states (shadow + border)
 - **Table View**: `size="small"` for density, sticky header `scroll={{ y: 400 }}`, row hover highlight
@@ -247,14 +269,6 @@ These guidelines apply to desktop design (lg+ breakpoints). Desktop enhances mob
 - Active: Segmented shows selected state
 - Disabled: 40% opacity
 
-## Active Technologies
+## PWA and Historical Specifications
 
-- TypeScript 5.3.3 + React 18.2.0, Vite 6.1.6, vite-plugin-pwa (to be added) (020-pwa-support)
-- N/A (browser-based caching via service worker) (020-pwa-support)
-
-- TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9, Zod 3.22.4 (019-goal-type-tooltips)
-
-- TypeScript 5.3.3 + React 18.2.0, Ant Design 5.12.8, Zustand 4.4.7, React Query 5.17.9 (018_fix-milestone-goal-creation)
-
-- TypeScript 5.3.3, React 18.2.0 + React Query 5.17.9, Zustand 4.4.7, Ant Design 5.12.8 (017-fix-duplicate-progress-error)
-- IndexedDB (via storage service layer) (017-fix-duplicate-progress-error)
+PWA support is implemented through `vite-plugin-pwa` in `vite.config.ts` and the hooks in `src/hooks/`. Verify offline and update behavior against a production build when changing caching or service-worker behavior. Historical technology lists in feature specs describe their original planning context; use the project stack above and the current implementation for maintenance decisions.
