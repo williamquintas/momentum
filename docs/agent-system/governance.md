@@ -4,14 +4,14 @@
 
 Project skills live under `.agents/skills/`:
 
-| Skill entrypoint                     | Use                                                              |
-| ------------------------------------ | ---------------------------------------------------------------- |
-| `momentum-context/SKILL.md`            | Establish current state, applicable rules and impact.             |
-| `momentum-verify/SKILL.md`             | Select checks and report evidence for the actual change.          |
-| `momentum-release-readiness/SKILL.md`  | Prepare a release decision without publishing.                    |
-| `momentum-spec-delivery/SKILL.md`      | Connect requirements, existing Spec Kit artifacts and acceptance. |
-| `momentum-ui-acceptance/SKILL.md`      | Check responsive UX, accessibility, languages and PWA.             |
-| `momentum-dependency-triage/SKILL.md`  | Evaluate existing dependency PRs and migration risks.             |
+| Skill entrypoint                      | Use                                                               |
+| ------------------------------------- | ----------------------------------------------------------------- |
+| `momentum-context/SKILL.md`           | Establish current state, applicable rules and impact.             |
+| `momentum-verify/SKILL.md`            | Select checks and report evidence for the actual change.          |
+| `momentum-release-readiness/SKILL.md` | Prepare a release decision without publishing.                    |
+| `momentum-spec-delivery/SKILL.md`     | Connect requirements, existing Spec Kit artifacts and acceptance. |
+| `momentum-ui-acceptance/SKILL.md`     | Check responsive UX, accessibility, languages and PWA.            |
+| `momentum-dependency-triage/SKILL.md` | Evaluate existing dependency PRs and migration risks.             |
 
 Load only the skill and references relevant to the task. Reuse `.specify`, `.ai-assistant/rules`,
 scripts and workflows; `.opencode` profiles are prior material, not automatically registered Codex agents.
@@ -59,14 +59,14 @@ that a successful build proves journeys, or that a tag proves a published/deploy
 Baselines are **not measured yet**. Collect these values from actual task/PR reports before setting
 targets; record date, revision, sample size and environment. Do not invent improvement percentages.
 
-| Metric                     | Collection and definition                                                                                                         |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Context rework             | Count completed tasks reopened because an existing rule or spec was missed, per sampled tasks.                                      |
-| Evidence completeness      | Reports with revision, dirty state and explicit check outcomes / sampled reports. Target: all reports.                              |
+| Metric                     | Collection and definition                                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Context rework             | Count completed tasks reopened because an existing rule or spec was missed, per sampled tasks.                                       |
+| Evidence completeness      | Reports with revision, dirty state and explicit check outcomes / sampled reports. Target: all reports.                               |
 | Local/CI divergence        | Same-revision CI failures after equivalent local checks passed; classify environment differences separately.                         |
 | Critical disabled coverage | Count skipped tests/suites protecting creation, progress, completion, import/export and PWA; track suite and case counts separately. |
-| Review usefulness          | Confirmed actionable reviewer findings / reviewed findings; track escaped domain defects separately.                                |
-| Investigation cost         | Elapsed diagnostic time and tool calls per failure; use token usage only when the host exposes it.                                  |
+| Review usefulness          | Confirmed actionable reviewer findings / reviewed findings; track escaped domain defects separately.                                 |
+| Investigation cost         | Elapsed diagnostic time and tool calls per failure; use token usage only when the host exposes it.                                   |
 
 Evaluate the instructions on four bounded scenarios: a simple UI change, a progress/history defect,
 a dependency PR, and a release-readiness request. Expected observations are correct rule selection,
