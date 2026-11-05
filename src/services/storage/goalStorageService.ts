@@ -54,6 +54,63 @@ interface RestoreJournal {
 
 // Synchronous restores normally take milliseconds. An active writer must not be mistaken for a crashed tab.
 const RESTORE_LEASE_MS = 60_000;
+const RESTORE_STORAGE_KEYS = [
+  STORAGE_KEYS.GOALS_INDEX,
+  STORAGE_KEYS.GOALS_DATA,
+  STORAGE_KEYS.GOALS_BY_TYPE,
+  STORAGE_KEYS.GOALS_BY_STATUS,
+  STORAGE_KEYS.GOALS_BY_CATEGORY,
+  STORAGE_KEYS.GOALS_BY_TAG,
+];
+
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
+
+const parseRecoverySnapshot = (value: unknown): StorageSnapshot[] => {
+  if (!Array.isArray(value) || value.length !== RESTORE_STORAGE_KEYS.length) {
+    throw new Error('Invalid storage recovery journal');
+  }
+  return value.map((entry: unknown, index: number) => {
+    const key = RESTORE_STORAGE_KEYS[index];
+    if (
+      key === undefined ||
+      !isRecord(entry) ||
+      entry.key !== key ||
+      !(entry.value === null || typeof entry.value === 'string')
+    ) {
+      throw new Error('Invalid storage recovery journal');
+    }
+    return { key, value: entry.value };
+  });
+};
+
+const parseRecoveryJournal = (journal: string): RestoreJournal => {
+  const parsed: unknown = JSON.parse(journal);
+  if (
+    !isRecord(parsed) ||
+    typeof parsed.owner !== 'string' ||
+    typeof parsed.expiresAt !== 'number' ||
+    !Number.isFinite(parsed.expiresAt) ||
+    !('snapshot' in parsed)
+  ) {
+    throw new Error('Invalid storage recovery journal');
+  }
+  return { owner: parsed.owner, expiresAt: parsed.expiresAt, snapshot: parseRecoverySnapshot(parsed.snapshot) };
+};
+
+const restoreStorageSnapshot = (snapshot: StorageSnapshot[]): void => {
+  snapshot.forEach(({ key, value }) => {
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+  });
+};
+
+const retainRecoveryJournal = (recovery: RestoreJournal): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.GOALS_TRANSACTION, JSON.stringify({ ...recovery, expiresAt: 0 }));
+  } catch {
+    /* Keep the original leased journal if storage itself remains unavailable. */
+  }
+};
 
 const recoverStorageTransaction = (rollbackOwner?: string): void => {
   const journal = localStorage.getItem(STORAGE_KEYS.GOALS_TRANSACTION);
@@ -61,65 +118,25 @@ const recoverStorageTransaction = (rollbackOwner?: string): void => {
 
   let recovery: RestoreJournal | undefined;
   try {
-    const parsed: unknown = JSON.parse(journal);
-    if (
-      typeof parsed !== 'object' ||
-      parsed === null ||
-      !('owner' in parsed) ||
-      typeof parsed.owner !== 'string' ||
-      !('expiresAt' in parsed) ||
-      typeof parsed.expiresAt !== 'number' ||
-      !Number.isFinite(parsed.expiresAt) ||
-      !('snapshot' in parsed)
-    )
-      throw new Error('Invalid storage recovery journal');
-    const snapshot: unknown = parsed.snapshot;
-    const goalKeys: string[] = [
-      STORAGE_KEYS.GOALS_INDEX,
-      STORAGE_KEYS.GOALS_DATA,
-      STORAGE_KEYS.GOALS_BY_TYPE,
-      STORAGE_KEYS.GOALS_BY_STATUS,
-      STORAGE_KEYS.GOALS_BY_CATEGORY,
-      STORAGE_KEYS.GOALS_BY_TAG,
-    ];
-    if (
-      !Array.isArray(snapshot) ||
-      snapshot.length !== goalKeys.length ||
-      !snapshot.every(
-        (entry: unknown, index: number): entry is StorageSnapshot =>
-          typeof entry === 'object' &&
-          entry !== null &&
-          'key' in entry &&
-          entry.key === goalKeys[index] &&
-          'value' in entry &&
-          (entry.value === null || typeof entry.value === 'string')
-      )
-    ) {
-      throw new Error('Invalid storage recovery journal');
-    }
+    const parsed = parseRecoveryJournal(journal);
     if (parsed.expiresAt > Date.now() && parsed.owner !== rollbackOwner) {
       throw new StorageError(
         StorageErrorType.STORAGE_UNAVAILABLE,
         'A backup restore is in progress in another tab. Please retry shortly.'
       );
     }
-    recovery = { owner: rollbackOwner ?? generateUUID(), expiresAt: Date.now() + RESTORE_LEASE_MS, snapshot };
+    recovery = {
+      owner: rollbackOwner ?? generateUUID(),
+      expiresAt: Date.now() + RESTORE_LEASE_MS,
+      snapshot: parsed.snapshot,
+    };
     localStorage.setItem(STORAGE_KEYS.GOALS_TRANSACTION, JSON.stringify(recovery));
-    for (const entry of snapshot) {
-      if (entry.value === null) localStorage.removeItem(entry.key);
-      else localStorage.setItem(entry.key, entry.value);
-    }
+    restoreStorageSnapshot(parsed.snapshot);
     localStorage.removeItem(STORAGE_KEYS.GOALS_TRANSACTION);
   } catch (error) {
     if (error instanceof StorageError) throw error;
-    if (recovery) {
-      // Allow a later read to retry a failed rollback, but never claim the saved snapshot is current data.
-      try {
-        localStorage.setItem(STORAGE_KEYS.GOALS_TRANSACTION, JSON.stringify({ ...recovery, expiresAt: 0 }));
-      } catch {
-        /* Keep the original leased journal if storage itself remains unavailable. */
-      }
-    }
+    // Allow a later read to retry a failed rollback without claiming the snapshot is current data.
+    if (recovery) retainRecoveryJournal(recovery);
     throw new StorageError(
       StorageErrorType.CORRUPTED_DATA,
       'An interrupted save could not be recovered. Existing data has been retained for recovery.',

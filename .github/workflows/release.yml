@@ -58,7 +58,7 @@ jobs:
         run: |
           node scripts/check-version.js maintenance
           node scripts/check-version.js tag "$RELEASE_TAG"
-          node scripts/check-release-commit.js "$RELEASE_TAG"
+          node scripts/check-release-commit.js
           echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"

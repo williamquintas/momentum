@@ -237,13 +237,13 @@ describe('Data Import Service with real goal storage', () => {
     };
     delete goal[fields[type]];
     expect(() => validated([goal])).toThrow(ImportValidationError);
-    expect(localStorage.length).toBe(0);
+    expect(localStorage).toHaveLength(0);
   });
   it('rejects unknown versions, malformed dates and missing required data', () => {
     expect(() => validateImportData({ ...backup([]), version: '2.0' })).toThrow(ImportValidationError);
     expect(() => validated([{ ...goalFixture(), createdAt: 'invalid' }])).toThrow(ImportValidationError);
     expect(() => validated([{ title: 'Missing data' }])).toThrow(ImportValidationError);
-    expect(localStorage.length).toBe(0);
+    expect(localStorage).toHaveLength(0);
   });
   it('preserves allowed overachievement and rejects it otherwise', () => {
     const over = { ...goalFixture(), allowOverAchievement: true, progress: 125, currentValue: 125 };

@@ -118,9 +118,14 @@ test('CLI reads the event file safely and rejects wrong events and malformed pay
 
 test('trusted workflow bootstrap agrees with the guard during first adoption and release', () => {
   const workflow = readFileSync(new URL('../.github/workflows/gitflow.yml', import.meta.url), 'utf8');
-  const match = workflow.match(/<<'NODE'\r?\n([\s\S]+?)\r?\n\s+NODE/);
-  assert.ok(match, 'bootstrap is present in the workflow');
-  const source = match[1].replace(/^ {10}/gm, '');
+  const lines = workflow.split(/\r?\n/);
+  const start = lines.findIndex((line) => line.includes("node --input-type=module <<'NODE'"));
+  const end = lines.findIndex((line, index) => index > start && line.trim() === 'NODE');
+  assert.ok(start >= 0 && end > start, 'bootstrap is present in the workflow');
+  const source = lines
+    .slice(start + 1, end)
+    .map((line) => line.replace(/^ {10}/, ''))
+    .join('\n');
   const directory = mkdtempSync(join(tmpdir(), 'momentum-gitflow-bootstrap-'));
   const eventPath = join(directory, 'event.json');
   const bot = { login: 'dependabot[bot]', type: 'Bot' };
