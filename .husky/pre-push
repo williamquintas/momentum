@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run type-check
-npm run lint
+node node_modules/typescript/bin/tsc --noEmit -p tsconfig.src.json
+node node_modules/eslint/bin/eslint.js . --ext .ts,.tsx,.js,.jsx
 

@@ -14,8 +14,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { UpdateProgressModal } from '@/features/goals/components/UpdateProgressModal/UpdateProgressModal';
 import type { Goal } from '@/features/goals/types';
 import { GoalType, GoalStatus, Priority } from '@/features/goals/types';
+import type { UpdateProgressInput } from '@/features/goals/hooks/useUpdateProgress';
 
-const mockSubmit = vi.fn().mockResolvedValue(undefined);
+const mockSubmit = vi.fn<(input: UpdateProgressInput) => Promise<void>>().mockResolvedValue(undefined);
 
 const createMockGoal = (type: GoalType): Goal => {
   const baseGoal = {
@@ -97,12 +98,26 @@ const createMockGoal = (type: GoalType): Goal => {
         ],
       } as Goal;
 
+    case GoalType.HABIT:
+      return {
+        ...baseGoal,
+        type: GoalType.HABIT,
+        targetFrequency: 'daily',
+        completionStats: {
+          totalOccurrences: 0,
+          completedOccurrences: 0,
+          completionRate: 0,
+          streak: { current: 0, longest: 0 },
+        },
+        entries: [],
+      } as Goal;
+
     default:
       throw new Error(`Unsupported goal type: ${String(type)}`);
   }
 };
 
-describe.skip('Progress Update Integration', () => {
+describe('Progress Update Integration', () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
@@ -114,9 +129,13 @@ describe.skip('Progress Update Integration', () => {
     });
     vi.clearAllMocks();
     document.body.innerHTML = '';
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((element) =>
+      element instanceof HTMLElement ? element.style : document.documentElement.style
+    );
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 
@@ -311,6 +330,33 @@ describe.skip('Progress Update Integration', () => {
     });
   });
 
+  describe('Habit Goal Progress Update', () => {
+    it('submits a dated habit completion entry', async () => {
+      const goal = createMockGoal(GoalType.HABIT);
+      render(
+        <TestWrapper>
+          <UpdateProgressModal open={true} goal={goal} onCancel={vi.fn()} onSubmit={mockSubmit} />
+        </TestWrapper>
+      );
+
+      const submitButton = Array.from(document.body.querySelectorAll('.ant-btn')).find((btn) =>
+        btn.textContent?.toLowerCase().includes('update')
+      );
+      expect(submitButton).toBeInTheDocument();
+      if (submitButton) fireEvent.click(submitButton);
+
+      await waitFor(() => expect(mockSubmit).toHaveBeenCalledTimes(1));
+      const submission = mockSubmit.mock.calls[0]?.[0];
+      expect(submission?.goalId).toBe('test-goal-id');
+      const updates = submission?.typeSpecificUpdates;
+      if (!updates || !('entries' in updates) || !updates.entries)
+        throw new Error('Habit updates must include entries');
+      expect(updates.entries).toHaveLength(1);
+      expect(updates.entries[0]?.completed).toBe(true);
+      expect(updates.entries[0]?.date).toBeInstanceOf(Date);
+    });
+  });
+
   describe('Common Form Elements', () => {
     it('renders note field for all goal types', () => {
       const goal = createMockGoal(GoalType.QUANTITATIVE);
@@ -327,13 +373,13 @@ describe.skip('Progress Update Integration', () => {
     it('renders cancel and submit buttons', () => {
       const goal = createMockGoal(GoalType.QUANTITATIVE);
 
-      const { container } = render(
+      render(
         <TestWrapper>
           <UpdateProgressModal open={true} goal={goal} onCancel={vi.fn()} onSubmit={mockSubmit} />
         </TestWrapper>
       );
 
-      const buttons = container.querySelectorAll('.ant-btn');
+      const buttons = document.body.querySelectorAll('.ant-btn');
       const cancelBtn = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('cancel'));
       const updateBtn = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('update'));
       expect(cancelBtn).toBeInTheDocument();
@@ -344,13 +390,13 @@ describe.skip('Progress Update Integration', () => {
       const mockOnCancel = vi.fn();
       const goal = createMockGoal(GoalType.QUANTITATIVE);
 
-      const { container } = render(
+      render(
         <TestWrapper>
           <UpdateProgressModal open={true} goal={goal} onCancel={mockOnCancel} onSubmit={mockSubmit} />
         </TestWrapper>
       );
 
-      const buttons = container.querySelectorAll('.ant-btn');
+      const buttons = document.body.querySelectorAll('.ant-btn');
       const cancelBtn = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('cancel'));
       expect(cancelBtn).toBeInTheDocument();
       if (cancelBtn) {
@@ -364,7 +410,7 @@ describe.skip('Progress Update Integration', () => {
     it('verifies quantitative progress calculation: (75-0)/(100-0)*100 = 75%', async () => {
       const goal = createMockGoal(GoalType.QUANTITATIVE);
 
-      const { container } = render(
+      render(
         <TestWrapper>
           <UpdateProgressModal open={true} goal={goal} onCancel={vi.fn()} onSubmit={mockSubmit} />
         </TestWrapper>
@@ -373,7 +419,7 @@ describe.skip('Progress Update Integration', () => {
       const input = screen.getByLabelText(/current value/i);
       fireEvent.change(input, { target: { value: '75' } });
 
-      const buttons = container.querySelectorAll('.ant-btn');
+      const buttons = document.body.querySelectorAll('.ant-btn');
       const submitButton = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('update'));
       expect(submitButton).toBeInTheDocument();
       if (submitButton) {
@@ -393,7 +439,7 @@ describe.skip('Progress Update Integration', () => {
     it('verifies binary progress calculation: 3/5*100 = 60%', async () => {
       const goal = createMockGoal(GoalType.BINARY);
 
-      const { container } = render(
+      render(
         <TestWrapper>
           <UpdateProgressModal open={true} goal={goal} onCancel={vi.fn()} onSubmit={mockSubmit} />
         </TestWrapper>
@@ -405,7 +451,7 @@ describe.skip('Progress Update Integration', () => {
         fireEvent.click(thirdCheckbox);
       }
 
-      const buttons = container.querySelectorAll('.ant-btn');
+      const buttons = document.body.querySelectorAll('.ant-btn');
       const submitButton = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('update'));
       expect(submitButton).toBeInTheDocument();
       if (submitButton) {
@@ -426,7 +472,7 @@ describe.skip('Progress Update Integration', () => {
     it('passes note to submit handler', async () => {
       const goal = createMockGoal(GoalType.QUANTITATIVE);
 
-      const { container } = render(
+      render(
         <TestWrapper>
           <UpdateProgressModal open={true} goal={goal} onCancel={vi.fn()} onSubmit={mockSubmit} />
         </TestWrapper>
@@ -435,7 +481,7 @@ describe.skip('Progress Update Integration', () => {
       const noteField = screen.getByLabelText(/note/i);
       fireEvent.change(noteField, { target: { value: 'Weekly progress update' } });
 
-      const buttons = container.querySelectorAll('.ant-btn');
+      const buttons = document.body.querySelectorAll('.ant-btn');
       const submitButton = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('update'));
       expect(submitButton).toBeInTheDocument();
       if (submitButton) {
@@ -454,7 +500,7 @@ describe.skip('Progress Update Integration', () => {
     it('includes type-specific updates in submit', async () => {
       const goal = createMockGoal(GoalType.QUANTITATIVE);
 
-      const { container } = render(
+      render(
         <TestWrapper>
           <UpdateProgressModal open={true} goal={goal} onCancel={vi.fn()} onSubmit={mockSubmit} />
         </TestWrapper>
@@ -463,7 +509,7 @@ describe.skip('Progress Update Integration', () => {
       const input = screen.getByLabelText(/current value/i);
       fireEvent.change(input, { target: { value: '80' } });
 
-      const buttons = container.querySelectorAll('.ant-btn');
+      const buttons = document.body.querySelectorAll('.ant-btn');
       const submitButton = Array.from(buttons).find((btn) => btn.textContent?.toLowerCase().includes('update'));
       expect(submitButton).toBeInTheDocument();
       if (submitButton) {

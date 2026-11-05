@@ -1,0 +1,61 @@
+name: Gitflow
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  gitflow:
+    name: Gitflow Route
+    runs-on: ubuntu-latest
+    steps:
+      # Evaluate the target branch's policy, not a replacement script in the PR.
+      - name: Checkout trusted base
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Validate pull request route
+        shell: bash
+        run: |
+          if test -f scripts/check-gitflow.js; then
+            node scripts/check-gitflow.js
+          else
+            # Bootstrap targets that do not have the guard yet, including the
+            # first release to main. Never execute the proposed head's script.
+            node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          const pr = event.pull_request;
+          const id = event.repository?.id;
+          const head = pr?.head;
+          const base = pr?.base;
+          if (process.env.GITHUB_EVENT_NAME !== 'pull_request' ||
+              !Number.isSafeInteger(id) || id <= 0 ||
+              !Number.isSafeInteger(head?.repo?.id) || head.repo.id <= 0 ||
+              base?.repo?.id !== id || typeof head?.ref !== 'string' ||
+              typeof base?.ref !== 'string') {
+            throw new Error('Invalid Gitflow event or repository identities');
+          }
+          const sameRepository = head.repo.id === id;
+          const bot = sameRepository && pr.user?.login === 'dependabot[bot]' &&
+            pr.user?.type === 'Bot' && /^dependabot\/[^/]+\/.+/.test(head.ref);
+          const maintenance = base.ref === 'develop' &&
+            (/^(feature|fix)\/.+/.test(head.ref) || (sameRepository && head.ref === 'main') || bot);
+          // main's npm Dependabot configuration is security-only; the event has no security flag.
+          const release = base.ref === 'main' && sameRepository &&
+            (/^release\/.+/.test(head.ref) || (bot && head.ref.startsWith('dependabot/npm_and_yarn/')));
+          if (!maintenance && !release) throw new Error('Invalid Gitflow route');
+          console.log('Gitflow bootstrap route passed; base policy is not installed yet');
+          NODE
+          fi

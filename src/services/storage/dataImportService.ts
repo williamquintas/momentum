@@ -7,9 +7,10 @@
 
 import { z } from 'zod';
 
-import { GoalType, GoalStatus, Priority, type CreateGoalInput, type Goal } from '@/types/goal.types';
+import type { Goal } from '@/types/goal.types';
 
-import { getAllGoals, createGoal, updateGoal } from './goalStorageService';
+import { getAllGoals, restoreGoals, deserializeRestoredGoal } from './goalStorageService';
+import type { SerializedGoal } from './storageTypes';
 
 /**
  * Import validation error
@@ -53,159 +54,222 @@ export interface ParsedImportData {
 /**
  * Zod schema for validating a serialized goal
  */
-const serializedGoalSchema = z.object({
-  // Required fields
-  id: z.string().uuid(),
-  title: z.string().min(1),
-  type: z.enum(['quantitative', 'qualitative', 'binary', 'milestone', 'recurring', 'habit']),
-  status: z.enum(['active', 'completed', 'paused', 'cancelled']),
-  priority: z.enum(['high', 'medium', 'low']),
-  category: z.string(),
-  tags: z.array(z.string()),
-  progress: z.number().min(0).max(100),
-  progressHistory: z.array(
-    z.object({
-      id: z.string().uuid(),
-      date: z.string(),
-      value: z.number(),
-      note: z.string().optional(),
-      metadata: z.record(z.string(), z.unknown()).optional(),
-    })
-  ),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  notes: z.array(
-    z.object({
-      id: z.string().uuid(),
-      content: z.string(),
-      createdAt: z.string(),
-      updatedAt: z.string(),
-      createdBy: z.string(),
-      tags: z.array(z.string()).optional(),
-    })
-  ),
-  attachments: z.array(
-    z.object({
-      id: z.string().uuid(),
-      filename: z.string(),
-      url: z.string(),
-      mimeType: z.string(),
-      size: z.number(),
-      uploadedAt: z.string(),
-      uploadedBy: z.string(),
-    })
-  ),
-  relatedGoals: z.array(z.string()),
-
-  // Optional fields
-  description: z.string().optional(),
-  startDate: z.string().optional(),
-  deadline: z.string().optional(),
-  completedDate: z.string().optional(),
-  createdBy: z.string().optional(),
-  assignee: z.string().optional(),
-  archived: z.boolean().optional(),
-  favorite: z.boolean().optional(),
-
-  // Type-specific fields
-  // Quantitative
-  startValue: z.number().optional(),
-  targetValue: z.number().optional(),
-  currentValue: z.number().optional(),
-  unit: z.string().optional(),
-  allowDecimals: z.boolean().optional(),
-  allowOverAchievement: z.boolean().optional(),
-  minValue: z.number().optional(),
-  maxValue: z.number().optional(),
-
-  // Qualitative
-  qualitativeStatus: z.enum(['not_started', 'in_progress', 'completed']).optional(),
-  selfAssessments: z
-    .array(
-      z.object({
-        id: z.string().uuid(),
-        date: z.string(),
-        rating: z.number(),
-        comment: z.string().optional(),
-        criteria: z.record(z.string(), z.number()).optional(),
-      })
-    )
-    .optional(),
-  improvementCriteria: z.array(z.string()).optional(),
-  targetRating: z.number().optional(),
-
-  // Binary
-  targetCount: z.number().optional(),
-  currentCount: z.number().optional(),
-  items: z.array(z.string()).optional(),
-  allowPartialCompletion: z.boolean().optional(),
-
-  // Milestone
-  milestones: z
-    .array(
-      z.object({
-        id: z.string().uuid(),
-        title: z.string(),
-        description: z.string().optional(),
-        status: z.enum(['pending', 'in_progress', 'completed', 'skipped']),
-        dueDate: z.string().optional(),
-        completedDate: z.string().optional(),
-        order: z.number(),
-        dependencies: z.array(z.string()).optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
-      })
-    )
-    .optional(),
-  allowMilestoneReordering: z.boolean().optional(),
-  requireSequentialCompletion: z.boolean().optional(),
-
-  // Recurring
-  recurrence: z
-    .object({
-      frequency: z.enum(['daily', 'weekly', 'monthly', 'yearly']),
-      interval: z.number(),
-      endDate: z.string().optional(),
-      daysOfWeek: z.array(z.number()).optional(),
-      dayOfMonth: z.number().optional(),
-      dayOfYear: z.number().optional(),
-    })
-    .optional(),
-  occurrences: z
-    .array(
-      z.object({
-        id: z.string().uuid(),
-        date: z.string(),
-        completed: z.boolean(),
-        value: z.number().optional(),
-        note: z.string().optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
-      })
-    )
-    .optional(),
-
-  // Habit
-  targetFrequency: z.enum(['daily', 'every_other_day', 'weekly', 'custom']).optional(),
-  customFrequency: z.number().optional(),
-  entries: z
-    .array(
-      z.object({
-        id: z.string().uuid(),
-        date: z.string(),
-        completed: z.boolean(),
-        value: z.number().optional(),
-        note: z.string().optional(),
-        metadata: z.record(z.string(), z.unknown()).optional(),
-      })
-    )
-    .optional(),
+const dateSchema = z.string().datetime({ offset: true });
+const completionStatsSchema = z.object({
+  totalOccurrences: z.number().int().nonnegative(),
+  completedOccurrences: z.number().int().nonnegative(),
+  completionRate: z.number().min(0).max(100),
+  streak: z.object({
+    current: z.number().int().nonnegative(),
+    longest: z.number().int().nonnegative(),
+    lastCompletedDate: dateSchema.optional(),
+    startDate: dateSchema.optional(),
+  }),
+  lastCompletedDate: dateSchema.optional(),
+  firstCompletedDate: dateSchema.optional(),
 });
+
+const serializedGoalSchema = z
+  .object({
+    // Required fields
+    id: z.string().uuid(),
+    title: z.string().min(1),
+    type: z.enum(['quantitative', 'qualitative', 'binary', 'milestone', 'recurring', 'habit']),
+    status: z.enum(['active', 'completed', 'paused', 'cancelled']),
+    priority: z.enum(['high', 'medium', 'low']),
+    category: z.string(),
+    tags: z.array(z.string()),
+    progress: z.number().min(0),
+    progressHistory: z.array(
+      z.object({
+        id: z.string().uuid(),
+        date: dateSchema,
+        value: z.number(),
+        note: z.string().optional(),
+        metadata: z.record(z.string(), z.unknown()).optional(),
+      })
+    ),
+    createdAt: dateSchema,
+    updatedAt: dateSchema,
+    notes: z.array(
+      z.object({
+        id: z.string().uuid(),
+        content: z.string(),
+        createdAt: dateSchema,
+        updatedAt: dateSchema,
+        createdBy: z.string(),
+        tags: z.array(z.string()).optional(),
+      })
+    ),
+    attachments: z.array(
+      z.object({
+        id: z.string().uuid(),
+        filename: z.string(),
+        url: z.string(),
+        mimeType: z.string(),
+        size: z.number(),
+        uploadedAt: dateSchema,
+        uploadedBy: z.string(),
+      })
+    ),
+    relatedGoals: z.array(z.string()),
+
+    // Optional fields
+    description: z.string().optional(),
+    startDate: dateSchema.optional(),
+    deadline: dateSchema.optional(),
+    completedDate: dateSchema.optional(),
+    createdBy: z.string().optional(),
+    assignee: z.string().optional(),
+    archived: z.boolean().optional(),
+    favorite: z.boolean().optional(),
+
+    // Type-specific fields
+    // Quantitative
+    startValue: z.number().optional(),
+    targetValue: z.number().optional(),
+    currentValue: z.number().optional(),
+    unit: z.string().optional(),
+    allowDecimals: z.boolean().optional(),
+    allowOverAchievement: z.boolean().optional(),
+    minValue: z.number().optional(),
+    maxValue: z.number().optional(),
+
+    // Qualitative
+    qualitativeStatus: z.enum(['not_started', 'in_progress', 'completed']).optional(),
+    selfAssessments: z
+      .array(
+        z.object({
+          id: z.string().uuid(),
+          date: dateSchema,
+          rating: z.number().min(1).max(10),
+          comment: z.string().optional(),
+          criteria: z.record(z.string(), z.number()).optional(),
+        })
+      )
+      .optional(),
+    improvementCriteria: z.array(z.string()).optional(),
+    targetRating: z.number().optional(),
+
+    // Binary
+    targetCount: z.number().optional(),
+    currentCount: z.number().optional(),
+    items: z.array(z.string()).optional(),
+    allowPartialCompletion: z.boolean().optional(),
+
+    // Milestone
+    milestones: z
+      .array(
+        z.object({
+          id: z.string().uuid(),
+          title: z.string(),
+          description: z.string().optional(),
+          status: z.enum(['pending', 'in_progress', 'completed', 'skipped']),
+          dueDate: dateSchema.optional(),
+          completedDate: dateSchema.optional(),
+          order: z.number(),
+          dependencies: z.array(z.string()).optional(),
+          metadata: z.record(z.string(), z.unknown()).optional(),
+        })
+      )
+      .optional(),
+    allowMilestoneReordering: z.boolean().optional(),
+    requireSequentialCompletion: z.boolean().optional(),
+
+    // Recurring
+    recurrence: z
+      .object({
+        frequency: z.enum(['daily', 'weekly', 'monthly', 'yearly']),
+        interval: z.number().int().positive(),
+        endDate: dateSchema.optional(),
+        daysOfWeek: z.array(z.number()).optional(),
+        dayOfMonth: z.number().optional(),
+        dayOfYear: z.number().optional(),
+      })
+      .optional(),
+    occurrences: z
+      .array(
+        z.object({
+          id: z.string().uuid(),
+          date: dateSchema,
+          completed: z.boolean(),
+          value: z.number().optional(),
+          note: z.string().optional(),
+          metadata: z.record(z.string(), z.unknown()).optional(),
+        })
+      )
+      .optional(),
+
+    // Habit
+    targetFrequency: z.enum(['daily', 'every_other_day', 'weekly', 'custom']).optional(),
+    customFrequency: z.number().optional(),
+    entries: z
+      .array(
+        z.object({
+          id: z.string().uuid(),
+          date: dateSchema,
+          completed: z.boolean(),
+          value: z.number().optional(),
+          note: z.string().optional(),
+          metadata: z.record(z.string(), z.unknown()).optional(),
+        })
+      )
+      .optional(),
+    completionStats: completionStatsSchema.optional(),
+    habitStrength: z.number().min(0).max(100).optional(),
+  })
+  .superRefine((goal, context) => {
+    const requiredFields: Record<string, string[]> = {
+      quantitative: ['startValue', 'targetValue', 'currentValue', 'unit', 'allowDecimals'],
+      qualitative: ['qualitativeStatus', 'selfAssessments'],
+      binary: ['currentCount', 'allowPartialCompletion'],
+      milestone: ['milestones', 'allowMilestoneReordering', 'requireSequentialCompletion'],
+      recurring: ['recurrence', 'occurrences', 'completionStats'],
+      habit: ['targetFrequency', 'entries', 'completionStats'],
+    };
+    for (const field of requiredFields[goal.type] ?? []) {
+      if ((goal as Record<string, unknown>)[field] === undefined) {
+        context.addIssue({ code: 'custom', path: [field], message: `Missing ${field} for ${goal.type} goal` });
+      }
+    }
+    if (goal.progress > 100 && !(goal.type === 'quantitative' && goal.allowOverAchievement)) {
+      context.addIssue({ code: 'custom', path: ['progress'], message: 'Progress exceeds the allowed target' });
+    }
+    if (
+      goal.type === 'habit' &&
+      goal.targetFrequency === 'custom' &&
+      !(goal.customFrequency && goal.customFrequency > 0)
+    ) {
+      context.addIssue({ code: 'custom', path: ['customFrequency'], message: 'Custom frequency must be positive' });
+    }
+    if (goal.type === 'milestone' && goal.milestones) {
+      const milestones = new Map(goal.milestones.map((milestone) => [milestone.id, milestone]));
+      if (milestones.size !== goal.milestones.length) {
+        context.addIssue({ code: 'custom', path: ['milestones'], message: 'Duplicate milestone identity' });
+      }
+      const visiting = new Set<string>();
+      const visited = new Set<string>();
+      const hasInvalidDependency = (id: string): boolean => {
+        if (visiting.has(id) || !milestones.has(id)) return true;
+        if (visited.has(id)) return false;
+        visiting.add(id);
+        const invalid = (milestones.get(id)?.dependencies ?? []).some(hasInvalidDependency);
+        visiting.delete(id);
+        visited.add(id);
+        return invalid;
+      };
+      if (goal.milestones.some((milestone) => hasInvalidDependency(milestone.id))) {
+        context.addIssue({ code: 'custom', path: ['milestones'], message: 'Missing or cyclic milestone dependency' });
+      }
+    }
+  });
 
 /**
  * Zod schema for validating export data
  */
 export const importDataSchema = z.object({
-  version: z.string(),
-  exportedAt: z.string(),
+  version: z.literal('1.0'),
+  exportedAt: dateSchema,
   appVersion: z.string().optional(),
   goals: z.array(serializedGoalSchema),
 });
@@ -260,155 +324,64 @@ const findDuplicate = (
 };
 
 /**
- * Convert string to GoalType enum
- */
-const stringToGoalType = (type: string): GoalType => {
-  return GoalType[type.toUpperCase() as keyof typeof GoalType] ?? GoalType.QUANTITATIVE;
-};
-
-/**
- * Convert string to GoalStatus enum
- */
-const stringToGoalStatus = (status: string): GoalStatus => {
-  return GoalStatus[status.toUpperCase() as keyof typeof GoalStatus] ?? GoalStatus.ACTIVE;
-};
-
-/**
- * Convert string to Priority enum
- */
-const stringToPriority = (priority: string): Priority => {
-  return Priority[priority.toUpperCase() as keyof typeof Priority] ?? Priority.MEDIUM;
-};
-
-/**
- * Create a CreateGoalInput from serialized data
- */
-const convertToCreateGoalInput = (serialized: z.infer<typeof serializedGoalSchema>): CreateGoalInput => {
-  const deserializeDate = (dateStr?: string): Date | undefined => {
-    return dateStr ? new Date(dateStr) : undefined;
-  };
-
-  const baseInput = {
-    ...serialized,
-    type: stringToGoalType(serialized.type),
-    status: stringToGoalStatus(serialized.status),
-    priority: stringToPriority(serialized.priority),
-    startDate: deserializeDate(serialized.startDate),
-    deadline: deserializeDate(serialized.deadline),
-    completedDate: deserializeDate(serialized.completedDate),
-    createdAt: new Date(serialized.createdAt),
-    updatedAt: new Date(serialized.updatedAt),
-    progressHistory: serialized.progressHistory.map((entry) => ({
-      id: entry.id,
-      date: new Date(entry.date),
-      value: entry.value,
-      note: entry.note,
-      metadata: entry.metadata,
-    })),
-  };
-
-  // Handle milestones
-  if (serialized.milestones) {
-    (baseInput as Record<string, unknown>).milestones = serialized.milestones.map((milestone) => ({
-      id: milestone.id,
-      title: milestone.title,
-      description: milestone.description,
-      status: milestone.status,
-      dueDate: deserializeDate(milestone.dueDate),
-      completedDate: deserializeDate(milestone.completedDate),
-      order: milestone.order,
-      dependencies: milestone.dependencies,
-      metadata: milestone.metadata,
-    }));
-  }
-
-  // Handle occurrences (recurring goals)
-  if (serialized.occurrences) {
-    (baseInput as Record<string, unknown>).occurrences = serialized.occurrences.map((entry) => ({
-      id: entry.id,
-      date: new Date(entry.date),
-      completed: entry.completed,
-      value: entry.value,
-      note: entry.note,
-      metadata: entry.metadata,
-    }));
-  }
-
-  // Handle entries (habit goals)
-  if (serialized.entries) {
-    (baseInput as Record<string, unknown>).entries = serialized.entries.map((entry) => ({
-      id: entry.id,
-      date: new Date(entry.date),
-      completed: entry.completed,
-      value: entry.value,
-      note: entry.note,
-      metadata: entry.metadata,
-    }));
-  }
-
-  return baseInput as unknown as CreateGoalInput;
-};
-
-/**
  * Import goals from validated data
  */
 export const importGoals = (
   validatedData: z.infer<typeof importDataSchema>,
   strategy: DuplicateStrategy = 'latest-wins'
 ): ImportResult => {
-  const errors: string[] = [];
-  let importedCount = 0;
-  let updatedCount = 0;
-  let skippedCount = 0;
+  try {
+    // Validate again at the write boundary; callers cannot bypass validation accidentally.
+    const data = validateImportData(validatedData);
+    const existing = getAllGoals();
+    const candidates = [...existing];
+    const aliases = new Map<string, string>();
+    const pending = new Map<string, Goal>();
+    const existingIds = new Set(existing.map((goal) => goal.id));
+    let skipped = 0;
 
-  // Get existing goals for duplicate detection
-  const existingGoals = getAllGoals();
-
-  for (const serializedGoal of validatedData.goals) {
-    try {
-      // Find duplicate
-      const duplicate = findDuplicate(
-        { id: serializedGoal.id, title: serializedGoal.title, type: serializedGoal.type },
-        existingGoals
-      );
-
-      const goalInput = convertToCreateGoalInput(serializedGoal);
-
-      if (duplicate) {
-        // Compare timestamps for latest-wins
-        const importedDate = new Date(serializedGoal.updatedAt);
-        const existingDate = new Date(duplicate.updatedAt);
-
-        if (importedDate > existingDate) {
-          // Import is newer, update existing
-          if (strategy === 'replace' || strategy === 'latest-wins') {
-            updateGoal(duplicate.id, { ...goalInput, updatedAt: new Date() });
-            updatedCount++;
-          } else {
-            skippedCount++;
-          }
-        } else {
-          // Existing is newer, skip
-          skippedCount++;
-        }
-      } else {
-        // No duplicate, create new goal
-        createGoal(goalInput);
-        importedCount++;
+    for (const serialized of data.goals) {
+      const duplicate = findDuplicate({ ...serialized, id: aliases.get(serialized.id) ?? serialized.id }, candidates);
+      const id = duplicate?.id ?? serialized.id;
+      aliases.set(serialized.id, id);
+      if (
+        duplicate &&
+        (strategy === 'skip' ||
+          (strategy === 'latest-wins' && new Date(serialized.updatedAt).getTime() <= duplicate.updatedAt.getTime()))
+      ) {
+        skipped++;
+        continue;
       }
-    } catch (error) {
-      const goalTitle = serializedGoal.title || 'Unknown';
-      errors.push(`Failed to import "${goalTitle}": ${error instanceof Error ? error.message : 'Unknown error'}`);
+      const goal = deserializeRestoredGoal({ ...serialized, id } as unknown as SerializedGoal);
+      pending.set(id, goal);
+      const index = candidates.findIndex((candidate) => candidate.id === id);
+      if (index < 0) candidates.push(goal);
+      else candidates[index] = goal;
     }
-  }
 
-  return {
-    success: errors.length === 0,
-    imported: importedCount,
-    updated: updatedCount,
-    skipped: skippedCount,
-    errors,
-  };
+    const availableIds = new Set(candidates.map((goal) => goal.id));
+    for (const goal of pending.values()) {
+      goal.relatedGoals = goal.relatedGoals.map((id) => aliases.get(id) ?? id);
+      if (goal.relatedGoals.some((id) => !availableIds.has(id))) {
+        throw new ImportValidationError(
+          [],
+          `Goal "${goal.title}" refers to a goal that is not in the backup or storage.`
+        );
+      }
+    }
+    // The whole plan is persisted once. Counts describe committed identities, not attempted writes.
+    restoreGoals([...pending.values()]);
+    const updated = [...pending.keys()].filter((id) => existingIds.has(id)).length;
+    return { success: true, imported: pending.size - updated, updated, skipped, errors: [] };
+  } catch (error) {
+    return {
+      success: false,
+      imported: 0,
+      updated: 0,
+      skipped: 0,
+      errors: [error instanceof Error ? error.message : 'Unknown error during import'],
+    };
+  }
 };
 
 /**
@@ -418,20 +391,28 @@ export const importGoals = (
 export const previewImport = (
   validatedData: z.infer<typeof importDataSchema>
 ): { newGoals: number; duplicates: number } => {
+  const data = validateImportData(validatedData);
   const existingGoals = getAllGoals();
+  const aliases = new Map<string, string>();
   let newGoals = 0;
   let duplicates = 0;
 
-  for (const serializedGoal of validatedData.goals) {
+  for (const serializedGoal of data.goals) {
     const duplicate = findDuplicate(
-      { id: serializedGoal.id, title: serializedGoal.title, type: serializedGoal.type },
+      {
+        id: aliases.get(serializedGoal.id) ?? serializedGoal.id,
+        title: serializedGoal.title,
+        type: serializedGoal.type,
+      },
       existingGoals
     );
+    aliases.set(serializedGoal.id, duplicate?.id ?? serializedGoal.id);
 
     if (duplicate) {
       duplicates++;
     } else {
       newGoals++;
+      existingGoals.push(deserializeRestoredGoal(serializedGoal as unknown as SerializedGoal));
     }
   }
 

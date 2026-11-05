@@ -26,7 +26,8 @@ For each small dependency batch:
 The update proposed by PR #124 supersedes #117 for React Router 6. Close #117 only after #124 or an equivalent result is
 validated and integrated. Replace the mixed-major groups in #93/#129 with small compatible updates and separately reviewed
 migrations (React 19, Ant Design 6, Router 7, Zod 4, Zustand 5, TypeScript 7 and other major development-tool migrations).
-Keep React 18, Ant Design 5, Router 6, Zod 3, Zustand 4 and TypeScript 5 for this maintenance delivery.
+Keep React 18, Ant Design 5, Router 6, Zustand 4 and TypeScript 5 for this maintenance delivery. Zod 4 is already declared
+and resolved in the current manifests; treat the earlier Zod 3 restriction as historical, not a downgrade instruction.
 
 ## Version and release policy
 
@@ -34,15 +35,25 @@ Maintenance PRs may retain an already published version. Run `node scripts/check
 SemVer and agreement between the package and both lockfile version fields. Test this policy without installed dependencies
 with `node --test scripts/check-version.node-test.js`.
 
-For manual releases, the workflow checks out `main`, prepares the version using `npm version --no-git-tag-version`, then
-checks the exact remote tag before generating a changelog, commit or tag. Changelog generation skips bump/commit/tag.
-The publication step repeats the collision check, commits the version changes, tags that commit once and pushes the two
-refs atomically. A failed remote lookup aborts release preparation; it does not prove a tag is absent. Branch protection can
-still reject publication and must not be bypassed.
+Prepare a release on `release/*` from the reviewed `develop` candidate. Use `npm version <version> --no-git-tag-version
+--ignore-scripts` only during authorized release preparation; review package/lockfile changes and update the changelog in
+that branch. Run the required checks, `node scripts/check-version.js maintenance` and
+`node scripts/check-version.js release` before publication. The latter rejects existing remote version tags and fails closed
+when the remote lookup fails. Open a `release/*` -> `main` PR; protected merges require explicit authorization.
 
-For releases triggered by an existing tag, the tag must equal `v` plus the package version, including prerelease or build
-metadata. The workflow validates that correspondence and builds that checkout without creating another version commit/tag.
-Patch, minor, major and `rc` prereleases remain available, with optional changelog generation.
+After the reviewed commit is integrated into `main`, create and push its exact `v<package-version>` tag only with publication
+authorization. Synchronize `main` back to `develop` through its own PR. Do not bump or push `main` using `npm run release`:
+that shortcut was removed. Legacy `version:*` commands can create commits/tags and are not validation commands.
+
+The Release workflow accepts a pushed `v*` tag or a manual dispatch naming an **existing** tag. It never creates a version
+commit or tag and never pushes a branch. Checkout must equal that tag, match both manifest/lockfile versions and pass
+`git merge-base --is-ancestor HEAD origin/main` against freshly fetched main before any project scripts are installed.
+`scripts/check-release-commit.js` also verifies the exact tag/HEAD identity and ancestry; its tests use synthetic repositories.
+Tags on unintegrated release branches are rejected. The workflow runs clean installation, validation, translations, policy
+tests, application tests, audit and build before uploading the validated archive. A separate publish job receives write
+permission, verifies that the tag still resolves to the validated SHA and publishes using `gh release create --verify-tag`.
+Build metadata uses the checked-out commit, including on manual dispatch. The workflow cannot be used to publish historical
+tags that lack these scripts without a separately reviewed compatibility change. A published Release is distinct from deployment.
 
 Do not run release commands or dispatch the workflow merely to validate this local maintenance delivery. Inspect workflow
 syntax and run the version-policy tests locally; validate the publication behavior only in a separately authorized release.

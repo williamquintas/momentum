@@ -52,8 +52,7 @@
     "version:minor": "standard-version --release-as minor",
     "version:major": "standard-version --release-as major",
     "version:prerelease": "standard-version -s --prerelease rc",
-    "version:dry-run": "standard-version --dry-run",
-    "release": "npm run version:patch && git push --follow-tags origin main"
+    "version:dry-run": "standard-version --dry-run"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.9",

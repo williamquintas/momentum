@@ -17,6 +17,7 @@ export const STORAGE_KEYS = {
   GOALS_BY_STATUS: 'goals_by_status',
   GOALS_BY_CATEGORY: 'goals_by_category',
   GOALS_BY_TAG: 'goals_by_tag',
+  GOALS_TRANSACTION: 'goals_transaction',
   COMPLETIONS: 'goal_completions',
   STORAGE_VERSION: 'goals_storage_version',
 } as const;

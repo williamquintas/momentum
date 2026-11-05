@@ -16,6 +16,21 @@ Itens com validação ou integração pendente permanecem desmarcados.
 - Registrar evidência de validação e distinguir integrado em develop de publicado. Fechamento de issue não é evidência
   suficiente; revisar estados remotos antes de executar tarefas baseadas no diagnóstico de 30/09/2026.
 
+## Comitês de consolidação — 04/11/2026 (America/Sao_Paulo)
+
+**Continuação em 05/11:** [implementação e validação](docs/agent-system/implementation-2026-11-05.md) de restauração,
+notas, criação dos seis tipos, PWA, bundling e Gitflow/release. Na árvore local, a suíte passou com 410 testes ativos e
+37 skipped; políticas: 30 passed; type-check, lint, formatação, traduções e build passaram. Há logs locais anteriores de
+jornadas sintéticas em Edge, mas a reprodução do navegador foi bloqueada nesta sessão. Auditoria previamente registrada:
+13 vulnerabilidades baixas/moderadas, sem altas/críticas; não reexecutada nesta sessão por falta do npm pessoal aprovado.
+Beta, backup completo e release continuam sem aceitação integral.
+
+Execução paralela de beta, qualidade/migrações e produto/integridade registrada no
+[relatório de coordenação](docs/agent-system/committees-2026-11-04.md), com vínculos às matrizes e aos achados.
+Base `546307d`, branch local `feature/beta-committees`. Prioridade: TASK-006/007, antes da aceitação do beta.
+Mudanças ainda não commitadas nem publicadas; CI, PR, revisão, merge, tag, GitHub Release e deployment não confirmados.
+Diagnóstico não encerra tarefas.
+
 ## Evidências da execução local — 01/10/2026 (America/Sao_Paulo)
 
 ### Ambiente e limites
