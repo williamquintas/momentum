@@ -680,7 +680,7 @@
       "updateNow": "Atualizar Agora",
       "later": "Mais Tarde",
       "description": "Uma nova versão do app está disponível. Você gostaria de atualizar agora?",
-      "refreshInfo": "A atualização atualizará a página e carregará os últimos recursos e correções."
+      "refreshInfo": "Salve suas alterações antes de atualizar. A atualização recarregará esta página com os últimos recursos e correções."
     },
     "installButton": {
       "ariaLabel": "Instalar App"

@@ -22,7 +22,7 @@ const generateUUID = (): string => {
     return v.toString(16);
   });
 };
-import { setStorageItem, initializeStorage } from './localStorageService';
+import { setStorageItem, initializeStorage as initializeStorageStructure } from './localStorageService';
 import {
   STORAGE_KEYS,
   StorageError,
@@ -38,7 +38,117 @@ import {
   type GoalsByTag,
   type SerializedCompletionEvent,
   type CompletionsData,
+  type StorageStructure,
 } from './storageTypes';
+
+interface StorageSnapshot {
+  key: string;
+  value: string | null;
+}
+
+interface RestoreJournal {
+  owner: string;
+  expiresAt: number;
+  snapshot: StorageSnapshot[];
+}
+
+// Synchronous restores normally take milliseconds. An active writer must not be mistaken for a crashed tab.
+const RESTORE_LEASE_MS = 60_000;
+const RESTORE_STORAGE_KEYS = [
+  STORAGE_KEYS.GOALS_INDEX,
+  STORAGE_KEYS.GOALS_DATA,
+  STORAGE_KEYS.GOALS_BY_TYPE,
+  STORAGE_KEYS.GOALS_BY_STATUS,
+  STORAGE_KEYS.GOALS_BY_CATEGORY,
+  STORAGE_KEYS.GOALS_BY_TAG,
+];
+
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
+
+const parseRecoverySnapshot = (value: unknown): StorageSnapshot[] => {
+  if (!Array.isArray(value) || value.length !== RESTORE_STORAGE_KEYS.length) {
+    throw new Error('Invalid storage recovery journal');
+  }
+  return value.map((entry: unknown, index: number) => {
+    const key = RESTORE_STORAGE_KEYS[index];
+    if (
+      key === undefined ||
+      !isRecord(entry) ||
+      entry.key !== key ||
+      !(entry.value === null || typeof entry.value === 'string')
+    ) {
+      throw new Error('Invalid storage recovery journal');
+    }
+    return { key, value: entry.value };
+  });
+};
+
+const parseRecoveryJournal = (journal: string): RestoreJournal => {
+  const parsed: unknown = JSON.parse(journal);
+  if (
+    !isRecord(parsed) ||
+    typeof parsed.owner !== 'string' ||
+    typeof parsed.expiresAt !== 'number' ||
+    !Number.isFinite(parsed.expiresAt) ||
+    !('snapshot' in parsed)
+  ) {
+    throw new Error('Invalid storage recovery journal');
+  }
+  return { owner: parsed.owner, expiresAt: parsed.expiresAt, snapshot: parseRecoverySnapshot(parsed.snapshot) };
+};
+
+const restoreStorageSnapshot = (snapshot: StorageSnapshot[]): void => {
+  snapshot.forEach(({ key, value }) => {
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+  });
+};
+
+const retainRecoveryJournal = (recovery: RestoreJournal): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.GOALS_TRANSACTION, JSON.stringify({ ...recovery, expiresAt: 0 }));
+  } catch {
+    /* Keep the original leased journal if storage itself remains unavailable. */
+  }
+};
+
+const recoverStorageTransaction = (rollbackOwner?: string): void => {
+  const journal = localStorage.getItem(STORAGE_KEYS.GOALS_TRANSACTION);
+  if (journal === null) return;
+
+  let recovery: RestoreJournal | undefined;
+  try {
+    const parsed = parseRecoveryJournal(journal);
+    if (parsed.expiresAt > Date.now() && parsed.owner !== rollbackOwner) {
+      throw new StorageError(
+        StorageErrorType.STORAGE_UNAVAILABLE,
+        'A backup restore is in progress in another tab. Please retry shortly.'
+      );
+    }
+    recovery = {
+      owner: rollbackOwner ?? generateUUID(),
+      expiresAt: Date.now() + RESTORE_LEASE_MS,
+      snapshot: parsed.snapshot,
+    };
+    localStorage.setItem(STORAGE_KEYS.GOALS_TRANSACTION, JSON.stringify(recovery));
+    restoreStorageSnapshot(parsed.snapshot);
+    localStorage.removeItem(STORAGE_KEYS.GOALS_TRANSACTION);
+  } catch (error) {
+    if (error instanceof StorageError) throw error;
+    // Allow a later read to retry a failed rollback without claiming the snapshot is current data.
+    if (recovery) retainRecoveryJournal(recovery);
+    throw new StorageError(
+      StorageErrorType.CORRUPTED_DATA,
+      'An interrupted save could not be recovered. Existing data has been retained for recovery.',
+      error instanceof Error ? error : undefined
+    );
+  }
+};
+
+const initializeStorage = (): StorageStructure => {
+  recoverStorageTransaction();
+  return initializeStorageStructure();
+};
 
 /**
  * Serialize a goal for storage (convert dates to ISO strings)
@@ -136,6 +246,15 @@ const deserializeGoal = (serialized: SerializedGoal): Goal => {
     completedDate: deserializeDate(serialized.completedDate),
     createdAt: new Date(serialized.createdAt),
     updatedAt: new Date(serialized.updatedAt),
+    notes: serialized.notes.map((note) => ({
+      ...note,
+      createdAt: new Date(note.createdAt),
+      updatedAt: new Date(note.updatedAt),
+    })),
+    attachments: serialized.attachments.map((attachment) => ({
+      ...attachment,
+      uploadedAt: new Date(attachment.uploadedAt),
+    })),
     progressHistory: serialized.progressHistory.map((entry) => ({
       id: entry.id,
       date: new Date(entry.date),
@@ -144,6 +263,29 @@ const deserializeGoal = (serialized: SerializedGoal): Goal => {
       metadata: entry.metadata,
     })),
   } as Goal;
+
+  if (goal.type === 'qualitative' && goal.selfAssessments) {
+    goal.selfAssessments = goal.selfAssessments.map((assessment) => ({
+      ...assessment,
+      date: new Date(assessment.date),
+    }));
+  }
+  if (goal.type === 'recurring' && goal.recurrence) {
+    goal.recurrence = { ...goal.recurrence, endDate: deserializeDate(goal.recurrence.endDate as unknown as string) };
+  }
+  if ((goal.type === 'recurring' || goal.type === 'habit') && goal.completionStats) {
+    const stats = goal.completionStats;
+    goal.completionStats = {
+      ...stats,
+      lastCompletedDate: deserializeDate(stats.lastCompletedDate as unknown as string),
+      firstCompletedDate: deserializeDate(stats.firstCompletedDate as unknown as string),
+      streak: {
+        ...stats.streak,
+        lastCompletedDate: deserializeDate(stats.streak?.lastCompletedDate as unknown as string),
+        startDate: deserializeDate(stats.streak?.startDate as unknown as string),
+      },
+    };
+  }
 
   // Deserialize milestones if present
   if (serialized.milestones && 'milestones' in goal) {
@@ -299,7 +441,7 @@ const removeFromIndexes = (
 };
 
 /**
- * Save all storage structures atomically
+ * Save normal CRUD through the existing storage wrapper. Backup restore uses its own journal below.
  */
 const saveStorage = (
   goalsIndex: GoalsIndex,
@@ -307,23 +449,82 @@ const saveStorage = (
   goalsByType: GoalsByType,
   goalsByStatus: GoalsByStatus,
   goalsByCategory: GoalsByCategory,
-  goalsByTag: GoalsByTag
+  goalsByTag: GoalsByTag,
+  isRestore = false
 ): void => {
+  const entries: [string, unknown][] = [
+    [STORAGE_KEYS.GOALS_INDEX, { ...goalsIndex, lastUpdated: new Date().toISOString() }],
+    [STORAGE_KEYS.GOALS_DATA, goalsData],
+    [STORAGE_KEYS.GOALS_BY_TYPE, goalsByType],
+    [STORAGE_KEYS.GOALS_BY_STATUS, goalsByStatus],
+    [STORAGE_KEYS.GOALS_BY_CATEGORY, goalsByCategory],
+    [STORAGE_KEYS.GOALS_BY_TAG, goalsByTag],
+  ];
+  if (!isRestore) {
+    for (const [key, value] of entries) setStorageItem(key, value);
+    return;
+  }
+  const journal: RestoreJournal = {
+    owner: generateUUID(),
+    expiresAt: Date.now() + RESTORE_LEASE_MS,
+    snapshot: entries.map(([key]) => ({ key, value: localStorage.getItem(key) })),
+  };
   try {
-    goalsIndex.lastUpdated = new Date().toISOString();
-    setStorageItem(STORAGE_KEYS.GOALS_INDEX, goalsIndex);
-    setStorageItem(STORAGE_KEYS.GOALS_DATA, goalsData);
-    setStorageItem(STORAGE_KEYS.GOALS_BY_TYPE, goalsByType);
-    setStorageItem(STORAGE_KEYS.GOALS_BY_STATUS, goalsByStatus);
-    setStorageItem(STORAGE_KEYS.GOALS_BY_CATEGORY, goalsByCategory);
-    setStorageItem(STORAGE_KEYS.GOALS_BY_TAG, goalsByTag);
+    // Serialize first so a serialization error cannot leave a partial transaction.
+    const serialized = entries.map(([key, value]) => [key, JSON.stringify(value)] as const);
+    localStorage.setItem(STORAGE_KEYS.GOALS_TRANSACTION, JSON.stringify(journal));
+    for (const [key, value] of serialized) {
+      const active = JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.GOALS_TRANSACTION) ?? 'null'
+      ) as RestoreJournal | null;
+      if (active?.owner !== journal.owner) {
+        throw new StorageError(StorageErrorType.STORAGE_UNAVAILABLE, 'Backup restore ownership changed. Please retry.');
+      }
+      localStorage.setItem(key, value);
+    }
+    localStorage.removeItem(STORAGE_KEYS.GOALS_TRANSACTION);
   } catch (error) {
+    recoverStorageTransaction(journal.owner);
     if (error instanceof StorageError) {
       throw error;
     }
-    throw new StorageError(StorageErrorType.UNKNOWN, 'Failed to save goals to storage', error as Error);
+    const isQuotaError = error instanceof DOMException && error.name === 'QuotaExceededError';
+    throw new StorageError(
+      isQuotaError ? StorageErrorType.QUOTA_EXCEEDED : StorageErrorType.UNKNOWN,
+      isQuotaError
+        ? 'Local Storage quota exceeded. The backup restore was not saved.'
+        : 'Failed to restore goals to storage',
+      error as Error
+    );
   }
 };
+
+/** Restore a validated batch without applying new-goal defaults or rewriting identities. */
+export const restoreGoals = (goals: Goal[]): void => {
+  if (goals.length === 0) return;
+  const storage = initializeStorage();
+  for (const goal of goals) storage.goalsData[goal.id] = serializeGoal(goal);
+  const goalsByType: GoalsByType = {};
+  const goalsByStatus: GoalsByStatus = {};
+  const goalsByCategory: GoalsByCategory = {};
+  const goalsByTag: GoalsByTag = {};
+  for (const serialized of Object.values(storage.goalsData)) {
+    const goal = deserializeGoal(serialized);
+    addToIndexes(goal.id, goal, goalsByType, goalsByStatus, goalsByCategory, goalsByTag);
+  }
+  saveStorage(
+    { ...storage.goalsIndex, ids: Object.keys(storage.goalsData) },
+    storage.goalsData,
+    goalsByType,
+    goalsByStatus,
+    goalsByCategory,
+    goalsByTag,
+    true
+  );
+};
+
+/** Convert validated backup data using the same date handling as persisted goals. */
+export const deserializeRestoredGoal = (goal: SerializedGoal): Goal => deserializeGoal(goal);
 
 /**
  * Create a new goal

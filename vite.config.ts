@@ -17,7 +17,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       devOptions: {
         enabled: true, // Enable PWA in development mode for testing
       },
@@ -166,7 +166,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          antd: ['antd'],
           query: ['@tanstack/react-query'],
           state: ['zustand'],
           utils: ['zod', 'date-fns', 'axios'],

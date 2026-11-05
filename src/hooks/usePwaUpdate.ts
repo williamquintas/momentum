@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 /**
  * Return type for the usePwaUpdate hook
@@ -16,10 +16,7 @@ interface UsePwaUpdateReturn {
 }
 
 /**
- * Hook to manage PWA automatic updates
- *
- * This hook listens for the 'swUpdated' event from vite-plugin-pwa
- * to detect when a new version of the app is available.
+ * Keep an installed update waiting until the user explicitly accepts a reload.
  *
  * @example
  * ```tsx
@@ -32,42 +29,59 @@ interface UsePwaUpdateReturn {
  */
 export const usePwaUpdate = (): UsePwaUpdateReturn => {
   const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
+  const registrationRef = useRef<ServiceWorkerRegistration>();
+  const shouldReloadRef = useRef(false);
+  const updateAppliedRef = useRef(false);
 
   useEffect(() => {
-    /**
-     * Handler for the 'swUpdated' event from vite-plugin-pwa
-     * Fired when a new service worker is available
-     */
-    const handleSwUpdated = (): void => {
-      setUpdateAvailable(true);
+    if (!('serviceWorker' in navigator)) return undefined;
+    let disposed = false;
+    let removeRegistrationListeners = (): void => {};
+    const serviceWorker = navigator.serviceWorker;
+    const wasControlled = Boolean(serviceWorker.controller);
+    const handleControllerChange = (): void => {
+      // Updating another tab must not discard this tab's edits.
+      if (shouldReloadRef.current) {
+        shouldReloadRef.current = false;
+        globalThis.location.reload();
+      } else if (wasControlled) {
+        updateAppliedRef.current = true;
+        setUpdateAvailable(true);
+      }
     };
-
-    // Listen for the service worker update event
-    // This event is emitted by vite-plugin-pwa when a new SW is available
-    window.addEventListener('swUpdated', handleSwUpdated);
-
-    // Also listen for updatefound from the service worker registration
-    // This provides a more direct way to detect updates
-    if ('serviceWorker' in navigator) {
-      void navigator.serviceWorker.ready.then((registration) => {
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // New service worker is installed and ready
-                setUpdateAvailable(true);
-              }
-            });
-          }
-        });
+    serviceWorker.addEventListener('controllerchange', handleControllerChange);
+    void serviceWorker.ready
+      .then((registration) => {
+        if (disposed) return;
+        registrationRef.current = registration;
+        const updateAvailability = (): void => {
+          if (!disposed) setUpdateAvailable(Boolean(registration.waiting && serviceWorker.controller));
+        };
+        let installingWorker: ServiceWorker | null = null;
+        const handleStateChange = (): void => updateAvailability();
+        const handleUpdateFound = (): void => {
+          installingWorker?.removeEventListener('statechange', handleStateChange);
+          installingWorker = registration.installing;
+          installingWorker?.addEventListener('statechange', handleStateChange);
+          updateAvailability();
+        };
+        registration.addEventListener('updatefound', handleUpdateFound);
+        handleUpdateFound();
+        removeRegistrationListeners = (): void => {
+          registration.removeEventListener('updatefound', handleUpdateFound);
+          installingWorker?.removeEventListener('statechange', handleStateChange);
+        };
+      })
+      .catch(() => {
+        if (!disposed) setUpdateAvailable(false);
       });
-    }
-
-    // Cleanup on unmount
     return () => {
-      window.removeEventListener('swUpdated', handleSwUpdated);
+      disposed = true;
+      shouldReloadRef.current = false;
+      updateAppliedRef.current = false;
+      registrationRef.current = undefined;
+      serviceWorker.removeEventListener('controllerchange', handleControllerChange);
+      removeRegistrationListeners();
     };
   }, []);
 
@@ -76,7 +90,20 @@ export const usePwaUpdate = (): UsePwaUpdateReturn => {
    * Called when user clicks "Update Now" button
    */
   const updatedApp = useCallback((): void => {
-    window.location.reload();
+    const waitingWorker = registrationRef.current?.waiting;
+    if (!waitingWorker) {
+      if (updateAppliedRef.current) {
+        updateAppliedRef.current = false;
+        globalThis.location.reload();
+      }
+      return;
+    }
+    shouldReloadRef.current = true;
+    try {
+      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+    } catch {
+      shouldReloadRef.current = false;
+    }
   }, []);
 
   return {

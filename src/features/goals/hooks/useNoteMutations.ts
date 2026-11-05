@@ -10,6 +10,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Goal, Note } from '@/features/goals/types';
 import { queryKeys } from '@/utils/queryKeys';
 
+const MAX_NOTE_CONTENT_LENGTH = 5000;
+
+const validateNoteContent = (content: string): void => {
+  if (!content.trim() || content.length > MAX_NOTE_CONTENT_LENGTH) {
+    throw new Error(`Note content must contain 1 to ${MAX_NOTE_CONTENT_LENGTH} characters`);
+  }
+};
+
 const generateUUID = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
@@ -103,6 +111,7 @@ export const useAddNote = () => {
   return useMutation({
     mutationFn: (input: AddNoteInput) => goalService.addNote(input),
     onMutate: async (input) => {
+      validateNoteContent(input.content);
       await queryClient.cancelQueries({ queryKey: queryKeys.goals.detail(input.goalId) });
       await queryClient.cancelQueries({ queryKey: queryKeys.goals.lists() });
 
@@ -145,6 +154,7 @@ export const useUpdateNote = () => {
   return useMutation({
     mutationFn: (input: UpdateNoteInput) => goalService.updateNote(input),
     onMutate: async (input) => {
+      validateNoteContent(input.content);
       await queryClient.cancelQueries({ queryKey: queryKeys.goals.detail(input.goalId) });
       await queryClient.cancelQueries({ queryKey: queryKeys.goals.lists() });
 

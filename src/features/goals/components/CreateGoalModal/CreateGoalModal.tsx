@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { CreateGoalInput } from '@/features/goals/types';
 
-import { GoalForm } from '../GoalForm';
+import { GoalForm } from '../GoalForm/GoalForm';
 
 export interface CreateGoalModalProps {
   /**

@@ -1,216 +1,228 @@
-/**
- * Create Goal Integration Tests - Goal Types
- *
- * Integration tests for creating each goal type through the form.
- * These tests verify that each goal type option is available and
- * renders the expected fields.
- */
+import React, { useState } from 'react';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CreateGoalForm } from '@/features/goals/components/CreateGoalForm';
+import { GoalForm } from '@/features/goals/components/GoalForm/GoalForm';
+import { GoalType, type CreateGoalInput } from '@/features/goals/types';
+import { exportGoals } from '@/services/storage/dataExportService';
+import { createGoal, getAllGoals, getGoal } from '@/services/storage/goalStorageService';
+import { STORAGE_KEYS } from '@/services/storage/storageTypes';
 
-const mockOnSubmit = vi.fn();
+vi.mock('@/utils/featureFlags', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/utils/featureFlags')>();
+  Object.assign(original.featureFlags, {
+    enableQuantitativeOnly: false,
+    enableMilestone: true,
+    enableRecurring: true,
+    enableHabit: true,
+    enableAttachments: true,
+    enableNotes: true,
+  });
+  return original;
+});
 
-describe.skip('Create Goal Integration - Goal Types', () => {
-  let queryClient: QueryClient;
+const TYPE_LABELS: Record<GoalType, string> = {
+  [GoalType.QUANTITATIVE]: 'Quantitative',
+  [GoalType.QUALITATIVE]: 'Qualitative',
+  [GoalType.BINARY]: 'Binary',
+  [GoalType.MILESTONE]: 'Milestone',
+  [GoalType.RECURRING]: 'Recurring',
+  [GoalType.HABIT]: 'Habit',
+};
 
+const CreationScreen = ({ onCancel }: { onCancel?: () => void }): React.ReactElement => {
+  const [error, setError] = useState('');
+  const [createdId, setCreatedId] = useState('');
+  const handleSubmit = (input: CreateGoalInput): void => {
+    try {
+      setCreatedId(createGoal(input).id);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Cannot create goal');
+    }
+  };
+  return (
+    <>
+      <GoalForm onSubmit={handleSubmit} onCancel={onCancel} />
+      {createdId && <output aria-label="Created goal ID">{createdId}</output>}
+      {error && <p role="alert">{error}</p>}
+    </>
+  );
+};
+
+const setInput = (label: RegExp, value: string): void => {
+  fireEvent.change(screen.getByLabelText(label), { target: { value } });
+};
+
+const click = async (element: HTMLElement): Promise<void> => {
+  await act(async () => {
+    await userEvent.click(element);
+  });
+};
+
+const selectType = async (type: GoalType): Promise<void> => {
+  await click(screen.getByLabelText(/^Goal Type/));
+  await click(screen.getByText(TYPE_LABELS[type], { exact: true }));
+};
+
+const fillGoal = async (type: GoalType, includeTitle = true): Promise<void> => {
+  if (includeTitle) setInput(/^Title$/, `Synthetic ${type}`);
+  setInput(/^Category$/, 'Integration fixtures');
+  await selectType(type);
+  switch (type) {
+    case GoalType.QUANTITATIVE:
+      setInput(/^Start Value$/, '0');
+      setInput(/^Target Value$/, '100');
+      setInput(/^Current Value$/, '0');
+      setInput(/^Unit$/, 'pages');
+      break;
+    case GoalType.QUALITATIVE:
+      await click(screen.getAllByLabelText(/^Status$/)[1]);
+      await click(screen.getByText('Not Started', { exact: true }));
+      setInput(/^Target Rating/, '8');
+      break;
+    case GoalType.BINARY:
+      setInput(/^Current Count$/, '0');
+      setInput(/^Target Count/, '3');
+      break;
+    case GoalType.MILESTONE:
+      setInput(/^Milestone 1 Title$/, 'Prepare outline');
+      await click(screen.getByRole('button', { name: /add milestone/i }));
+      setInput(/^Milestone 2 Title$/, 'Write draft');
+      break;
+    case GoalType.RECURRING:
+      await click(screen.getByLabelText(/^Recurrence Frequency$/));
+      await click(screen.getByText('Weekly', { exact: true }));
+      setInput(/^Interval$/, '2');
+      break;
+    case GoalType.HABIT:
+      await click(screen.getByLabelText(/^Target Frequency$/));
+      await click(screen.getByText('Custom', { exact: true }));
+      setInput(/^Custom Days Between$/, '3');
+      break;
+  }
+};
+
+describe('GoalForm creation with real local storage', () => {
   beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
-    });
-    vi.clearAllMocks();
-    document.body.innerHTML = '';
+    localStorage.clear();
+    // The shared setup reports every element as display:none. Keep actual inline
+    // visibility here so semantic role queries can exercise the real form.
+    vi.spyOn(window, 'getComputedStyle').mockImplementation((element) =>
+      element instanceof HTMLElement ? element.style : document.documentElement.style
+    );
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    localStorage.clear();
   });
 
-  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>{children}</BrowserRouter>
-    </QueryClientProvider>
-  );
-
-  describe('Goal Type Selection', () => {
-    it('renders all 6 goal type options', async () => {
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
-      );
-
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      fireEvent.mouseDown(typeSelect);
-
-      await waitFor(() => {
-        expect(screen.getByText('Quantitative')).toBeInTheDocument();
-        expect(screen.getByText('Qualitative')).toBeInTheDocument();
-        expect(screen.getByText('Binary')).toBeInTheDocument();
-        expect(screen.getByText('Milestone')).toBeInTheDocument();
-        expect(screen.getByText('Recurring')).toBeInTheDocument();
-        expect(screen.getByText('Habit')).toBeInTheDocument();
-      });
-    });
+  it('offers all six enabled types', async () => {
+    render(<CreationScreen />);
+    await click(screen.getByLabelText(/^Goal Type/));
+    for (const label of Object.values(TYPE_LABELS)) {
+      expect(screen.getByText(label, { exact: true })).toBeInTheDocument();
+    }
   });
 
-  describe('Binary Goal Selection', () => {
-    it('renders binary goal fields when type is selected', async () => {
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
-      );
+  it.each(Object.values(GoalType))('creates, reloads and exports a %s goal through the form', async (type) => {
+    const { unmount } = render(<CreationScreen />);
+    await fillGoal(type);
+    await click(screen.getByRole('button', { name: /^Create Goal$/ }));
 
-      fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'Test' } });
+    const output = await screen.findByLabelText('Created goal ID');
+    const id = output.textContent ?? '';
+    unmount();
+    const restored = getGoal(id);
+    expect(restored).not.toBeNull();
+    expect(restored?.title).toBe(`Synthetic ${type}`);
+    expect(restored?.type).toBe(type);
+    expect(restored?.category).toBe('Integration fixtures');
+    expect(restored?.progress).toBe(0);
+    expect(restored?.createdAt).toBeInstanceOf(Date);
+    expect(getAllGoals()).toHaveLength(1);
 
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      await userEvent.click(typeSelect);
-      await userEvent.click(screen.getByText('Binary'));
+    switch (restored?.type) {
+      case GoalType.QUANTITATIVE:
+        expect(restored.startValue).toBe(0);
+        expect(restored.targetValue).toBe(100);
+        expect(restored.currentValue).toBe(0);
+        expect(restored.unit).toBe('pages');
+        break;
+      case GoalType.QUALITATIVE:
+        expect(restored.qualitativeStatus).toBe('not_started');
+        expect(restored.targetRating).toBe(8);
+        break;
+      case GoalType.BINARY:
+        expect(restored.currentCount).toBe(0);
+        expect(restored.targetCount).toBe(3);
+        break;
+      case GoalType.MILESTONE:
+        expect(restored.milestones.map((milestone) => milestone.title)).toEqual(['Prepare outline', 'Write draft']);
+        expect(new Set(restored.milestones.map((milestone) => milestone.id)).size).toBe(2);
+        break;
+      case GoalType.RECURRING:
+        expect(restored.recurrence).toEqual({ frequency: 'weekly', interval: 2 });
+        expect(restored.completionStats.totalOccurrences).toBe(0);
+        break;
+      case GoalType.HABIT:
+        expect(restored.targetFrequency).toBe('custom');
+        expect(restored.customFrequency).toBe(3);
+        expect(restored.entries).toEqual([]);
+        break;
+    }
 
-      await waitFor(() => {
-        expect(screen.getByLabelText(/current count/i)).toBeInTheDocument();
-      });
-    });
+    const exported = exportGoals();
+    expect(exported.success).toBe(true);
+    expect(exported.data?.goals).toHaveLength(1);
+    expect(exported.data?.goals[0]?.id).toBe(id);
+    expect(exported.data?.goals[0]?.type).toBe(type);
+    expect(exported.data?.goals[0]?.createdAt).toBe(restored?.createdAt.toISOString());
   });
 
-  describe('Milestone Goal Selection', () => {
-    it('renders milestone goal fields when type is selected', async () => {
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
-      );
+  it('shows a required title error and writes nothing', async () => {
+    render(<CreationScreen />);
+    await fillGoal(GoalType.BINARY, false);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    await click(screen.getByRole('button', { name: /^Create Goal$/ }));
 
-      fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'Test' } });
-
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      await userEvent.click(typeSelect);
-      await userEvent.click(screen.getByText('Milestone'));
-
-      await waitFor(() => {
-        expect(screen.getByLabelText(/milestone 1 title/i)).toBeInTheDocument();
-      });
-    });
-
-    it('adds new milestone when add button is clicked', async () => {
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
-      );
-
-      fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'Test' } });
-
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      await userEvent.click(typeSelect);
-      await userEvent.click(screen.getByText('Milestone'));
-
-      await waitFor(() => {
-        expect(screen.getByLabelText(/milestone 1 title/i)).toBeInTheDocument();
-      });
-
-      const addButton = screen.getByRole('button', { name: /add milestone/i });
-      fireEvent.click(addButton);
-
-      await waitFor(() => {
-        expect(screen.getByLabelText(/milestone 2 title/i)).toBeInTheDocument();
-      });
-    });
+    await waitFor(() => expect(screen.getByLabelText(/^Title$/)).toHaveAttribute('aria-invalid', 'true'));
+    expect(await screen.findByText('This field is required')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Created goal ID')).not.toBeInTheDocument();
+    expect(getAllGoals()).toEqual([]);
+    consoleError.mockRestore();
   });
 
-  describe('Habit Goal Selection', () => {
-    it('renders habit goal fields when type is selected', async () => {
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
-      );
+  it('cancels a filled draft without creating any goal', async () => {
+    const onCancel = vi.fn();
+    render(<CreationScreen onCancel={onCancel} />);
+    await fillGoal(GoalType.HABIT);
+    await click(screen.getByRole('button', { name: /^Cancel$/ }));
 
-      fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'Test' } });
-
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      await userEvent.click(typeSelect);
-      await userEvent.click(screen.getByText('Habit'));
-
-      await waitFor(() => {
-        expect(screen.getByLabelText(/target frequency/i)).toBeInTheDocument();
-      });
-    });
+    expect(onCancel).toHaveBeenCalledOnce();
+    expect(screen.queryByLabelText('Created goal ID')).not.toBeInTheDocument();
+    expect(getAllGoals()).toEqual([]);
   });
 
-  describe('Form Validation', () => {
-    it('shows validation error for missing title', async () => {
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
-      );
-
-      fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'Test' } });
-
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      await userEvent.click(typeSelect);
-      await userEvent.click(screen.getByText('Quantitative'));
-
-      await waitFor(() => {
-        fireEvent.change(screen.getByLabelText(/start value/i), { target: { value: '10' } });
-        fireEvent.change(screen.getByLabelText(/target value/i), { target: { value: '20' } });
-        fireEvent.change(screen.getByLabelText(/current value/i), { target: { value: '10' } });
-        fireEvent.change(screen.getByLabelText(/unit/i), { target: { value: 'kg' } });
-      });
-
-      const submitButton = screen.getByRole('button', { name: /create goal/i });
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(screen.getByText(/title is required/i)).toBeInTheDocument();
-      });
-
-      expect(mockOnSubmit).not.toHaveBeenCalled();
+  it('reports a storage write failure without reporting creation success', async () => {
+    render(<CreationScreen />);
+    await fillGoal(GoalType.BINARY);
+    getAllGoals();
+    const originalSetItem = Storage.prototype.setItem.bind(localStorage);
+    let shouldFail = true;
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key: string, value: string): void => {
+      if (key === STORAGE_KEYS.GOALS_DATA && shouldFail) {
+        shouldFail = false;
+        throw new DOMException('Storage quota exceeded', 'QuotaExceededError');
+      }
+      originalSetItem(key, value);
     });
+    await click(screen.getByRole('button', { name: /^Create Goal$/ }));
 
-    it('handles creation failure gracefully', async () => {
-      const failingOnSubmit = vi.fn().mockRejectedValueOnce(new Error('Storage unavailable'));
-
-      render(
-        <TestWrapper>
-          <CreateGoalForm onSubmit={failingOnSubmit} />
-        </TestWrapper>
-      );
-
-      fireEvent.change(screen.getByLabelText(/title/i), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByLabelText(/category/i), { target: { value: 'Test' } });
-
-      const typeSelect = screen.getByLabelText(/goal type/i);
-      await userEvent.click(typeSelect);
-      await userEvent.click(screen.getByText('Quantitative'));
-
-      await waitFor(() => {
-        fireEvent.change(screen.getByLabelText(/start value/i), { target: { value: '10' } });
-        fireEvent.change(screen.getByLabelText(/target value/i), { target: { value: '20' } });
-        fireEvent.change(screen.getByLabelText(/current value/i), { target: { value: '10' } });
-        fireEvent.change(screen.getByLabelText(/unit/i), { target: { value: 'kg' } });
-      });
-
-      const submitButton = screen.getByRole('button', { name: /create goal/i });
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(failingOnSubmit).toHaveBeenCalled();
-      });
-    });
+    expect(await screen.findByRole('alert')).toHaveTextContent(/quota|storage/i);
+    expect(screen.queryByLabelText('Created goal ID')).not.toBeInTheDocument();
+    expect(getAllGoals()).toEqual([]);
   });
 });
