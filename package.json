@@ -56,16 +56,16 @@
     "release": "npm run version:patch && git push --follow-tags origin main"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.17.9",
+    "@tanstack/react-query": "^5.106.1",
     "antd": "5.12.8",
     "axios": "^1.21.0",
-    "country-flag-icons": "^1.6.15",
+    "country-flag-icons": "^1.6.20",
     "date-fns": "^3.0.6",
-    "i18next": "^26.0.4",
-    "i18next-browser-languagedetector": "^8.2.1",
+    "i18next": "^26.7.2",
+    "i18next-browser-languagedetector": "^8.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-i18next": "^17.0.2",
+    "react-i18next": "^17.1.13",
     "react-router-dom": "^6.30.6",
     "zod": "^4.6.7",
     "zustand": "^4.4.7"
